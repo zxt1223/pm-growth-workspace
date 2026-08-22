@@ -694,7 +694,22 @@ function sceneFromHash(){
   const h=(location.hash||'').replace('#','');
   return SCENES[h]?h:'dashboard';
 }
+function goScene(k){
+  if(!SCENES[k]) k='dashboard';
+  document.querySelectorAll('.scene-tab').forEach(x=>x.classList.toggle('active', x.dataset.key===k));
+  renderScene(k);
+}
 renderScene(sceneFromHash());
+// 监听 hash 变化 + 父页 postMessage（用于工作台面板内嵌秒切，不重新加载）
+window.addEventListener('hashchange',()=>goScene(sceneFromHash()));
+window.addEventListener('message',(e)=>{
+  const d=e.data;
+  if(!d) return;
+  if(d.type==='design-scene' && typeof d.key==='string'){
+    goScene(d.key);
+    try{ history.replaceState(null,'','#'+d.key); }catch(_){ location.hash=d.key; }
+  }
+});
 </script>
 </body>
 </html>
