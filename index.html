@@ -1925,7 +1925,7 @@ a { color: var(--primary); text-decoration: none; }
       </div>
     </div>
     <div class="dr-wrap">
-      <p class="dr-note">以下 4 个场景复刻了你提供的参考图设计语言（明亮风 SaaS 中后台）。点击任意卡片可在下方直接预览；完整 UI 设计 Prompt 见底部折叠区，可下载 <code>ui-design-prompt.md</code>。</p>
+      <p class="dr-note">以下 4 张场景卡由<strong>同一份设计 Token</strong>（明亮 SaaS 中后台：主色 <code>#4F6BFF</code>、Inter 字体、24px 圆角大面板、柔和阴影等）扩展而成——基于参考图①Dashboard / ②Events / ③Locations / ④Staff List。点击任意卡片可即时切换下方预览（秒切不重载）；完整 Prompt 详见底部折叠区，可下载 <code>ui-design-prompt.md</code>。</p>
       <div class="dr-cards" id="drCards">
         <div class="dr-card active" data-scene="dashboard" onclick="setDesignScene('dashboard')">
           <div class="t">① Dashboard</div><div class="tag">Nexus 风</div>
@@ -4344,7 +4344,10 @@ function switchTab(tab) {
 /* ========== Design Reference Panel ========== */
 function setDesignScene(key) {
   const f = document.getElementById('designFrame');
-  if (f) f.src = 'design-prototypes.html#' + key;
+  if (f) {
+    // 用 src + cachebust 强制 iframe 刷新（最稳妥；GIF内部pill切已是秒切不重载）
+    f.src = 'design-prototypes.html?t=' + Date.now() + '#' + key;
+  }
   const cards = document.querySelectorAll('#drCards .dr-card');
   cards.forEach(c => c.classList.toggle('active', c.dataset.scene === key));
 }
