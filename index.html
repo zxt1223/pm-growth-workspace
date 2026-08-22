@@ -1447,6 +1447,10 @@ a { color: var(--primary); text-decoration: none; }
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
       <span>工具应用</span>
     </button>
+    <button class="tab" data-tab="design" onclick="switchTab('design')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      <span>设计参考</span>
+    </button>
       </div>
     </aside>
     <div class="ws-main">
@@ -1892,6 +1896,74 @@ a { color: var(--primary); text-decoration: none; }
     </div>
   </div>
   </div>
+  <div class="panel" id="panel-design">
+    <style>
+      .dr-wrap{max-width:1120px}
+      .dr-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:16px 0}
+      .dr-card{border:1px solid #EEF0F5;border-radius:14px;padding:16px;cursor:pointer;background:#fff;transition:.18s ease-out}
+      .dr-card:hover{box-shadow:0 8px 24px rgba(79,107,255,.12);border-color:#4F6BFF}
+      .dr-card.active{border-color:#4F6BFF;background:#EEF1FF}
+      .dr-card .t{font-weight:700;font-size:15px;color:#1A2233}
+      .dr-card .tag{display:inline-block;font-size:11px;font-weight:600;color:#4F6BFF;background:#E8EDFF;padding:2px 8px;border-radius:999px;margin:9px 0}
+      .dr-card .d{font-size:12px;color:#6B7280;line-height:1.55}
+      .dr-frame{border:1px solid #EEF0F5;border-radius:16px;overflow:hidden;background:#fff;margin-top:8px;box-shadow:0 8px 24px -8px rgba(79,107,255,.10)}
+      .dr-frame iframe{width:100%;height:840px;border:none;display:block}
+      .dr-note{font-size:13px;color:#6B7280;line-height:1.75;margin:0}
+      .dr-prompt{background:#F8FAFF;border:1px solid #EEF1FF;border-radius:12px;padding:16px;font-size:13px;color:#374151;white-space:pre-wrap;line-height:1.7;max-height:380px;overflow:auto}
+      .dr-prompt h4{margin:0 0 6px;color:#1A2233;font-size:13px}
+      .dr-prompt code{background:#EEF1FF;color:#4F6BFF;padding:1px 6px;border-radius:6px;font-size:12px}
+      #panel-design details summary{user-select:none}
+    </style>
+    <div class="module-header">
+      <div class="module-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        <span>设计参考</span>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-sm btn-secondary" onclick="window.open('design-prototypes.html','_blank')">在新窗口打开完整设计稿 ↗</button>
+        <a class="btn btn-sm btn-secondary" href="ui-design-prompt.md" target="_blank">下载 Prompt (.md) ↗</a>
+      </div>
+    </div>
+    <div class="dr-wrap">
+      <p class="dr-note">以下 4 个场景复刻了你提供的参考图设计语言（明亮风 SaaS 中后台）。点击任意卡片可在下方直接预览；完整 UI 设计 Prompt 见底部折叠区，可下载 <code>ui-design-prompt.md</code>。</p>
+      <div class="dr-cards" id="drCards">
+        <div class="dr-card active" data-scene="dashboard" onclick="setDesignScene('dashboard')">
+          <div class="t">① Dashboard</div><div class="tag">Nexus 风</div>
+          <div class="d">KPI 指标卡 + 柱状 / 环形 / 状态环图表 + 近期动态</div>
+        </div>
+        <div class="dr-card" data-scene="events" onclick="setDesignScene('events')">
+          <div class="t">② Events</div><div class="tag">CrowdPass 风</div>
+          <div class="d">签到状态环 + 选中操作条 + Attendees 表格</div>
+        </div>
+        <div class="dr-card" data-scene="locations" onclick="setDesignScene('locations')">
+          <div class="t">③ Locations</div><div class="tag">Konoom 风</div>
+          <div class="d">Locations 表格：状态胶囊 + 利用率进度 + 金额</div>
+        </div>
+        <div class="dr-card" data-scene="staff" onclick="setDesignScene('staff')">
+          <div class="t">④ Staff List</div><div class="tag">Zendenta 风</div>
+          <div class="d">人员表：工作日圆点组 + 服务胶囊 + 状态</div>
+        </div>
+      </div>
+      <div class="dr-frame">
+        <iframe id="designFrame" src="design-prototypes.html#dashboard" title="设计参考预览"></iframe>
+      </div>
+      <details style="margin-top:18px">
+        <summary style="cursor:pointer;font-weight:600;color:#1A2233">UI 设计 Prompt（完整）</summary>
+        <div class="dr-prompt" style="margin-top:10px"><h4>明亮风 SaaS 中后台设计语言</h4>背景：浅紫蓝渐变 <code>#EEF1FF→#F5F7FF→#FAFAFE</code>，白色 24px 大圆角悬浮面板 + 柔和多重阴影。
+主色：<code>#4F6BFF</code>（hover <code>#3D57E6</code>），浅色面 <code>#E8EDFF</code>。
+文字：<code>#1A2233 / #6B7280 / #9CA3AF</code>。状态：success <code>#16A34A</code>、danger <code>#DC2626</code>、warn <code>#F59E0B</code>、info <code>#2563EB</code>。
+侧边栏：240px 白底，用户卡 + 分组菜单，选中态为整行 pill 浅蓝背景 + 主色实心线性 icon（20px / 1.75px stroke）。
+顶部条：大标题 + 副标题、居中搜索框、icon 按钮（消息/铃铛小红点）+ 头像、<code>Month ▾</code> 下拉 + 蓝色 <code>Export</code> 主按钮。
+KPI 卡：4 列网格，大 tabular 数字 + 涨跌 chip（绿↑/红↓）+ 右上迷你 sparkline + <code>View Report →</code>。
+图表：圆角柱状图（Profit/Loss 双系列）、环形图（中心指标 + 百分比标注）、状态环（外环刻度 + 双小指标）；纯 SVG，无图表库。
+表格：白卡 + 图标工具栏（Search/Columns/Density/Filter/Export）+ 主按钮；选中条高亮提示；双行单元格（32px 头像 + 姓名 + 邮箱）；状态胶囊（Member/Signed Up/Verified/Replication Needed/Code Suspended）；行 hover 浅蓝 + 左侧 3px 主色边条；底部分页。
+微交互：hover 200ms ease-out、tabular-nums 防抖、浅灰骨架占位、空状态插画。
+交付：单页、图表用纯 SVG、4 场景（Dashboard/Events/Locations/Staff）、<code>:root</code> 集中 CSS 变量、预留暗色 hook。
+
+—— 以上为精简版，完整 12 节 + 一句话版见 <a href="ui-design-prompt.md" target="_blank" style="color:#4F6BFF">ui-design-prompt.md ↗</a></div>
+      </details>
+    </div>
+  </div>
   </div>
 </div>
 
@@ -1928,6 +2000,10 @@ a { color: var(--primary); text-decoration: none; }
   <button class="bottom-tab" data-tab="tools" onclick="switchTab('tools')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
     <span>工具</span>
+  </button>
+  <button class="bottom-tab" data-tab="design" onclick="switchTab('design')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+    <span>参考</span>
   </button>
 </div>
 
@@ -4263,6 +4339,14 @@ function switchTab(tab) {
   document.querySelectorAll('.bottom-tab').forEach(t => {
     t.classList.toggle('active', t.dataset.tab === tab);
   });
+}
+
+/* ========== Design Reference Panel ========== */
+function setDesignScene(key) {
+  const f = document.getElementById('designFrame');
+  if (f) f.src = 'design-prototypes.html#' + key;
+  const cards = document.querySelectorAll('#drCards .dr-card');
+  cards.forEach(c => c.classList.toggle('active', c.dataset.scene === key));
 }
 
 /* Workspace left sidebar collapse (state persisted in settings) */
