@@ -3935,12 +3935,16 @@ function isToday(dateStr) {
 function isThisWeek(dateStr) {
   if (!dateStr) return false;
   const now = new Date();
+  // ISO 周：周一为一周起始
+  const day = now.getDay(); // 0=周日 .. 6=周六
+  const diffToMonday = (day === 0 ? 6 : day - 1);
   const weekStart = new Date(now);
-  weekStart.setDate(now.getDate() - now.getDay());
+  weekStart.setDate(now.getDate() - diffToMonday);
   weekStart.setHours(0, 0, 0, 0);
   const weekEnd = new Date(weekStart);
   weekEnd.setDate(weekStart.getDate() + 7);
   const d = new Date(dateStr);
+  if (isNaN(d)) return false;
   return d >= weekStart && d < weekEnd;
 }
 function escapeHtml(str) {
@@ -4339,6 +4343,8 @@ function switchTab(tab) {
   document.querySelectorAll('.bottom-tab').forEach(t => {
     t.classList.toggle('active', t.dataset.tab === tab);
   });
+  // 切换到任务看板时强制重渲染（列表初始隐藏在其他面板后面，需主动渲染）
+  if (tab === 'tasks') renderTasks();
 }
 
 /* ========== Design Reference Panel ========== */
@@ -5142,9 +5148,23 @@ function renderTasks() {
     return new Date(a.dueDate) - new Date(b.dueDate);
   });
 
+  // 渲染后复位 filter 的视觉选中态（防止原重渲染清空选中导致"本周"等视图看似无数据）
+  const vSel = document.getElementById('taskFilterView');
+  const pSel = document.getElementById('taskFilterPriority');
+  if (vSel) vSel.value = view;
+  if (pSel) pSel.value = priority;
+
+  const emptyHint = {
+    all: '暂无任务，点右上角「添加任务」开始记录',
+    today: '今日没有截止的任务',
+    week: '本周没有截止的任务（已完成的不计入本周视图）',
+    overdue: '没有逾期任务，棒！',
+    done: '还没有已完成的任务'
+  }[view] || '暂无任务';
+
   const container = document.getElementById('taskList');
   if (sorted.length === 0) {
-    container.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><p>暂无任务</p></div>';
+    container.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><p>' + emptyHint + '</p></div>';
   } else {
     container.innerHTML = sorted.map(t => {
       const pClass = t.priority === 'P0' ? 'badge-p0' : t.priority === 'P1' ? 'badge-p1' : 'badge-p2';
