@@ -1359,6 +1359,16 @@ a { color: var(--primary); text-decoration: none; }
 </head>
 <body>
 
+<!-- ========== Storage Health Banner ========== -->
+<div id="storageBanner" class="storage-banner">存储检测中…</div>
+<style>
+.storage-banner{padding:8px 14px;font-size:13px;line-height:1.5;border-bottom:1px solid rgba(0,0,0,.08)}
+.storage-banner a{color:inherit;text-decoration:underline;font-weight:500}
+.storage-banner--ok{background:#EAF3DE;color:#27500A}
+.storage-banner--warn{background:#FAEEDA;color:#633806}
+.storage-banner--error{background:#FCEBEB;color:#791F1F}
+</style>
+
 <!-- ========== Header ========== -->
 <header class="header">
   <div class="header-inner">
@@ -3874,6 +3884,13 @@ function getData(key) {
 }
 function setData(key, data) {
   localStorage.setItem(key, JSON.stringify(data));
+  if (key !== KEYS.settings && key !== KEYS.textOverrides) {
+    try {
+      const s = getData(KEYS.settings) || {};
+      s.lastSaveAt = new Date().toISOString();
+      localStorage.setItem(KEYS.settings, JSON.stringify(s));
+    } catch (e) { /* storage may be blocked; ignore */ }
+  }
 }
 
 /* ========== Initialize (no sample data - user's own content only) ========== */
@@ -6855,7 +6872,35 @@ document.addEventListener('DOMContentLoaded', () => {
   mergeAutoJobSeed();   // Auto-synced job postings (Feishu table snapshot)
   initTextEditing();
   renderAll();
+  checkStorageHealth();   // Show storage status banner (normal / ephemeral / blocked)
 });
+
+/* ========== Storage Health Check ========== */
+function checkStorageHealth() {
+  const banner = document.getElementById('storageBanner');
+  if (!banner) return;
+  const inIframe = (window.self !== window.top);
+  const isEphemeral = (location.protocol === 'http:' &&
+    (location.hostname === '127.0.0.1' || location.hostname === 'localhost')) || inIframe;
+  let available = true;
+  try {
+    const probe = '__wb_probe__';
+    localStorage.setItem(probe, '1');
+    localStorage.removeItem(probe);
+  } catch (e) { available = false; }
+  if (!available) {
+    banner.className = 'storage-banner storage-banner--error';
+    banner.innerHTML = '警告：当前环境无法保存数据（存储被禁用或受限），修改刷新后会丢失。请改用永久链接 https://zxt1223.github.io/pm-growth-workspace/ ，并善用顶部"导出"按钮随时备份。';
+  } else if (isEphemeral) {
+    banner.className = 'storage-banner storage-banner--warn';
+    banner.innerHTML = '警告：你正在临时预览（' + location.host + '）中编辑，刷新会丢失修改。请改用永久链接 <a href="https://zxt1223.github.io/pm-growth-workspace/" target="_blank" rel="noopener">https://zxt1223.github.io/pm-growth-workspace/</a> 。';
+  } else {
+    const s = getData(KEYS.settings) || {};
+    const t = s.lastSaveAt ? new Date(s.lastSaveAt).toLocaleString() : '尚未保存';
+    banner.className = 'storage-banner storage-banner--ok';
+    banner.textContent = '存储正常 · 上次保存：' + t + '（修改已自动保存到本浏览器，刷新不丢）';
+  }
+}
 
 /* ========== Daily Safety Backup ========== */
 function autoBackupData() {
