@@ -504,6 +504,25 @@ a { color: var(--primary); text-decoration: none; }
 .answer-block.ref .answer-block-label { color: var(--accent); }
 .answer-text { font-size: 13px; color: var(--text); line-height: 1.7; white-space: pre-wrap; word-break: break-word; }
 
+/* ========== Interview Q&A (参考答案 + 已隐藏) ========== */
+.qa-answer {
+  margin-top: 12px;
+  padding: 12px 14px;
+  background: var(--bg-soft, #f6f8fb);
+  border-left: 3px solid var(--accent, #6c5ce7);
+  border-radius: 8px;
+}
+.qa-answer-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent, #6c5ce7);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  margin-bottom: 6px;
+}
+.card-hidden { opacity: .72; }
+.card-hidden .card-title { text-decoration: line-through; text-decoration-color: var(--border); }
+
 /* ========== Suggestions ========== */
 .suggestions {
   margin-top: 8px;
@@ -1479,6 +1498,13 @@ a { color: var(--primary); text-decoration: none; }
         <option value="中级">中级</option>
         <option value="高级">高级</option>
       </select>
+      <select class="filter-select" id="trainingFilterCompany" onchange="renderTraining()">
+        <option value="">全部公司</option>
+      </select>
+      <select class="filter-select" id="trainingView" onchange="renderTraining()">
+        <option value="active">全部题目</option>
+        <option value="hidden">已隐藏题库</option>
+      </select>
       <button class="btn btn-sm btn-danger" onclick="confirmClearModule('training')">清空数据</button>
     </div>
     <div id="trainingList"></div>
@@ -2057,7 +2083,13 @@ window.AUTO_EXP_SEED = [
 {"id": "exp-auto-20260822-didi-pm", "title": "滴滴产品经理面经：顺风车产品理解与出行场景拆解", "company": "滴滴", "role": "产品经理", "platform": "我的秘密彩虹", "category": "产品思维与方法论", "sourceUrl": "http://www.mysecretrainbow.com/career/8013.html", "summary": "电话一面偏压力面深挖简历，二面考顺风车产品理解与数据估算；笔试结合出行场景考查问题定义与方法论", "keyPoints": ["压力面应对：产品设计思路、用户/市场/业务逐层追问要提前备好框架", "简历项目高频题：核心差异化、产品壁垒、商业模式、种子用户积累", "顺风车高频题：产品理解、早高峰司机让乘客取消订单的改进建议", "滴滴不做通信的原因分析、司乘冲突判定等场景题考查平台思维", "数据估算题需掌握出行市场规模与供需拆分逻辑"], "content": "滴滴产品经理面经整理。笔试：结合滴滴平台自身考查出行场景的实际问题，如乘客安全防范意识、平台监管手段等，核心是能否把问题说清楚、找到根本原因并结合业务或用户路径提出改进。电话一面（偏压力面，约1小时）：自我介绍后对简历产品经历刨根问底——产品核心差异化在哪、产品壁垒如何体现、商业模式如何、如何积累第一批种子用户、付费服务中用户与服务提供者发生冲突且各执一词时如何判定；随后聊对顺风车产品的理解、针对滴滴早高峰司机让顾客取消订单现象的产品改进建议、滴滴不做通信的原因分析及产品改进。电话二面（约半小时）：考查对顺风车车主与乘客双边需求、撮合与信任机制的产品理解，以及发散性产品思维与数据估算能力。整体强调从用户场景出发的方法论和差异化思考，建议提前整理个人打车场景中的问题洞察，面试时深入讨论可形成加分项。", "tags": "面经,产品经理,滴滴,出行,顺风车", "date": "2026-08-22"},
 {"id": "exp-auto-20260822-tencent-ai-pm", "title": "腾讯AI产品经理四轮面经：从方案选型到成本意识", "company": "腾讯", "role": "AI产品经理", "platform": "CSDN", "category": "AI产品", "sourceUrl": "https://blog.csdn.net/Gaga246/article/details/163763070", "summary": "四轮不考推导只考方案：调API/微调/规则引擎如何选，AI功能限时设计要讲清兜底与成本，三面被追问token开销与ROI回正", "keyPoints": ["方案选型题：通用模型直调/微调/规则引擎按query复杂度、量级与成本选ROI最高者", "幻觉兜底+RAG与知识库约束配合是AI产品面试必考组合", "AI功能设计方案需讲清：目标人群、使用场景、AI能力边界、出错兜底、成功衡量", "成本意识是隐藏考点：每月token花费、占预算比例、ROI多久回正", "被问AI必要性时，先自问不用AI能否实现，答出AI增量与回本周期"], "content": "腾讯AI产品经理四轮面经。一面技术理解：给定客服场景，让你在直接调混元API、微调、纯规则引擎三种方案中做选择——正确思路是先讲清各方案的适用场景，再按query复杂度与量级、单次调用成本、人工兜底开销综合选出ROI最高的方案；随后追问幻觉如何兜底、RAG和知识库约束如何配合使用。二面产品闭环：限时设计一个AI功能，需讲清目标人群、使用场景、AI能力边界、出错如何兜底、如何衡量成功——本质考产品基本功而非AI深度。三面深挖简历项目：三分钟讲清完整链路（用户痛点、为什么选此方案、上线后怎么看效果、成本怎么控），被追问每月token花多少钱、占预算多少、ROI多久回正。四面软实力：为什么选AI赛道、怎么看行业未来、你做的这个AI功能不用AI靠规则做得了吗。四轮无一道推导题，核心是量化能力、成本意识与AI必要性认知。", "tags": "面经,AI产品经理,腾讯,成本意识,大模型", "date": "2026-08-22"},
 {"id": "exp-auto-20260822-bytedance-ai-pm", "title": "字节跳动AI产品经理1h45min面试：认知筛选与场景迁移双考察", "company": "字节跳动", "role": "AI产品经理", "platform": "CSDN", "category": "AI产品", "sourceUrl": "https://blog.csdn.net/weixin_58753619/article/details/163641880", "summary": "一面45-60分钟做认知筛选（行业视野+数据思维+技术常识），二面60分钟考场景设计与经验迁移，附破题思路", "keyPoints": ["AI产品评价题：对比豆包/Kimi等，指出生态整合与长文本差异，不要只夸一个", "RAG与幻觉必考：用大白话讲检索-增强-生成流程，技术+产品双层给方案", "AIGC质量评估：区分通识类指标（BLEU/ROUGE/准确性）与体验类指标（回复时长/打断率/留存）", "提升DAU题从用户、场景、内容供给与激励分层展开", "场景设计题（如AI导购助手）需拆解核心难点与落地路径"], "content": "字节跳动AI产品经理面试共1小时45分钟。一面（45到60分钟，认知筛选）：行业与用户视角——评价目前市面上最喜欢的AI产品（豆包、ChatGPT、Cursor等）及优缺点、如何看待大模型发展趋势、Decoder-only架构为何成为主流、对某款AI产品做竞品分析的方法论；项目与数据思维——介绍最有成就感的AI项目及角色、如何评估AIGC质量并设立核心指标、提升某款AI产品DAU从哪些维度入手；基础技术认知——Prompt、RAG、SFT的区别与联系、大模型幻觉如何处理、是否了解GRPO、MCP等新技术。破题思路：对比思维别只夸一个产品；技术问题点出核心逻辑即可，如Decoder-only生成效率高、拟合能力强；幻觉处理要技术与产品双层给方案，引入知识库的同时增加反馈按钮与免责声明；评估AIGC区分通识类指标（BLEU、ROUGE、准确性）与体验类指标（回复时长、打断率、留存）。二面（约60分钟，场景与迁移）：为抖音或电商设计AI导购助手如何规划、核心难点是什么，考察复杂问题解决与经验迁移。", "tags": "面经,AI产品经理,字节跳动,RAG,大模型", "date": "2026-08-22"},
-{"id": "exp-auto-20260822-ctrip-product-ops", "title": "携程2026届产品运营岗校招面经：转化率归因与首页拆解", "company": "携程", "role": "产品运营", "platform": "超级简历WonderCV", "category": "运营方法论", "sourceUrl": "https://www.wondercv.com/mianjing/product-operations-2026-414", "summary": "2026届产品运营岗全流程面经：携程App首页运营策略分析、酒店频道转化率三连降定位、10个经典题及回答思路", "keyPoints": ["自我介绍必答：为何选产品运营而非产品经理，落点在让功能被用起来、让用户留下来", "首页分析题从信息架构、推荐算法、促销位、用户动线四维展开", "转化率下降归因用数据验证-维度拆解-归因分析-提出建议框架", "维度拆解覆盖用户端/产品端/渠道端/竞品端", "需理解OTA行业与携程多品牌矩阵（携程/去哪儿/Trip.com）打法"], "content": "携程2026届产品运营岗校招面经。岗位核心是让产品被用起来、让用户留下来——通过运营策略与数据分析持续提升产品的覆盖、活跃与商业价值。经典问题及思路：1.自我介绍并说明为何选产品运营而非产品经理——产品经理关注做什么功能，产品运营关注功能上线后如何让用户用起来并产生价值；2.分析携程App首页产品设计，观察到了哪些运营策略、如何优化——从信息架构、推荐算法、促销位置、用户动线四个维度分析，优化建议需有具体场景和数据假设支撑；3.某酒店频道订单转化率连续三周下降，如何通过数据分析定位问题——按数据验证、维度拆解、归因分析、提出建议的框架展开，拆解覆盖用户端（新老用户、不同客群）、产品端（搜索功能、详情页、价格展示）、渠道端（不同流量来源转化差异）、竞品端（竞对策略变化）。面试整体重视对OTA行业与携程业务矩阵的理解，常见业务场景题如节假日价格波动下的用户投诉应对、AB实验设计等。", "tags": "面经,产品运营,携程,校招,数据分析", "date": "2026-08-22"}
+{"id": "exp-auto-20260822-ctrip-product-ops", "title": "携程2026届产品运营岗校招面经：转化率归因与首页拆解", "company": "携程", "role": "产品运营", "platform": "超级简历WonderCV", "category": "运营方法论", "sourceUrl": "https://www.wondercv.com/mianjing/product-operations-2026-414", "summary": "2026届产品运营岗全流程面经：携程App首页运营策略分析、酒店频道转化率三连降定位、10个经典题及回答思路", "keyPoints": ["自我介绍必答：为何选产品运营而非产品经理，落点在让功能被用起来、让用户留下来", "首页分析题从信息架构、推荐算法、促销位、用户动线四维展开", "转化率下降归因用数据验证-维度拆解-归因分析-提出建议框架", "维度拆解覆盖用户端/产品端/渠道端/竞品端", "需理解OTA行业与携程多品牌矩阵（携程/去哪儿/Trip.com）打法"], "content": "携程2026届产品运营岗校招面经。岗位核心是让产品被用起来、让用户留下来——通过运营策略与数据分析持续提升产品的覆盖、活跃与商业价值。经典问题及思路：1.自我介绍并说明为何选产品运营而非产品经理——产品经理关注做什么功能，产品运营关注功能上线后如何让用户用起来并产生价值；2.分析携程App首页产品设计，观察到了哪些运营策略、如何优化——从信息架构、推荐算法、促销位置、用户动线四个维度分析，优化建议需有具体场景和数据假设支撑；3.某酒店频道订单转化率连续三周下降，如何通过数据分析定位问题——按数据验证、维度拆解、归因分析、提出建议的框架展开，拆解覆盖用户端（新老用户、不同客群）、产品端（搜索功能、详情页、价格展示）、渠道端（不同流量来源转化差异）、竞品端（竞对策略变化）。面试整体重视对OTA行业与携程业务矩阵的理解，常见业务场景题如节假日价格波动下的用户投诉应对、AB实验设计等。", "tags": "面经,产品运营,携程,校招,数据分析", "date": "2026-08-22"},
+{"id": "exp-auto-20260822-netease-llm-pm", "title": "网易互娱大模型产品经理一面面经：幻觉防范与上线标准", "company": "网易互娱", "role": "大模型产品经理", "platform": "牛客网", "category": "AI产品", "sourceUrl": "https://www.nowcoder.com/feed/main/detail/8ccd8e0875af4fa98778ca0cd4807f4b", "summary": "一面25分钟聚焦简历深挖：大模型观点总结如何防幻觉、上线指标定多高才能发版、业务闭环与游戏理解", "keyPoints": ["大模型岗必考幻觉防范：观点总结类功能需人工校验加知识库约束兜底", "上线标准要量化：准确率等指标达到什么水平才可发布要提前想清", "实习经历要能讲清目标用户、可量化结果与主要卡点", "业务闭环：从需求到上线到指标验证的全链路复盘", "游戏公司会问平时玩不玩游戏、玩哪些类型，提前准备"], "content": "网易互娱2026秋招大模型产品经理一面（约25分钟，视频面试，风格友善）。问题聚焦简历深挖：①自我介绍；②XX项目中的具体职责与关键成果；③使用大模型做观点总结时如何防范幻觉、产品上线标准是什么、准确率等指标达到什么水平才可发布；④实习期间产品面向哪类用户、取得哪些可量化结果、遇到的主要卡点是什么；⑤平时玩游戏吗、主要玩哪些类型。面试官态度友好，注重产品逻辑、落地细节与实际成效。要点：大模型产品岗关注幻觉控制、评估标准与业务闭环，建议提前梳理指标验证方法与上线决策依据；游戏公司还会考察对游戏的了解与热爱，自我介绍尽量引导到游戏相关经历。", "tags": "面经,AI产品,大模型产品经理,网易互娱,秋招", "date": "2026-08-22"},
+{"id": "exp-auto-20260822-bilibili-content-product", "title": "哔哩哔哩内容生态产品面试：弹幕文化与社区治理考点", "company": "哔哩哔哩", "role": "内容生态产品", "platform": "原创力文档", "category": "产品思维与方法论", "sourceUrl": "https://m.book118.com/html/2026/0708/7114043050011131.shtm", "summary": "15题覆盖弹幕文化核心需求、鬼畜侵权处理、UP主恰饭合规、直播礼物与中长视频推荐判定", "keyPoints": ["弹幕核心需求=实时互动与社区归属感，不是弹幕数量", "鬼畜侵权处理优先级：立即下架并联系创作者协商，而非等举报阈值", "恰饭视频审查重点：是否明确标注广告或推广", "中长视频推荐权重：完播率>时长>弹幕互动量>粉丝量", "准备B站面试要理解社区生态：创作者、弹幕文化、商业化边界"], "content": "B站内容生态方向面试题整理（15题，2026年7月发布）。选择题考点：①B站用户对弹幕文化的核心需求是实时互动与社区归属感，而非弹幕数量越多越好；②视频出现鬼畜系列侵权投诉时平台处理优先级最高的是立即下架并联系创作者协商，而非等待举报量达到阈值；③UP主恰饭视频合规要求中，最需严格审查是否明确标注广告或推广；④直播礼物掉落的常见技术原因是网络延迟超过200ms；⑤算法推荐对中长视频的判定中，用户完播率是否超过60%权重最高。简答题涉及创作激励、社区治理、商业化等方向。要点：面B站内容/社区类产品，要把弹幕文化、社区归属感、UP主生态与商业化边界的平衡作为核心理解，不能只停留在功能层面。", "tags": "面经,内容生态,社区产品,哔哩哔哩,弹幕文化", "date": "2026-08-22"},
+{"id": "exp-auto-20260822-huawei-product", "title": "华为产品经理高频面试题：理念契合与跨部门协作", "company": "华为", "role": "产品经理", "platform": "人人文库", "category": "产品思维与方法论", "sourceUrl": "https://m.renrendoc.com/paper/531747777.html", "summary": "20道真题聚焦自我认知与岗位匹配、人际关系：产品理念契合、热情事例、分歧处理与跨部门协调", "keyPoints": ["自我认知题：把华为产品理念（创新、品质、用户体验）与自身职业规划做具体勾连", "产品热情事例要讲清背景、行动与结果，别停留在口号", "功能设计分歧处理：倾听、摆依据、从用户需求与产品目标找共识", "跨部门沟通：先了解对方职责，定期沟通机制加公司整体利益优先", "适配题：提前了解华为业务流程与文化，表达快速融入的具体动作"], "content": "华为产品岗面试题库（2026-07-28发布，基于上百篇真实面经提炼的20道高频真题）。自我认知与岗位匹配：①阐述对华为产品理念的理解及与职业规划的契合点——创新、品质与用户体验；②过往经历中最能体现产品热情的事例；③入职后如何快速适应华为产品工作节奏与文化；④如何保持对产品细节的关注。人际关系：①与团队成员在产品功能设计上有严重分歧如何处理——先冷静倾听、阐述依据、从用户需求和产品整体目标出发找共识，仍无法统一可请教资深同事或上级；②跨部门推进项目时如何有效沟通协调——主动了解对方职责与需求、建立定期沟通机制、以公司整体利益为重寻求双赢；③负责的产品出问题影响其他部门怎么办。要点：华为产品面重价值观契合与协作能力，回答要具体化、可落地，避免空话套话。", "tags": "面经,产品经理,华为,面试题库,跨部门协作", "date": "2026-08-22"},
+{"id": "exp-auto-20260822-taobao-ecommerce-pm", "title": "淘宝电商产品面试真题：商详优化与用户为中心", "company": "淘宝", "role": "电商产品经理", "platform": "人人文库", "category": "产品思维与方法论", "sourceUrl": "https://www.renrendoc.com/paper/532569328.html", "summary": "15道真题覆盖商品详情页优化维度、以用户为中心的电商实践、搜索体验提升与双十一高并发设计", "keyPoints": ["商品详情页优化从页面结构、信息呈现、转化路径、数据指标四维切入", "以用户为中心要落到具体功能：如个性化推荐、售后保障策略", "搜索体验问题：先用户调研定位困惑点，再设计筛选、排序、纠错方案", "高并发场景（双十一秒杀）要懂缓存技术的好处与一致性挑战", "数据监控关注GMV、转化率、客单价、退款率等核心指标"], "content": "淘宝产品/电商方向面试真题（2026-08-07发布）。典型题：①介绍自己时面试官关注哪些评估匹配度的点；②描述一次合作完成项目的经历、扮演角色、挑战与成果；③负责商品详情页优化项目，从哪些维度分析页面不足——可沿页面结构、信息呈现、转化路径、数据指标展开并给出优化措施；④谈谈对以用户为中心在电商平台实践的理解，可结合淘宝具体功能；⑤设计处理淘宝海量订单数据的系统要考虑哪些关键设计要点（数据量、实时性、一致性）；⑥用户调研显示部分买家搜索时感到困惑、难以找到心仪商品，如何分析并设计初步方案提升搜索体验；⑦双十一秒杀等高并发场景为什么用缓存技术、好处与潜在挑战；⑧从数据监控角度关注哪些核心指标评估平台健康与业务表现（GMV、转化率、退款率等）。要点：面电商产品要把业务指标、用户场景与数据思维打通。", "tags": "面经,电商产品,淘宝,商品详情页,搜索体验", "date": "2026-08-22"},
+{"id": "exp-auto-20260822-qunar-ad-pm", "title": "去哪儿2027秋招产品经理解读：投放方向要懂数据与AB实验", "company": "去哪儿", "role": "产品经理（投放方向）", "platform": "UP简历", "category": "产品思维与方法论", "sourceUrl": "https://www.upjianli.com/jianlixiezuo/6006.html", "summary": "投放方向产品经理看重SQL、Python数据分析与AB实验，产品更像mini-CEO要对结果负责，业务场景题必考", "keyPoints": ["投放方向简历突出SQL、Python、AB测试项目经历非常加分", "产品经理定位=mini-CEO，要对结果负责，不接受只画原型", "必考业务场景题：酒店价格飙升用户投诉怎么办、如何设计按钮颜色实验", "简历杜绝空话：用STAR量化，如上线时间提前3天、点击率提升5%", "会深挖实习是否参与核心决策，准备好最大困难及解决过程"], "content": "去哪儿旅行2027届秋招产品经理解读（UP简历，2026年发布）。要点：①岗位偏投放方向，简历中SQL、Python数据分析与AB测试项目经历非常受欢迎；②这里的产品经理更像mini-CEO，要对结果负责，只想画原型不愿深入数据和商业逻辑的人不适合；③简历杜绝空话——不写具备良好沟通能力，要写通过协调设计与开发资源将项目上线时间提前3天，所有成果必须量化（如点击率提升5%）；④面试大概率考业务场景题：五一期间酒店价格飙升导致用户投诉增加作为产品经理怎么办、如何设计实验验证新按钮颜色对订单量的影响；⑤面试官会深挖实习细节确认你是否参与核心决策而非打杂，准备好项目中遇到的最大困难及解决过程（必考题）；⑥技术背景同学可能被问简单技术实现逻辑以评估沟通成本。要点：旅游行业受外部环境影响大，投放产品要理解ROI、转化率、获客成本。", "tags": "面经,产品经理,去哪儿,投放,秋招", "date": "2026-08-22"},
+{"id": "exp-auto-20260822-oppo-product", "title": "OPPO产品经理面试题：本分文化与产品理念融入", "company": "OPPO", "role": "产品经理", "platform": "人人文库", "category": "产品思维与方法论", "sourceUrl": "https://www.renrendoc.com:8443/paper/528831219.html", "summary": "高频真题聚焦企业文化契合（创新、本分）、团队协作事例、业务节奏适应与产品理念落地", "keyPoints": ["OPPO文化关键词：创新、本分，回答要体现诚信做事不投机取巧", "团队协作事例讲清角色、沟通方式与共识达成过程", "快速适应业务节奏：时间规划加学习新知识加保持积极心态", "产品理念认同要落到具体工作场景，展示用户视角与细节追求", "意见分歧处理：冷静倾听、分析合理性、以工作目标为导向"], "content": "OPPO产品岗面试题库（2026年发布，20道高频真题）。自我认知与岗位匹配：①阐述对OPPO企业文化的理解及与职业价值观的契合——创新激发创造力、本分秉持诚信做事不投机取巧；②过往经历中最能体现团队协作精神的事例——讲清与成员沟通、听取意见、协调资源、以大局为重达成共识；③面对OPPO快速发展节奏如何调整——提前做时间规划、提高效率、积极参加培训学习新技能；④如何在工作中保持对OPPO产品理念（追求极致用户体验）的认同并融入——站在用户角度思考、注重细节、追求简洁美观实用。人际关系：①与同事意见分歧——冷静避免情绪化、倾听分析合理性、诚恳表达、必要时请教资深同事，以工作目标为导向达成共识；②上级安排的任务与工作计划冲突——先沟通了解紧急程度与重要性，更紧急重要则调整计划优先完成。要点：OPPO产品岗面试重价值观契合、团队协作与用户视角，答案要具体、真诚。", "tags": "面经,产品经理,OPPO,企业文化,面试题", "date": "2026-08-22"}
     // AUTO-EXPERIENCE-POSTS-END
 ];
 
@@ -3106,6 +3138,695 @@ const QUESTION_BANK = [
   { title: '滴滴如何通过产品设计提升司机的接单意愿？', type: '功能设计', difficulty: '中级' },
   { title: '如何设计一个B2B SaaS产品的免费试用到付费转化路径？', type: '增长策略', difficulty: '高级' }
 ];
+// INTERVIEW_QA_SEED-START
+const INTERVIEW_QA_SEED = [
+  {
+    "id": "iq-bd-commercial-1",
+    "title": "广告有哪些常见收费方式？CPM/CPC/CPA 分别怎么计算？",
+    "type": "需求分析",
+    "difficulty": "中级",
+    "company": "字节跳动",
+    "sourcePostId": "exp-auto-20260819-bytedance-commercial-pm",
+    "referenceAnswer": "常见：CPM（千次展示计费）、CPC（点击计费）、CPA（转化/行动计费）、CPT（时长）、oCPM/oCPC（优化出价）。CPM=总花费/展示×1000；CPC=总花费/点击数；CPA=总花费/转化数。商业化 PM 要能默算并讲清各方式适用场景与对广告主/平台的影响。"
+  },
+  {
+    "id": "iq-bd-commercial-2",
+    "title": "如何估算信息流广告的单日收益？",
+    "type": "增长策略",
+    "difficulty": "中级",
+    "company": "字节跳动",
+    "sourcePostId": "exp-auto-20260819-bytedance-commercial-pm",
+    "referenceAnswer": "收益≈日均曝光×填充率×平均点击率(CTR)×平均点击单价(CPC)，或 曝光×eCPM/1000。也可拆成 DAU×人均刷新×广告填充×CTR×CPC。关键把大盘指标拆成可量化漏斗，并说明估算口径与假设（费米问题常客）。"
+  },
+  {
+    "id": "iq-bd-commercial-3",
+    "title": "优化平台功能但没做 AB 实验，怎么向面试官解释？",
+    "type": "功能设计",
+    "difficulty": "中级",
+    "company": "字节跳动",
+    "sourcePostId": "exp-auto-20260819-bytedance-commercial-pm",
+    "referenceAnswer": "没做 AB 可能因流量小/周期短/无法随机分流。应说明替代验证：前后对比（控同期变量）、分桶对照、业务指标灰度、定性反馈，并坦诚结论置信度边界——重点展现\"有方法验证而非拍脑袋\"。"
+  },
+  {
+    "id": "iq-bd-commercial-4",
+    "title": "广告竞价基本逻辑是什么？",
+    "type": "产品拆解",
+    "difficulty": "中级",
+    "company": "字节跳动",
+    "sourcePostId": "exp-auto-20260819-bytedance-commercial-pm",
+    "referenceAnswer": "主流 GSP（广义第二高价）实时竞价：系统按 eCPM（预估CTR×出价×1000）排序，胜出者按\"第二名出价+微小溢价\"扣费。PM 要理解 eCPM 如何平衡平台收入与广告主 ROI。"
+  },
+  {
+    "id": "iq-bd-ops-1",
+    "title": "抖音/小红书分别有哪些让你\"不爽\"的点？怎么拆解改进？",
+    "type": "UX优化",
+    "difficulty": "初级",
+    "company": "字节跳动",
+    "sourcePostId": "exp-auto-20260819-bytedance-product-ops",
+    "referenceAnswer": "用\"用户-场景-痛点\"框架：如抖音信息流同质化→加强兴趣探索分发；小红书搜索广告感重→标注并降权。运营要展现\"发现问题→拆解归因→给可落地方案\"的理性链条，而非吐槽。"
+  },
+  {
+    "id": "iq-bd-ops-2",
+    "title": "平时用什么 App、关注哪些数据？（运营岗）",
+    "type": "需求分析",
+    "difficulty": "初级",
+    "company": "字节跳动",
+    "sourcePostId": "exp-auto-20260819-bytedance-product-ops",
+    "referenceAnswer": "准备 2-3 个深度使用 App，从\"留存/内容供给/创作者激励\"等运营指标角度谈，而不只说功能。体现数据敏感度与\"用数据看产品\"的习惯。"
+  },
+  {
+    "id": "iq-bd-ops-3",
+    "title": "3L 桶和 5L 桶如何量出 4L 水？",
+    "type": "功能设计",
+    "difficulty": "初级",
+    "company": "字节跳动",
+    "sourcePostId": "exp-auto-20260819-bytedance-product-ops",
+    "referenceAnswer": "①装满5L；②用5L倒满3L，剩2L；③倒空3L，把2L倒入3L；④装满5L，倒满3L（还需1L），5L桶剩4L。考察逻辑拆解与步骤表达，说出思路即可。"
+  },
+  {
+    "id": "iq-bd-ops-4",
+    "title": "用一个事例证明你有目标导向？",
+    "type": "需求分析",
+    "difficulty": "初级",
+    "company": "字节跳动",
+    "sourcePostId": "exp-auto-20260819-bytedance-product-ops",
+    "referenceAnswer": "用 STAR：设定明确量化目标→拆关键动作→遇阻如何调→结果达成。重点突出\"目标-动作-结果\"闭环，而非泛泛而谈\"我很拼\"。"
+  },
+  {
+    "id": "iq-bd-live-1",
+    "title": "你对抖音短视频/电商直播有什么自己的看法？",
+    "type": "产品拆解",
+    "difficulty": "初级",
+    "company": "字节跳动",
+    "sourcePostId": "exp-auto-20260819-bytedance-live-ops",
+    "referenceAnswer": "展现对内容生态的理解：短视频靠\"情绪+完播\"，直播靠\"信任+即时转化\"；电商直播核心是\"人货场\"匹配。避免背模板，讲真实观察与判断。"
+  },
+  {
+    "id": "iq-bd-live-2",
+    "title": "视频创作项目你最擅长哪块、学到什么？",
+    "type": "功能设计",
+    "difficulty": "初级",
+    "company": "字节跳动",
+    "sourcePostId": "exp-auto-20260819-bytedance-live-ops",
+    "referenceAnswer": "用项目量化成果（播放/涨粉/转化），并拆自己负责的环节（选题/脚本/剪辑），说清\"擅长\"与\"学到\"的具体能力，避免把团队成果说成个人。"
+  },
+  {
+    "id": "iq-bd-live-3",
+    "title": "HR 面问优缺点各三词、最困难的事，怎么答？",
+    "type": "需求分析",
+    "difficulty": "初级",
+    "company": "字节跳动",
+    "sourcePostId": "exp-auto-20260819-bytedance-live-ops",
+    "referenceAnswer": "真诚不模板。缺点选\"可改进、不影响岗位核心\"的并配改进动作；困难讲\"冲突→处理→成长\"，体现复盘能力。HR 面重在性格与公司文化匹配。"
+  },
+  {
+    "id": "iq-bd-game-1",
+    "title": "分析一个吸引你的小游戏/弹幕玩法成功原因（PM 视角）",
+    "type": "产品拆解",
+    "difficulty": "高级",
+    "company": "字节跳动",
+    "sourcePostId": "exp-auto-20260819-bytedance-pm-game",
+    "referenceAnswer": "从\"用户需求-玩法机制-留存钩子-社交传播\"拆解：如某小游戏靠低门槛+即时反馈+排行榜社交。PM 要能把体验翻译成产品机制，而非只说\"好玩\"。"
+  },
+  {
+    "id": "iq-bd-game-2",
+    "title": "为开发者工具设计数据看板 PRD，重点包含哪些？",
+    "type": "功能设计",
+    "difficulty": "高级",
+    "company": "字节跳动",
+    "sourcePostId": "exp-auto-20260819-bytedance-pm-game",
+    "referenceAnswer": "重点：核心指标（DAU/留存/调用量）、漏斗（注册-创建-发布）、异常监控、分群对比。PRD 写清目标、用户、指标定义、看板模块与优先级——结构化而非堆功能。"
+  },
+  {
+    "id": "iq-bd-game-3",
+    "title": "优秀开发者工具应具备哪些核心特质？",
+    "type": "功能设计",
+    "difficulty": "中级",
+    "company": "字节跳动",
+    "sourcePostId": "exp-auto-20260819-bytedance-pm-game",
+    "referenceAnswer": "效率（少步骤完成）、易用（低学习成本）、反馈闭环（操作有结果可见）、可扩展（支持进阶用法）。平台型产品要 B 端+C 端复合视角。"
+  },
+  {
+    "id": "iq-bd-game-4",
+    "title": "小游戏 DAU 大幅波动如何一步步排查？",
+    "type": "需求分析",
+    "difficulty": "高级",
+    "company": "字节跳动",
+    "sourcePostId": "exp-auto-20260819-bytedance-pm-game",
+    "referenceAnswer": "先定位波动范围（全量/分群/分渠道）→看新增/留存/回流变化→关联版本/活动/外部事件→下钻具体玩法数据→定位根因。体现数据分析驱动意识与结构化排查。"
+  },
+  {
+    "id": "iq-bd-strat-1",
+    "title": "策略运营实习生需具备哪些核心能力？",
+    "type": "产品拆解",
+    "difficulty": "中级",
+    "company": "字节跳动",
+    "sourcePostId": "exp-auto-20260819-bytedance-strategy-ops",
+    "referenceAnswer": "数据洞察、逻辑拆解、策略落地、跨部门推动。即用数据发现问题，用框架拆解，输出可落地策略，并推动多方执行——\"数据+逻辑+框架\"是岗位底色。"
+  },
+  {
+    "id": "iq-bd-strat-2",
+    "title": "分享一个通过数据分析发现业务问题的案例（思路）",
+    "type": "需求分析",
+    "difficulty": "中级",
+    "company": "字节跳动",
+    "sourcePostId": "exp-auto-20260819-bytedance-strategy-ops",
+    "referenceAnswer": "讲清：数据来源→漏斗拆解（如转化漏在哪一步）→根因假设→优化建议→验证。强调\"从指标到动作\"的闭环，而非只罗列数字。"
+  },
+  {
+    "id": "iq-bd-strat-3",
+    "title": "北极星指标如何确定和分解？",
+    "type": "需求分析",
+    "difficulty": "中级",
+    "company": "字节跳动",
+    "sourcePostId": "exp-auto-20260819-bytedance-strategy-ops",
+    "referenceAnswer": "北极星=当前阶段最能代表用户价值的单一指标（如 GMV、活跃买家数）。分解：用户旅程拆层→每层过程指标→口径统一→分级管理更新。"
+  },
+  {
+    "id": "iq-bd-strat-4",
+    "title": "如何平衡数据严谨性与策略落地效率？",
+    "type": "需求分析",
+    "difficulty": "中级",
+    "company": "字节跳动",
+    "sourcePostId": "exp-auto-20260819-bytedance-strategy-ops",
+    "referenceAnswer": "用\"粗粒度快验+细粒度深究\"：先用轻量分析快速给方向，再对关键结论做严谨验证；按决策紧迫度分配分析深度，避免\"完美分析\"拖死落地。"
+  },
+  {
+    "id": "iq-mt-pm-1",
+    "title": "介绍一个最满意的 0到1 项目（怎么讲）",
+    "type": "功能设计",
+    "difficulty": "中级",
+    "company": "美团",
+    "sourcePostId": "exp-auto-20260819-meituan-pm",
+    "referenceAnswer": "强调结构性：背景（为什么做）→目标→你的动作（调研/PRD/协调）→上线→量化结果。把从0到1的每一环讲清，展现项目闭环能力。"
+  },
+  {
+    "id": "iq-mt-pm-2",
+    "title": "项目研发质疑时你怎么应对？",
+    "type": "功能设计",
+    "difficulty": "中级",
+    "company": "美团",
+    "sourcePostId": "exp-auto-20260819-meituan-pm",
+    "referenceAnswer": "前期调研清楚自查逻辑；考虑全场景；用优先级收益+部门 OKR 对齐说服；PRD 写清楚降低理解成本；真失误则记录复盘。核心\"用数据和目标对齐，而非硬怼\"。"
+  },
+  {
+    "id": "iq-mt-pm-3",
+    "title": "怎么证明项目成功的衡量数据？",
+    "type": "增长策略",
+    "difficulty": "中级",
+    "company": "美团",
+    "sourcePostId": "exp-auto-20260819-meituan-pm",
+    "referenceAnswer": "实习中提前收集反馈：B 端可与业务 one-one 或发问卷；用核心指标（使用率/效率提升/收入）量化，避免\"我感觉好\"——美团重项目闭环与可量化。"
+  },
+  {
+    "id": "iq-mt-pm-4",
+    "title": "为什么想做产品、优劣势怎么答？",
+    "type": "需求分析",
+    "difficulty": "初级",
+    "company": "美团",
+    "sourcePostId": "exp-auto-20260819-meituan-pm",
+    "referenceAnswer": "优势要和产品岗能力绑定（如结构化、同理心）；缺点选\"不影响核心\"且配改进动作，别讲致命短板。讲清\"我适合且我准备过\"。"
+  },
+  {
+    "id": "iq-mt-ai-1",
+    "title": "使用 AI 前后，对用户使用和商业收益的差别？",
+    "type": "产品拆解",
+    "difficulty": "高级",
+    "company": "美团",
+    "sourcePostId": "exp-auto-20260819-meituan-ai-app",
+    "referenceAnswer": "用户侧：更低操作成本、更个性化；平台侧：效率提升、新营收点（如 AI 导购转化）。用具体场景量化差别（耗时降 X%、转化升 Y%），大厂产品面已普遍考 AI 应用。"
+  },
+  {
+    "id": "iq-mt-ai-2",
+    "title": "AI 应用题怎么答（实现思路+落地形态+资源）？",
+    "type": "功能设计",
+    "difficulty": "高级",
+    "company": "美团",
+    "sourcePostId": "exp-auto-20260819-meituan-ai-app",
+    "referenceAnswer": "先定场景与用户价值→技术可行性（模型/数据）→MVP 落地形态→所需资源（算法/数据/算力/跨部门）→度量指标。体现\"业务落地\"而非炫技。"
+  },
+  {
+    "id": "iq-mt-ai-3",
+    "title": "最有成就感的项目，你具体做了什么？",
+    "type": "功能设计",
+    "difficulty": "中级",
+    "company": "美团",
+    "sourcePostId": "exp-auto-20260819-meituan-ai-app",
+    "referenceAnswer": "区分\"团队做了\"和\"你做了\"：用动词量化你的贡献（设计/推动/上线），讲清你提供的能力与结果，避免把团队成果说成个人。"
+  },
+  {
+    "id": "iq-mt-ai-4",
+    "title": "怎么从用户角度确认 AI 方向？",
+    "type": "需求分析",
+    "difficulty": "中级",
+    "company": "美团",
+    "sourcePostId": "exp-auto-20260819-meituan-ai-app",
+    "referenceAnswer": "用户调研（访谈/问卷）+ 行为数据 + 竞品对标，验证需求真实存在且高频，避免\"自嗨式 AI\"。AI 方向要落到具体用户痛点。"
+  },
+  {
+    "id": "iq-xhs-pm-1",
+    "title": "怎么理解小红书\"兴趣社区\"战略升级？",
+    "type": "产品拆解",
+    "difficulty": "高级",
+    "company": "小红书",
+    "sourcePostId": "exp-auto-20260819-xhs-pm",
+    "referenceAnswer": "从\"生活指南\"到\"兴趣社区\"：用兴趣图谱连接人与内容/人，提升留存与互动。对用户价值=找到同好；商业价值=更准的种草。讲清战略对产品设计的影响。"
+  },
+  {
+    "id": "iq-xhs-pm-2",
+    "title": "用户女性占 70%，如何设计功能吸引男性用户？",
+    "type": "UX优化",
+    "difficulty": "高级",
+    "company": "小红书",
+    "sourcePostId": "exp-auto-20260819-xhs-pm",
+    "referenceAnswer": "先定位男性兴趣场景（数码/汽车/运动），做内容供给与分发倾斜，避免破坏社区调性；用\"分兴趣圈层\"而非强行改版，逐步扩大结构。"
+  },
+  {
+    "id": "iq-xhs-pm-3",
+    "title": "用户活跃度连续三月下降，从哪些维度分析？",
+    "type": "增长策略",
+    "difficulty": "高级",
+    "company": "小红书",
+    "sourcePostId": "exp-auto-20260819-xhs-pm",
+    "referenceAnswer": "拆：新增/留存/活跃/流失；内容供给质量；分发效率；竞品分流；外部季节。定位是\"没人来/来了不走/走了不回\"哪环，再定策略。"
+  },
+  {
+    "id": "iq-xhs-pm-4",
+    "title": "产品方案与技术团队分歧如何协调推进？",
+    "type": "功能设计",
+    "difficulty": "中级",
+    "company": "小红书",
+    "sourcePostId": "exp-auto-20260819-xhs-pm",
+    "referenceAnswer": "用目标与数据对齐；拆 MVP 先验证；技术权衡讲清成本；找共同上级拍板时带方案。核心\"对事不对人，用证据推进\"。"
+  },
+  {
+    "id": "iq-xhs-co-1",
+    "title": "如何做爆款？结合热点怎么玩？",
+    "type": "增长策略",
+    "difficulty": "中级",
+    "company": "小红书",
+    "sourcePostId": "exp-auto-20260819-xhs-content-ops",
+    "referenceAnswer": "爆款=选题（情绪/痛点/时效）+ 内容结构（前3秒钩子）+ 视觉 + 互动设计。结合热点要\"快+角度独特+不硬蹭\"，内容运营岗要有作品感。"
+  },
+  {
+    "id": "iq-xhs-co-2",
+    "title": "小红书博主与其他平台博主差异？",
+    "type": "产品拆解",
+    "difficulty": "中级",
+    "company": "小红书",
+    "sourcePostId": "exp-auto-20260819-xhs-content-ops",
+    "referenceAnswer": "小红书重\"真实种草+图文审美+搜索心智\"；博主靠\"信任感+实用价值\"而非纯流量。强调平台差异认知要具体，而非泛泛而谈。"
+  },
+  {
+    "id": "iq-xhs-co-3",
+    "title": "笔记互动四个指标（点赞/收藏/评论/分享）怎么理解？",
+    "type": "增长策略",
+    "difficulty": "初级",
+    "company": "小红书",
+    "sourcePostId": "exp-auto-20260819-xhs-content-ops",
+    "referenceAnswer": "点赞=认同、收藏=实用/想回看、评论=引发讨论、分享=破圈价值。不同指标反映不同内容价值，指导选题与优化方向。"
+  },
+  {
+    "id": "iq-xhs-co-4",
+    "title": "评价官方号最喜欢的三条内容（考察什么）？",
+    "type": "UX优化",
+    "difficulty": "初级",
+    "company": "小红书",
+    "sourcePostId": "exp-auto-20260819-xhs-content-ops",
+    "referenceAnswer": "考察审美与洞察：能否说出\"好在哪\"（选题/排版/钩子/转化），而不只是\"我喜欢\"。用结构化理由替代主观偏好。"
+  },
+  {
+    "id": "iq-xhs-ec-1",
+    "title": "梳理用户从下单到履约完成的完整链路",
+    "type": "功能设计",
+    "difficulty": "高级",
+    "company": "小红书",
+    "sourcePostId": "exp-auto-20260819-xhs-ecommerce-pm",
+    "referenceAnswer": "浏览/搜索→点击→加购→下单→支付→备货→发货→物流→签收→售后。电商 PM 要端到端讲清每环节体验与指标，而非只盯前端。"
+  },
+  {
+    "id": "iq-xhs-ec-2",
+    "title": "三家电商公司商业模式调研分几个模块？",
+    "type": "产品拆解",
+    "difficulty": "高级",
+    "company": "小红书",
+    "sourcePostId": "exp-auto-20260819-xhs-ecommerce-pm",
+    "referenceAnswer": "按\"用户-商品-交易-履约-营销\"模块对比：货架电商（淘宝）重搜索与 SKU，内容电商（抖音）重兴趣分发，社区电商（小红书）重信任种草。"
+  },
+  {
+    "id": "iq-xhs-ec-3",
+    "title": "美团/抖音/小红书做本地生活的特点对比？",
+    "type": "产品拆解",
+    "difficulty": "高级",
+    "company": "小红书",
+    "sourcePostId": "exp-auto-20260819-xhs-ecommerce-pm",
+    "referenceAnswer": "美团=交易心智强（搜索+履约）、抖音=内容流量大（短视频引流）、小红书=决策种草（笔记转化）。各擅场景不同，面试常考格局对比。"
+  },
+  {
+    "id": "iq-xhs-ec-4",
+    "title": "为什么小红书不在内容部分植入商业化（效果不好）？",
+    "type": "产品拆解",
+    "difficulty": "中级",
+    "company": "小红书",
+    "sourcePostId": "exp-auto-20260819-xhs-ecommerce-pm",
+    "referenceAnswer": "硬广破坏社区信任与调性、伤害核心体验；小红书电商优势在\"社区氛围\"带来的自然种草，而非强行变现。社区与电商要结合而非互斥。"
+  },
+  {
+    "id": "iq-tt-store-1",
+    "title": "TikTok Shop 平台商业模式与核心竞争力？",
+    "type": "产品拆解",
+    "difficulty": "中级",
+    "company": "字节跳动（TikTok Shop）",
+    "sourcePostId": "exp-auto-20260819-tiktokshop-store-ops",
+    "referenceAnswer": "内容电商（短视频+直播）驱动交易，核心在\"内容×兴趣分发×闭环交易\"。竞争力=流量效率+达人生态+低门槛转化，考察内容电商全链路理解。"
+  },
+  {
+    "id": "iq-tt-store-2",
+    "title": "针对欧美/东南亚/中东如何制定运营策略？",
+    "type": "增长策略",
+    "difficulty": "高级",
+    "company": "字节跳动（TikTok Shop）",
+    "sourcePostId": "exp-auto-20260819-tiktokshop-store-ops",
+    "referenceAnswer": "按市场差异：东南亚价格敏感+直播强；欧美品牌与信任优先；中东宗教与物流特殊。策略在选品、内容、履约上本地化，多市场差异是高频题。"
+  },
+  {
+    "id": "iq-tt-store-3",
+    "title": "新店铺 0到1 搭建关键步骤与时间节点？",
+    "type": "功能设计",
+    "difficulty": "中级",
+    "company": "字节跳动（TikTok Shop）",
+    "sourcePostId": "exp-auto-20260819-tiktokshop-store-ops",
+    "referenceAnswer": "选品→开店与装修→供应链→短视频/直播启动→投流→数据复盘；每阶段设里程碑与指标，先跑通单点再扩，避免一次性铺太大。"
+  },
+  {
+    "id": "iq-tt-store-4",
+    "title": "提升店铺直播观看量和互动率的策略？",
+    "type": "增长策略",
+    "difficulty": "中级",
+    "company": "字节跳动（TikTok Shop）",
+    "sourcePostId": "exp-auto-20260819-tiktokshop-store-ops",
+    "referenceAnswer": "观看=预告+投流+固定时段；互动=福利/问答/抽奖+主播话术+评论区运营。用数据看\"进房-停留-互动-转化\"漏斗优化，而非凭感觉。"
+  },
+  {
+    "id": "iq-tt-train-1",
+    "title": "全托管 vs 亚马逊市场模式，对中国品牌各自吸引力与弊端？",
+    "type": "产品拆解",
+    "difficulty": "高级",
+    "company": "字节跳动（TikTok Shop）",
+    "sourcePostId": "exp-auto-20260819-tiktokshop-ecom-trainee",
+    "referenceAnswer": "全托管：平台掌运营，品牌省心但失定价/数据；亚马逊：品牌自主但需自建运营。吸引力=低门槛出海；弊端=利润与控制权。考察模式理解深度。"
+  },
+  {
+    "id": "iq-tt-train-2",
+    "title": "法国美妆 KOL，专业型 vs 娱乐型哪类更有价值？",
+    "type": "增长策略",
+    "difficulty": "高级",
+    "company": "字节跳动（TikTok Shop）",
+    "sourcePostId": "exp-auto-20260819-tiktokshop-ecom-trainee",
+    "referenceAnswer": "全托管重转化与信任→专业型（成分功效）更契合；但若需破圈声量，娱乐型补位。按阶段目标组合，而非二选一。"
+  },
+  {
+    "id": "iq-tt-train-3",
+    "title": "美国夏季狂欢节，全托管核心叙事如何建立消费者信任？",
+    "type": "增长策略",
+    "difficulty": "高级",
+    "company": "字节跳动（TikTok Shop）",
+    "sourcePostId": "exp-auto-20260819-tiktokshop-ecom-trainee",
+    "referenceAnswer": "强调\"平台背书+正品保障+价格优势+无忧售后\"，用统一叙事降低决策风险，而非单品叫卖。信任是跨境转化的前提。"
+  },
+  {
+    "id": "iq-tt-train-4",
+    "title": "首页流量曝光选品排序依据哪些数据指标？",
+    "type": "增长策略",
+    "difficulty": "高级",
+    "company": "字节跳动（TikTok Shop）",
+    "sourcePostId": "exp-auto-20260819-tiktokshop-ecom-trainee",
+    "referenceAnswer": "转化率、GMV、点击率、退货率、好评率综合加权；低质高退商品降权，保障用户体验与平台口碑。排序逻辑要兼顾平台与用户长期价值。"
+  },
+  {
+    "id": "iq-tt-search-1",
+    "title": "优化垂直场景（时尚/美容）搜索发现效率的策略框架？",
+    "type": "产品拆解",
+    "difficulty": "高级",
+    "company": "字节跳动（TikTok Shop）",
+    "sourcePostId": "exp-auto-20260819-tiktokshop-search-pm",
+    "referenceAnswer": "指标：相关性/覆盖率/点击率/转化率；策略：召回优化（query 理解+类目）→排序（多目标）→展现（图文样式）；风险：低质内容。框架要完整。"
+  },
+  {
+    "id": "iq-tt-search-2",
+    "title": "美国 vs 印尼搜索差异化需求与适配？",
+    "type": "产品拆解",
+    "difficulty": "高级",
+    "company": "字节跳动（TikTok Shop）",
+    "sourcePostId": "exp-auto-20260819-tiktokshop-search-pm",
+    "referenceAnswer": "美国重品牌与精准；印尼重性价比与本地语言/宗教合规。适配在词表、排序权重、类目与合规，考察全球化多市场思维。"
+  },
+  {
+    "id": "iq-tt-search-3",
+    "title": "搜索低质量内容结构化挖掘机制？",
+    "type": "功能设计",
+    "difficulty": "高级",
+    "company": "字节跳动（TikTok Shop）",
+    "sourcePostId": "exp-auto-20260819-tiktokshop-search-pm",
+    "referenceAnswer": "定义低质标准（标题党/货不对板）→用规则+模型打标→聚类归因→下架/降权+反馈给供给端，形成\"识别-治理-反哺\"闭环。"
+  },
+  {
+    "id": "iq-tt-search-4",
+    "title": "搜索体验优化循环迭代机制？",
+    "type": "需求分析",
+    "difficulty": "中级",
+    "company": "字节跳动（TikTok Shop）",
+    "sourcePostId": "exp-auto-20260819-tiktokshop-search-pm",
+    "referenceAnswer": "埋点采集行为→分群分析流失→AB 实验验证→迭代；形成\"数据-假设-实验-上线\"闭环，电商搜索要内容消费思维。"
+  },
+  {
+    "id": "iq-bd-dpm-ai-1",
+    "title": "实现 AI 自动生成 SQL 的核心难点与方案？",
+    "type": "功能设计",
+    "difficulty": "高级",
+    "company": "字节跳动",
+    "sourcePostId": "exp-auto-20260820-bytedance-data-pm-ai",
+    "referenceAnswer": "难点：自然语言→准确 SQL（schema 理解、多表关联、歧义）。方案：表结构检索增强+少样本+执行校验+结果可视化；产品侧控\"准确率与可解释\"，AI+数据产品考察落地能力。"
+  },
+  {
+    "id": "iq-bd-dpm-ai-2",
+    "title": "作为产品 owner，AI 生成 SQL 的核心业务问题/优势/用户？",
+    "type": "需求分析",
+    "difficulty": "高级",
+    "company": "字节跳动",
+    "sourcePostId": "exp-auto-20260820-bytedance-data-pm-ai",
+    "referenceAnswer": "问题：非技术同学取数难；优势：降门槛提效率；用户：分析师/业务/运营。讲清 owner 视角的价值闭环，而非只堆技术。"
+  },
+  {
+    "id": "iq-bd-dpm-ai-3",
+    "title": "内部业务线产品 vs 外部 B 端商业化，需求优先级/颗粒度差异？",
+    "type": "产品拆解",
+    "difficulty": "高级",
+    "company": "字节跳动",
+    "sourcePostId": "exp-auto-20260820-bytedance-data-pm-ai",
+    "referenceAnswer": "内部重\"快+贴合自家业务\"、颗粒度粗；外部重\"通用+稳定+合规\"、颗粒度细、要培训与文档。面向内外部产品思维差异是高频考点。"
+  },
+  {
+    "id": "iq-bd-dpm-ai-4",
+    "title": "内部紧急需求 vs 外部商业化需求冲突，如何协调？",
+    "type": "需求分析",
+    "difficulty": "高级",
+    "company": "字节跳动",
+    "sourcePostId": "exp-auto-20260820-bytedance-data-pm-ai",
+    "referenceAnswer": "用价值/紧迫/影响面评估；分阶段交付；对外承诺透明；必要时向上对齐资源。体现多边资源协调与\"对业务负责\"。"
+  },
+  {
+    "id": "iq-mt-dpm-1",
+    "title": "从0到1 数据产品案例怎么讲（量化成效）？",
+    "type": "功能设计",
+    "difficulty": "高级",
+    "company": "美团",
+    "sourcePostId": "exp-auto-20260820-meituan-data-pm",
+    "referenceAnswer": "起点问题→洞察路径→方案→上线成效（量化指标，如决策时长降 X%、覆盖 Y 业务）。讲清\"问题-方案-价值\"，美团数据产品面试极专业。"
+  },
+  {
+    "id": "iq-mt-dpm-2",
+    "title": "构建企业级指标体系的方法论？",
+    "type": "需求分析",
+    "difficulty": "高级",
+    "company": "美团",
+    "sourcePostId": "exp-auto-20260820-meituan-data-pm",
+    "referenceAnswer": "分业务/过程/北极星指标；收敛口径防泛滥：建指标字典、owner 制、评审机制，统一定义。防止\"指标打架\"。"
+  },
+  {
+    "id": "iq-mt-dpm-3",
+    "title": "埋点方案如何可追溯可扩展、避免过度？",
+    "type": "功能设计",
+    "difficulty": "高级",
+    "company": "美团",
+    "sourcePostId": "exp-auto-20260820-meituan-data-pm",
+    "referenceAnswer": "按\"事件-属性\"模型；统一规范；只埋必要字段；分层（基础+业务）；文档化，避免噪音与遗漏。可追溯可扩展是埋点设计核心。"
+  },
+  {
+    "id": "iq-mt-dpm-4",
+    "title": "数据质量问题（缺失/延迟/异常）如何处理？",
+    "type": "需求分析",
+    "difficulty": "中级",
+    "company": "美团",
+    "sourcePostId": "exp-auto-20260820-meituan-data-pm",
+    "referenceAnswer": "监测（告警）→定位（血缘排查）→修复（补数/重跑）→责任界定（owner+SLa）。流程化不靠人盯，数据质量是决策地基。"
+  },
+  {
+    "id": "iq-xhs-dpm-1",
+    "title": "什么是数据产品？",
+    "type": "需求分析",
+    "difficulty": "中级",
+    "company": "小红书",
+    "sourcePostId": "exp-auto-20260820-xhs-data-pm",
+    "referenceAnswer": "把数据能力产品化，让用户低门槛完成\"取数-分析-决策\"；区别于报表，重交互与场景闭环。面试官明确考察\"逻辑性+产品 sense\"两条线。"
+  },
+  {
+    "id": "iq-xhs-dpm-2",
+    "title": "小红书近两三年成功原因与隐含问题（用户视角）？",
+    "type": "产品拆解",
+    "difficulty": "高级",
+    "company": "小红书",
+    "sourcePostId": "exp-auto-20260820-xhs-data-pm",
+    "referenceAnswer": "成功：真实种草+搜索心智+社区信任；问题：变现与内容平衡、男性与下沉渗透、信息茧房。展现用户视角与社区产品理解深度。"
+  },
+  {
+    "id": "iq-xhs-dpm-3",
+    "title": "跟其他平台最明显差异点，一句话总结？",
+    "type": "产品拆解",
+    "difficulty": "中级",
+    "company": "小红书",
+    "sourcePostId": "exp-auto-20260820-xhs-data-pm",
+    "referenceAnswer": "例：\"小红书是决策前的信任社区，用户来问和种草，而非单纯刷\"。考察提炼力与一句话差异化表达。"
+  },
+  {
+    "id": "iq-xhs-dpm-4",
+    "title": "数据产品岗看两条线（逻辑性+产品 sense）怎么准备？",
+    "type": "需求分析",
+    "difficulty": "中级",
+    "company": "小红书",
+    "sourcePostId": "exp-auto-20260820-xhs-data-pm",
+    "referenceAnswer": "逻辑线：用分析案例证明拆解；产品线：用原型/需求文档证明用户感知。过往经历要能映射到两线，按维度准备而非泛泛。"
+  },
+  {
+    "id": "iq-mt-dpm-xhs-1",
+    "title": "前期数据探查怎么做？写 SQL 吗？",
+    "type": "功能设计",
+    "difficulty": "中级",
+    "company": "美团",
+    "sourcePostId": "exp-auto-20260820-meituan-data-pm-xhs",
+    "referenceAnswer": "用 SQL/Python 取数，先描后析：分布、异常、相关性；不是等别人给表，主动探查。美团数据产品重实操（SQL+看板搭建）。"
+  },
+  {
+    "id": "iq-mt-dpm-xhs-2",
+    "title": "监控大看板（曝光率/点击率）怎么监控、优化点？",
+    "type": "增长策略",
+    "difficulty": "中级",
+    "company": "美团",
+    "sourcePostId": "exp-auto-20260820-meituan-data-pm-xhs",
+    "referenceAnswer": "设阈值告警+同环比；优化点：维度下钻、口径统一、可视化清晰。讲清\"你发现的优化\"，而非只说\"我搭了看板\"。"
+  },
+  {
+    "id": "iq-mt-dpm-xhs-3",
+    "title": "活动中如何数据复盘、解决数据异动？",
+    "type": "需求分析",
+    "difficulty": "中级",
+    "company": "美团",
+    "sourcePostId": "exp-auto-20260820-meituan-data-pm-xhs",
+    "referenceAnswer": "异动→拆维度（渠道/人群/时间）→定位→归因（活动/外部）→动作。复盘形成方法论，美团榜单与 TT 实习是高频素材。"
+  },
+  {
+    "id": "iq-mt-dpm-xhs-4",
+    "title": "为什么从运营转产品？如何理解产品？",
+    "type": "需求分析",
+    "difficulty": "初级",
+    "company": "美团",
+    "sourcePostId": "exp-auto-20260820-meituan-data-pm-xhs",
+    "referenceAnswer": "转行动机讲\"从执行到定义价值\"的升华；产品=发现真问题、设计方案、对结果负责。讲清差异化理解，而非\"产品更牛\"。"
+  },
+  {
+    "id": "iq-bd-dc-1",
+    "title": "多业务方紧急需求，如何排优先级？",
+    "type": "需求分析",
+    "difficulty": "高级",
+    "company": "字节跳动",
+    "sourcePostId": "exp-auto-20260820-bytedance-data-center-arhar",
+    "referenceAnswer": "四象限（紧急×重要）+ 价值/影响面；分阶段交付；坦诚沟通排期。不盲目接，明确目标和边界比埋头干活更重要。"
+  },
+  {
+    "id": "iq-bd-dc-2",
+    "title": "指标体系设计框架？",
+    "type": "需求分析",
+    "difficulty": "高级",
+    "company": "字节跳动",
+    "sourcePostId": "exp-auto-20260820-bytedance-data-center-arhar",
+    "referenceAnswer": "北极星→用户旅程→拆二三级指标→口径统一→分级管理更新。对齐业务目标，避免指标泛滥与口径打架。"
+  },
+  {
+    "id": "iq-bd-dc-3",
+    "title": "业务方要 DAU/留存，怎么挖真实需求？",
+    "type": "需求分析",
+    "difficulty": "高级",
+    "company": "字节跳动",
+    "sourcePostId": "exp-auto-20260820-bytedance-data-center-arhar",
+    "referenceAnswer": "先问 3 问：目标？现状？证据？真实需求往往是\"流失根因/转化卡点\"而非表面指标。倾听+提问挖掘深层需求。"
+  },
+  {
+    "id": "iq-bd-dc-4",
+    "title": "两业务线口径不一致怎么统一？",
+    "type": "需求分析",
+    "difficulty": "高级",
+    "company": "字节跳动",
+    "sourcePostId": "exp-auto-20260820-bytedance-data-center-arhar",
+    "referenceAnswer": "调研差异→联合数据团队定标准→上报拿背书→换算 ROI 推动落地。治理靠机制不是吵，跨部门协同是数据 PM 日常。"
+  },
+  {
+    "id": "iq-bd-dc-5",
+    "title": "被吐槽的数据看板怎么优化？",
+    "type": "功能设计",
+    "difficulty": "中级",
+    "company": "字节跳动",
+    "sourcePostId": "exp-auto-20260820-bytedance-data-center-arhar",
+    "referenceAnswer": "先区分表达问题 vs 内容问题；做用户访谈+观察使用；优化信息与交互。用户反馈是重要信号，先做调研再改。"
+  },
+  {
+    "id": "iq-bd-aipm-1",
+    "title": "评价一款 AI 产品（如豆包/Kimi），方法论？",
+    "type": "产品拆解",
+    "difficulty": "高级",
+    "company": "字节跳动",
+    "sourcePostId": "exp-auto-20260822-bytedance-ai-pm",
+    "referenceAnswer": "用对比思维：生态整合、长文本、Agent、多模态等维度；指出差异与不足，别只夸一个。展现产品判断与\"认知筛选\"能力。"
+  },
+  {
+    "id": "iq-bd-aipm-2",
+    "title": "RAG 与幻觉如何处理（大白话+方案）？",
+    "type": "功能设计",
+    "difficulty": "高级",
+    "company": "字节跳动",
+    "sourcePostId": "exp-auto-20260822-bytedance-ai-pm",
+    "referenceAnswer": "RAG=检索增强生成：先查资料再生成，减少瞎编。产品层：知识库+反馈按钮+免责声明+引用来源，技术与产品双层降幻觉。"
+  },
+  {
+    "id": "iq-bd-aipm-3",
+    "title": "如何评估 AIGC 质量、设核心指标？",
+    "type": "需求分析",
+    "difficulty": "高级",
+    "company": "字节跳动",
+    "sourcePostId": "exp-auto-20260822-bytedance-ai-pm",
+    "referenceAnswer": "通识类（BLEU/ROUGE/准确性）+ 体验类（回复时长/打断率/留存）；按场景选指标，不唯算法。区分\"像不像人\"与\"好不好用\"。"
+  },
+  {
+    "id": "iq-bd-aipm-4",
+    "title": "为抖音/电商设计 AI 导购助手，核心难点与路径？",
+    "type": "功能设计",
+    "difficulty": "高级",
+    "company": "字节跳动",
+    "sourcePostId": "exp-auto-20260822-bytedance-ai-pm",
+    "referenceAnswer": "难点：意图理解+商品匹配+可信推荐。路径：场景定义→数据/知识库→MVP→评估→迭代；考复杂问题拆解与经验迁移（二面重点）。"
+  }
+];
+// INTERVIEW_QA_SEED-END
+
 
 /* ========== Utility ========== */
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
@@ -3642,33 +4363,44 @@ function renderToday() {
 
 /* ========== Training Module ========== */
 function renderTraining() {
+  populateCompanyFilter();
   const list = getData(KEYS.training);
   const filterType = document.getElementById('trainingFilterType').value;
   const filterDiff = document.getElementById('trainingFilterDiff').value;
+  const filterCompany = document.getElementById('trainingFilterCompany').value;
+  const view = document.getElementById('trainingView').value; // 'active' | 'hidden'
 
   const filtered = list.filter(q =>
     (!filterType || q.type === filterType) &&
-    (!filterDiff || q.difficulty === filterDiff)
+    (!filterDiff || q.difficulty === filterDiff) &&
+    (!filterCompany || q.company === filterCompany) &&
+    (view === 'hidden' ? q.hidden : !q.hidden)
   ).sort((a, b) => new Date(b.date) - new Date(a.date));
 
   const container = document.getElementById('trainingList');
   if (filtered.length === 0) {
-    container.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><p>暂无题目，点击"添加题目"或"随机出题"开始</p></div>';
+    const emptyMsg = view === 'hidden'
+      ? '已隐藏题库是空的——点题目卡片上的 “✓” 即可把题收进来，随时可恢复'
+      : '暂无题目，点击“添加题目”或“随机出题”开始';
+    container.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><p>' + emptyMsg + '</p></div>';
     return;
   }
 
   container.innerHTML = filtered.map(q => {
     const diffClass = q.difficulty === '初级' ? 'badge-diff-easy' : q.difficulty === '中级' ? 'badge-diff-mid' : 'badge-diff-hard';
     const overdue = isOverdue(q.date) && !q.myAnswer;
+    const isHidden = !!q.hidden;
     return `
-      <div class="card fade-in">
+      <div class="card fade-in ${isHidden ? 'card-hidden' : ''}">
         <div class="card-header">
           <div>
             <div class="card-title">${escapeHtml(q.title)}</div>
             <div class="mt-8" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
               <span class="badge badge-primary">${q.type}</span>
               <span class="badge ${diffClass}">${q.difficulty}</span>
+              ${q.company ? '<span class="badge badge-gray">'+escapeHtml(q.company)+'</span>' : ''}
               <span class="badge badge-gray">${q.date}</span>
+              ${isHidden ? '<span class="badge badge-warning">已隐藏</span>' : ''}
               ${overdue ? '<span class="badge badge-danger">逾期未答</span>' : ''}
               ${q.myAnswer ? (q.isAIGenerated ? '<span class="badge badge-info">AI生成</span>' : '<span class="badge badge-success">已回答</span>') : ''}
               ${q.aiCritique ? '<span class="badge badge-info">已点评</span>' : ''}
@@ -3676,6 +4408,13 @@ function renderTraining() {
             </div>
           </div>
           <div class="card-actions">
+            ${isHidden
+              ? `<button class="btn btn-sm btn-secondary" title="恢复" onclick="unhideTrainingItem('${q.id}')">
+                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                 </button>`
+              : `<button class="btn btn-sm btn-success" title="已掌握，隐藏此题" onclick="hideTrainingItem('${q.id}')">
+                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                 </button>`}
             <button class="btn btn-sm btn-secondary" onclick="toggleStar('${q.id}')">
               <svg viewBox="0 0 24 24" fill="${q.starred ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
             </button>
@@ -3684,12 +4423,13 @@ function renderTraining() {
             </button>
           </div>
         </div>
+        ${q.referenceAnswer ? `<div class="qa-answer"><div class="qa-answer-label">参考答案</div><div class="answer-text" style="white-space:pre-wrap">${escapeHtml(q.referenceAnswer)}</div></div>` : ''}
         <button class="expand-toggle" onclick="toggleExpand(this)">
-          <span>展开回答</span>
+          <span>展开 / 收起 我的回答</span>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
         <div class="expandable">
-          ${q.myAnswer ? `<div class="answer-block"><div class="answer-block-label">${q.isAIGenerated ? 'AI 生成答案' : '我的回答'}</div><div class="answer-text">${escapeHtml(q.myAnswer)}</div></div>` : '<div class="answer-block"><div class="answer-block-label">我的回答</div><div class="answer-text text-muted">暂未回答，点击"编辑回答"写下你的思考，或点击"无想法？生成答案"由AI生成</div></div>'}
+          ${q.myAnswer ? `<div class="answer-block"><div class="answer-block-label">${q.isAIGenerated ? 'AI 生成答案' : '我的回答'}</div><div class="answer-text">${escapeHtml(q.myAnswer)}</div></div>` : '<div class="answer-block"><div class="answer-block-label">我的回答</div><div class="answer-text text-muted">暂未回答，点击“编辑回答”写下你的思考，或点击“无想法？生成答案”由AI生成</div></div>'}
           ${q.aiCritique ? `<div class="suggestions"><div class="suggestions-title">AI 点评</div><div class="answer-text" style="white-space:pre-wrap">${escapeHtml(q.aiCritique)}</div></div>` : ''}
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
             <button class="btn btn-sm btn-secondary" onclick="editTraining('${q.id}')">编辑回答</button>
@@ -3709,6 +4449,8 @@ function renderTraining() {
     `;
   }).join('');
 }
+
+
 
 function toggleExpand(btn) {
   const expandable = btn.nextElementSibling;
@@ -6055,6 +6797,42 @@ function renderAll() {
 // expPosts, news, text overrides, etc.) belongs to the user and must be preserved
 // across ALL future updates. Only a true fresh install (no version marker at all)
 // starts with empty storage. Upgrades only bump the version and add new features.
+
+/* ========== Interview Q&A seed (from 求职经验贴, pilot: 字节/美团/小红书) ========== */
+function mergeInterviewQA() {
+  try {
+    const list = getData(KEYS.training) || [];
+    const existing = new Set(list.map(x => x.id));
+    let added = 0;
+    (typeof INTERVIEW_QA_SEED !== 'undefined' ? INTERVIEW_QA_SEED : []).forEach(it => {
+      if (!existing.has(it.id)) {
+        list.push(Object.assign({ hidden: false, date: '2026-08-22', myAnswer: '', aiCritique: '', starred: false }, it));
+        added++;
+      }
+    });
+    if (added > 0) setData(KEYS.training, list);
+  } catch (e) { /* best-effort */ }
+}
+function hideTrainingItem(id) {
+  const list = getData(KEYS.training) || [];
+  const it = list.find(x => x.id === id);
+  if (it) { it.hidden = true; setData(KEYS.training, list); renderTraining(); }
+}
+function unhideTrainingItem(id) {
+  const list = getData(KEYS.training) || [];
+  const it = list.find(x => x.id === id);
+  if (it) { it.hidden = false; setData(KEYS.training, list); renderTraining(); }
+}
+function populateCompanyFilter() {
+  const sel = document.getElementById('trainingFilterCompany');
+  if (!sel) return;
+  const cur = sel.value;
+  const list = getData(KEYS.training) || [];
+  const companies = [...new Set(list.map(x => x.company).filter(Boolean))].sort();
+  sel.innerHTML = '<option value="">全部公司</option>' + companies.map(c => '<option value="'+escapeHtml(c)+'">'+escapeHtml(c)+'</option>').join('');
+  sel.value = cur;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const VERSION = 'v6_exp_two_types';
   const storedVersion = localStorage.getItem('wb_pm_version');
@@ -6072,6 +6850,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initSampleData();
   seedFetchedNews();    // Auto-inject fetched AI news from 9 sources
   mergeAutoExpSeed();   // Auto-collected experience posts (牛客/小红书 etc.)
+  mergeInterviewQA();   // Pilot: 字节/美团/小红书 面试 Q&A 注入训练题库
+  populateCompanyFilter(); // 按企业筛选下拉
   mergeAutoJobSeed();   // Auto-synced job postings (Feishu table snapshot)
   initTextEditing();
   renderAll();
