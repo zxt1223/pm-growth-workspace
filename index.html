@@ -4345,6 +4345,9 @@ function switchTab(tab) {
   });
   // 切换到任务看板时强制重渲染（列表初始隐藏在其他面板后面，需主动渲染）
   if (tab === 'tasks') renderTasks();
+  // 知识库 / 求职贴 同样初始隐藏，切 tab 时主动重渲以正常展示列表
+  if (tab === 'expKnowledge') renderExpKnowledge();
+  if (tab === 'expInterview') renderExpInterview();
 }
 
 /* ========== Design Reference Panel ========== */
