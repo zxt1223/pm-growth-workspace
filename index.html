@@ -6414,13 +6414,15 @@ function expPostType(p) {
 function expSidebarFiltersHtml(type) {
   const all = getData(KEYS.expPosts);
   if (type === 'knowledge') {
+    // 主题计数跨类型：含该 category 的全部帖子（知识贴 + 该主题面经），与点击后的实际显示一致
     const counts = {};
-    all.filter(p => expPostType(p) === 'knowledge').forEach(p => {
+    all.forEach(p => {
       const t = p.category || '其他';
       counts[t] = (counts[t] || 0) + 1;
     });
+    const pureKnowledge = all.filter(p => expPostType(p) === 'knowledge').length;
     const total = Object.values(counts).reduce((a, b) => a + b, 0);
-    const item = t => `<div class="exp-side-sub-item ${expView.knowledgeTopic === t ? 'active' : ''}" onclick="setExpTopic('${encodeURIComponent(t || '')}')"><span>${t || '全部主题'}</span><span class="cnt">${t ? (counts[t] || 0) : total}</span></div>`;
+    const item = t => `<div class="exp-side-sub-item ${expView.knowledgeTopic === t ? 'active' : ''}" onclick="setExpTopic('${encodeURIComponent(t || '')}')"><span>${t || '全部主题'}</span><span class="cnt">${t ? (counts[t] || 0) : pureKnowledge}</span></div>`;
     return `<div class="exp-side-sub-label">知识主题</div>` + ['', ...EXP_KNOWLEDGE_TOPICS].map(item).join('');
   }
   const counts = {};
@@ -6598,7 +6600,8 @@ function renderExpKnowledge() {
   if (sideFilters) sideFilters.innerHTML = expSidebarFiltersHtml('knowledge');
   const allKnowledge = list.filter(p => expPostType(p) === 'knowledge');
   let filtered = allKnowledge.slice();
-  if (expView.knowledgeTopic) filtered = filtered.filter(p => (p.category || '其他') === expView.knowledgeTopic);
+  // 选中具体主题时跨类型展示：该 category 下的所有帖子（含面经）一起显示；未选主题则只显示纯知识贴
+  if (expView.knowledgeTopic) filtered = list.filter(p => (p.category || '其他') === expView.knowledgeTopic);
   if (searchTerm) filtered = filtered.filter(p => expPostSearchMatch(p, searchTerm));
   // 顶部计数与筛选状态提示：让"总数 vs 实际显示"透明，便于定位分类/筛选问题
   const metaEl = document.getElementById('expKMeta');
