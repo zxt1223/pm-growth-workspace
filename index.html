@@ -3157,7 +3157,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "中级",
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260819-bytedance-commercial-pm",
-    "referenceAnswer": "常见：CPM（千次展示计费）、CPC（点击计费）、CPA（转化/行动计费）、CPT（时长）、oCPM/oCPC（优化出价）。CPM=总花费/展示×1000；CPC=总花费/点击数；CPA=总花费/转化数。商业化 PM 要能默算并讲清各方式适用场景与对广告主/平台的影响。"
+    "referenceAnswer": "常见：CPM（千次展示计费）、CPC（点击计费）、CPA（转化/行动计费）、CPT（时长）、oCPM/oCPC（优化出价）。CPM=总花费/展示×1000；CPC=总花费/点击数；CPA=总花费/转化数。商业化 PM 要能默算并讲清各方式适用场景与对广告主/平台的影响。【实例】抖音一条信息流广告曝光100万次、花费2万元，则 CPM=2万/100万×1000=20元；同一广告获得1万次点击，则 CPC=2万/1万=2元；若按CPA（注册）计费，1万点击带来500个注册、花费1万元，则 CPA=20元/注册。某在线教育广告主用 oCPM 把“付费”设为优化目标，系统自动找高转化人群，CPA 从35元降到22元。"
   },
   {
     "id": "iq-bd-commercial-2",
@@ -3166,7 +3166,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "中级",
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260819-bytedance-commercial-pm",
-    "referenceAnswer": "收益≈日均曝光×填充率×平均点击率(CTR)×平均点击单价(CPC)，或 曝光×eCPM/1000。也可拆成 DAU×人均刷新×广告填充×CTR×CPC。关键把大盘指标拆成可量化漏斗，并说明估算口径与假设（费米问题常客）。"
+    "referenceAnswer": "收益≈日均曝光×填充率×平均点击率(CTR)×平均点击单价(CPC)，或 曝光×eCPM/1000。也可拆成 DAU×人均刷新×广告填充×CTR×CPC。关键把大盘指标拆成可量化漏斗，并说明估算口径与假设（费米问题常客）。【实例】某 App 日活5000万、人均刷新20次、每刷1个广告位，则曝光=10亿；填充率80%→8亿次可售；CTR 2%→1600万点击；CPC 0.8元→日收益约1280万元。抖音实际按 eCPM=出价×pCTR×pCVR×1000 排序，同一广告位不同用户看到不同出价的广告。"
   },
   {
     "id": "iq-bd-commercial-3",
@@ -3175,7 +3175,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "中级",
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260819-bytedance-commercial-pm",
-    "referenceAnswer": "没做 AB 可能因流量小/周期短/无法随机分流。应说明替代验证：前后对比（控同期变量）、分桶对照、业务指标灰度、定性反馈，并坦诚结论置信度边界——重点展现\"有方法验证而非拍脑袋\"。"
+    "referenceAnswer": "没做 AB 可能因流量小/周期短/无法随机分流。应说明替代验证：前后对比（控同期变量）、分桶对照、业务指标灰度、定性反馈，并坦诚结论置信度边界——重点展现\"有方法验证而非拍脑袋\"。【实例】某工具类 App 日活仅3万、改版周期2周，无法随机分流。用“改版前4周 vs 改版后4周”同口径对比（控住节假日与版本发布），核心留存+3.2%，并辅以20人用户访谈定性验证；坦诚“无法排除同期运营活动影响，置信度中等”。"
   },
   {
     "id": "iq-bd-commercial-4",
@@ -3184,7 +3184,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "中级",
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260819-bytedance-commercial-pm",
-    "referenceAnswer": "主流 GSP（广义第二高价）实时竞价：系统按 eCPM（预估CTR×出价×1000）排序，胜出者按\"第二名出价+微小溢价\"扣费。PM 要理解 eCPM 如何平衡平台收入与广告主 ROI。"
+    "referenceAnswer": "主流 GSP（广义第二高价）实时竞价：系统按 eCPM（预估CTR×出价×1000）排序，胜出者按\"第二名出价+微小溢价\"扣费。PM 要理解 eCPM 如何平衡平台收入与广告主 ROI。【实例】抖音两广告主争同一位置：A 出价2元、pCTR 5%、pCVR 4%→eCPM=2×0.05×0.04×1000=4元；B 出价1元、pCTR 10%、pCVR 6%→eCPM=1×0.10×0.06×1000=6元，B 胜出。B 按“次高价+0.01”扣费≈4.01元/千次展示，实际单次点击约0.48元——高 CTR 广告主反而更便宜。"
   },
   {
     "id": "iq-bd-ops-1",
@@ -3193,7 +3193,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "初级",
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260819-bytedance-product-ops",
-    "referenceAnswer": "用\"用户-场景-痛点\"框架：如抖音信息流同质化→加强兴趣探索分发；小红书搜索广告感重→标注并降权。运营要展现\"发现问题→拆解归因→给可落地方案\"的理性链条，而非吐槽。"
+    "referenceAnswer": "用\"用户-场景-痛点\"框架：如抖音信息流同质化→加强兴趣探索分发；小红书搜索广告感重→标注并降权。运营要展现\"发现问题→拆解归因→给可落地方案\"的理性链条，而非吐槽。【实例】抖音：刷到大量重复同质化搞笑视频，可在“不感兴趣”外增加“减少此类”的细粒度反馈，并用探索分发插入10%新兴趣内容；小红书：搜索结果前几条像广告，对“赞助/合作”笔记强制标注“广告”角标并降权，提升搜索可信度。"
   },
   {
     "id": "iq-bd-ops-2",
@@ -3202,7 +3202,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "初级",
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260819-bytedance-product-ops",
-    "referenceAnswer": "准备 2-3 个深度使用 App，从\"留存/内容供给/创作者激励\"等运营指标角度谈，而不只说功能。体现数据敏感度与\"用数据看产品\"的习惯。"
+    "referenceAnswer": "准备 2-3 个深度使用 App，从\"留存/内容供给/创作者激励\"等运营指标角度谈，而不只说功能。体现数据敏感度与\"用数据看产品\"的习惯。【实例】深度使用“剪映”：从留存看其模板使用7日留存约45%、创作者激励靠“模板分成”；用“番茄小说”看其免费+广告模式的用户时长与广告填充。面试时讲“为什么它的创作者激励能留住人”而非只说功能好用。"
   },
   {
     "id": "iq-bd-ops-3",
@@ -3211,7 +3211,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "初级",
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260819-bytedance-product-ops",
-    "referenceAnswer": "①装满5L；②用5L倒满3L，剩2L；③倒空3L，把2L倒入3L；④装满5L，倒满3L（还需1L），5L桶剩4L。考察逻辑拆解与步骤表达，说出思路即可。"
+    "referenceAnswer": "①装满5L；②用5L倒满3L，剩2L；③倒空3L，把2L倒入3L；④装满5L，倒满3L（还需1L），5L桶剩4L。考察逻辑拆解与步骤表达，说出思路即可。【实例】面试不要求唯一解，关键是把“倒满-转移-清空”的步骤讲清楚并说明为什么能凑出4L（5-3=2，2+5-3=4）。可类比“用两个容量不同的桶量任意体积水”的通用思路，展现逻辑拆解。"
   },
   {
     "id": "iq-bd-ops-4",
@@ -3220,7 +3220,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "初级",
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260819-bytedance-product-ops",
-    "referenceAnswer": "用 STAR：设定明确量化目标→拆关键动作→遇阻如何调→结果达成。重点突出\"目标-动作-结果\"闭环，而非泛泛而谈\"我很拼\"。"
+    "referenceAnswer": "用 STAR：设定明确量化目标→拆关键动作→遇阻如何调→结果达成。重点突出\"目标-动作-结果\"闭环，而非泛泛而谈\"我很拼\"。【实例】曾负责社群运营：定目标“3个月把社群月活从800涨到3000”→动作：每周主题直播+老带新裂变+分层运营→遇阻（发话题没人聊）改为“话题投票+达人带头”→结果月活3100、发言率+40%。用 STAR 把“目标-动作-结果”讲闭环。"
   },
   {
     "id": "iq-bd-live-1",
@@ -3229,7 +3229,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "初级",
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260819-bytedance-live-ops",
-    "referenceAnswer": "展现对内容生态的理解：短视频靠\"情绪+完播\"，直播靠\"信任+即时转化\"；电商直播核心是\"人货场\"匹配。避免背模板，讲真实观察与判断。"
+    "referenceAnswer": "展现对内容生态的理解：短视频靠\"情绪+完播\"，直播靠\"信任+即时转化\"；电商直播核心是\"人货场\"匹配。避免背模板，讲真实观察与判断。【实例】抖音短视频：美妆博主把前3秒从“大家好”改成“油皮底妆脱妆救急”钩子，完播率从23%升到58%、单条230万播放；直播：“东方甄选”靠知识+信任，场均观看时长超同行2倍。说明生态靠“情绪+完播”和“信任+即时转化”。"
   },
   {
     "id": "iq-bd-live-2",
@@ -3238,7 +3238,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "初级",
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260819-bytedance-live-ops",
-    "referenceAnswer": "用项目量化成果（播放/涨粉/转化），并拆自己负责的环节（选题/脚本/剪辑），说清\"擅长\"与\"学到\"的具体能力，避免把团队成果说成个人。"
+    "referenceAnswer": "用项目量化成果（播放/涨粉/转化），并拆自己负责的环节（选题/脚本/剪辑），说清\"擅长\"与\"学到\"的具体能力，避免把团队成果说成个人。【实例】负责一条科普视频：我主导选题（挑“空调耗电误区”高搜词）+脚本（前3秒抛反常识）+剪辑（字幕+重点框），播放52万、涨粉8000、引流小程序转化1200单。明确“选题/脚本/剪辑”中我负责脚本与剪辑。"
   },
   {
     "id": "iq-bd-live-3",
@@ -3247,7 +3247,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "初级",
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260819-bytedance-live-ops",
-    "referenceAnswer": "真诚不模板。缺点选\"可改进、不影响岗位核心\"的并配改进动作；困难讲\"冲突→处理→成长\"，体现复盘能力。HR 面重在性格与公司文化匹配。"
+    "referenceAnswer": "真诚不模板。缺点选\"可改进、不影响岗位核心\"的并配改进动作；困难讲\"冲突→处理→成长\"，体现复盘能力。HR 面重在性格与公司文化匹配。【实例】缺点答“公开表达偏保守”→配改进动作“每周做一次组内分享，已坚持2个月”；困难讲“直播撞档大主播导致流量被抢→改用错峰+连麦引流，单场 GMV 回升”。体现复盘与成长，而非模板。"
   },
   {
     "id": "iq-bd-game-1",
@@ -3256,7 +3256,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260819-bytedance-pm-game",
-    "referenceAnswer": "从\"用户需求-玩法机制-留存钩子-社交传播\"拆解：如某小游戏靠低门槛+即时反馈+排行榜社交。PM 要能把体验翻译成产品机制，而非只说\"好玩\"。"
+    "referenceAnswer": "从\"用户需求-玩法机制-留存钩子-社交传播\"拆解：如某小游戏靠低门槛+即时反馈+排行榜社交。PM 要能把体验翻译成产品机制，而非只说\"好玩\"。【实例】《羊了个羊》靠“低门槛+即时反馈+强社交排行（朋友圈晒图）”病毒传播；从 PM 视角拆：用户需求=碎片娱乐、玩法机制=三消+每日关卡、留存钩子=每日挑战、社交传播=分享炫耀。把体验翻译成机制。"
   },
   {
     "id": "iq-bd-game-2",
@@ -3265,7 +3265,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260819-bytedance-pm-game",
-    "referenceAnswer": "重点：核心指标（DAU/留存/调用量）、漏斗（注册-创建-发布）、异常监控、分群对比。PRD 写清目标、用户、指标定义、看板模块与优先级——结构化而非堆功能。"
+    "referenceAnswer": "重点：核心指标（DAU/留存/调用量）、漏斗（注册-创建-发布）、异常监控、分群对比。PRD 写清目标、用户、指标定义、看板模块与优先级——结构化而非堆功能。【实例】为某 API 平台设计看板：核心指标 DAU/留存/调用量；漏斗=注册→创建应用→首次调用→发布；异常监控对“调用错误率>1%”告警；分群对比新/老开发者。PRD 写清目标（降低新用户首次调用耗时）、指标定义、模块优先级。"
   },
   {
     "id": "iq-bd-game-3",
@@ -3274,7 +3274,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "中级",
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260819-bytedance-pm-game",
-    "referenceAnswer": "效率（少步骤完成）、易用（低学习成本）、反馈闭环（操作有结果可见）、可扩展（支持进阶用法）。平台型产品要 B 端+C 端复合视角。"
+    "referenceAnswer": "效率（少步骤完成）、易用（低学习成本）、反馈闭环（操作有结果可见）、可扩展（支持进阶用法）。平台型产品要 B 端+C 端复合视角。【实例】以“VS Code”为例：效率（命令面板少步骤）、易用（插件市场低学习成本）、反馈闭环（保存即运行可见）、可扩展（插件生态）。平台型产品要同时有 B 端（开发者）和 C 端（终端用户）复合视角。"
   },
   {
     "id": "iq-bd-game-4",
@@ -3283,7 +3283,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260819-bytedance-pm-game",
-    "referenceAnswer": "先定位波动范围（全量/分群/分渠道）→看新增/留存/回流变化→关联版本/活动/外部事件→下钻具体玩法数据→定位根因。体现数据分析驱动意识与结构化排查。"
+    "referenceAnswer": "先定位波动范围（全量/分群/分渠道）→看新增/留存/回流变化→关联版本/活动/外部事件→下钻具体玩法数据→定位根因。体现数据分析驱动意识与结构化排查。【实例】某小游戏 DAU 周环比-25%：先定位“分渠道掉”（买量渠道A掉40%而非自然量）→看新增跌、留存稳→关联“渠道A素材疲劳+竞价涨价”→下钻该渠道具体计划→根因是创意衰退。先范围后根因，数据分析驱动。"
   },
   {
     "id": "iq-bd-strat-1",
@@ -3292,7 +3292,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "中级",
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260819-bytedance-strategy-ops",
-    "referenceAnswer": "数据洞察、逻辑拆解、策略落地、跨部门推动。即用数据发现问题，用框架拆解，输出可落地策略，并推动多方执行——\"数据+逻辑+框架\"是岗位底色。"
+    "referenceAnswer": "数据洞察、逻辑拆解、策略落地、跨部门推动。即用数据发现问题，用框架拆解，输出可落地策略，并推动多方执行——\"数据+逻辑+框架\"是岗位底色。【实例】做抖音同城团购策略：用数据发现“下午时段核销低”→逻辑拆为“供给少+用户习惯”→落地“下午券+商家激励”策略→推动运营/算法/销售三方执行，核销+18%。体现“数据+逻辑+框架+推动”。"
   },
   {
     "id": "iq-bd-strat-2",
@@ -3301,7 +3301,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "中级",
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260819-bytedance-strategy-ops",
-    "referenceAnswer": "讲清：数据来源→漏斗拆解（如转化漏在哪一步）→根因假设→优化建议→验证。强调\"从指标到动作\"的闭环，而非只罗列数字。"
+    "referenceAnswer": "讲清：数据来源→漏斗拆解（如转化漏在哪一步）→根因假设→优化建议→验证。强调\"从指标到动作\"的闭环，而非只罗列数字。【实例】看某功能转化漏斗：落地页→点击“立即使用”仅12%→假设按钮不显眼/诱因不清→A/B 把按钮放大+加利益点文案→转化率升到21%。强调“从指标到动作”闭环，不止罗列数字。"
   },
   {
     "id": "iq-bd-strat-3",
@@ -3310,7 +3310,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "中级",
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260819-bytedance-strategy-ops",
-    "referenceAnswer": "北极星=当前阶段最能代表用户价值的单一指标（如 GMV、活跃买家数）。分解：用户旅程拆层→每层过程指标→口径统一→分级管理更新。"
+    "referenceAnswer": "北极星=当前阶段最能代表用户价值的单一指标（如 GMV、活跃买家数）。分解：用户旅程拆层→每层过程指标→口径统一→分级管理更新。【实例】Airbnb 北极星=“预订晚数”（兼顾宿主与房客两端价值）；WhatsApp=“发送消息数”（而非注册数，因注册不创造价值）。拆解：用户旅程（搜→聊→订→住→评）每层过程指标，口径统一到“间夜”。"
   },
   {
     "id": "iq-bd-strat-4",
@@ -3319,7 +3319,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "中级",
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260819-bytedance-strategy-ops",
-    "referenceAnswer": "用\"粗粒度快验+细粒度深究\"：先用轻量分析快速给方向，再对关键结论做严谨验证；按决策紧迫度分配分析深度，避免\"完美分析\"拖死落地。"
+    "referenceAnswer": "用\"粗粒度快验+细粒度深究\"：先用轻量分析快速给方向，再对关键结论做严谨验证；按决策紧迫度分配分析深度，避免\"完美分析\"拖死落地。【实例】大促前需紧急定“满减门槛”：先用历史数据粗算（1小时出方向：满199减30 ROI 最高）→再对 Top3 方案做严谨 AB（2周）。按决策紧迫度分配深度，避免“完美分析”拖死大促。"
   },
   {
     "id": "iq-mt-pm-1",
@@ -3328,7 +3328,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "中级",
     "company": "美团",
     "sourcePostId": "exp-auto-20260819-meituan-pm",
-    "referenceAnswer": "强调结构性：背景（为什么做）→目标→你的动作（调研/PRD/协调）→上线→量化结果。把从0到1的每一环讲清，展现项目闭环能力。"
+    "referenceAnswer": "强调结构性：背景（为什么做）→目标→你的动作（调研/PRD/协调）→上线→量化结果。把从0到1的每一环讲清，展现项目闭环能力。【实例】从0到1做优惠券聚合：背景（用户找券分散）→目标（券领取率+30%）→动作（调研+PRD+推动研发+联动商家）→上线→领取率+35%、月活12万。把每环讲清展现闭环。"
   },
   {
     "id": "iq-mt-pm-2",
@@ -3337,7 +3337,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "中级",
     "company": "美团",
     "sourcePostId": "exp-auto-20260819-meituan-pm",
-    "referenceAnswer": "前期调研清楚自查逻辑；考虑全场景；用优先级收益+部门 OKR 对齐说服；PRD 写清楚降低理解成本；真失误则记录复盘。核心\"用数据和目标对齐，而非硬怼\"。"
+    "referenceAnswer": "前期调研清楚自查逻辑；考虑全场景；用优先级收益+部门 OKR 对齐说服；PRD 写清楚降低理解成本；真失误则记录复盘。核心\"用数据和目标对齐，而非硬怼\"。【实例】研发质疑“智能推荐”排期紧：先自查 PRD 场景是否全覆盖→用优先级矩阵（影响面×收益）对齐 OKR→把非核心过滤逻辑放二期→PRD 补流程图降低理解成本→真延期则复盘记文档。用数据和目标对齐不硬怼。"
   },
   {
     "id": "iq-mt-pm-3",
@@ -3346,7 +3346,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "中级",
     "company": "美团",
     "sourcePostId": "exp-auto-20260819-meituan-pm",
-    "referenceAnswer": "实习中提前收集反馈：B 端可与业务 one-one 或发问卷；用核心指标（使用率/效率提升/收入）量化，避免\"我感觉好\"——美团重项目闭环与可量化。"
+    "referenceAnswer": "实习中提前收集反馈：B 端可与业务 one-one 或发问卷；用核心指标（使用率/效率提升/收入）量化，避免\"我感觉好\"——美团重项目闭环与可量化。【实例】实习做商家后台：提前埋点+周回访业务方，用“功能使用率从40%→72%、商家配置时长-35%、GMV+8%”量化，而非“我感觉好用”。美团重闭环与可量化。"
   },
   {
     "id": "iq-mt-pm-4",
@@ -3355,7 +3355,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "初级",
     "company": "美团",
     "sourcePostId": "exp-auto-20260819-meituan-pm",
-    "referenceAnswer": "优势要和产品岗能力绑定（如结构化、同理心）；缺点选\"不影响核心\"且配改进动作，别讲致命短板。讲清\"我适合且我准备过\"。"
+    "referenceAnswer": "优势要和产品岗能力绑定（如结构化、同理心）；缺点选\"不影响核心\"且配改进动作，别讲致命短板。讲清\"我适合且我准备过\"。【实例】优势=“结构化表达+用户同理心”（用一次用户访谈发现痛点改版案例佐证）；缺点=“偶有过度追求细节”→配改进“用 MVP 先验证再打磨”。讲清“我适合且准备过”。"
   },
   {
     "id": "iq-mt-ai-1",
@@ -3364,7 +3364,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "美团",
     "sourcePostId": "exp-auto-20260819-meituan-ai-app",
-    "referenceAnswer": "用户侧：更低操作成本、更个性化；平台侧：效率提升、新营收点（如 AI 导购转化）。用具体场景量化差别（耗时降 X%、转化升 Y%），大厂产品面已普遍考 AI 应用。"
+    "referenceAnswer": "用户侧：更低操作成本、更个性化；平台侧：效率提升、新营收点（如 AI 导购转化）。用具体场景量化差别（耗时降 X%、转化升 Y%），大厂产品面已普遍考 AI 应用。【实例】美团“问小美”AI 助手：用户侧点餐前问“2人减脂吃什么”原来需翻10家店→AI 3秒给组合菜单，决策耗时降60%；平台侧 AI 导购转化+15%、新增广告库存。用具体场景量化差别。"
   },
   {
     "id": "iq-mt-ai-2",
@@ -3373,7 +3373,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "美团",
     "sourcePostId": "exp-auto-20260819-meituan-ai-app",
-    "referenceAnswer": "先定场景与用户价值→技术可行性（模型/数据）→MVP 落地形态→所需资源（算法/数据/算力/跨部门）→度量指标。体现\"业务落地\"而非炫技。"
+    "referenceAnswer": "先定场景与用户价值→技术可行性（模型/数据）→MVP 落地形态→所需资源（算法/数据/算力/跨部门）→度量指标。体现\"业务落地\"而非炫技。【实例】设计“AI 写商圈分析”：场景=城市经理做选址→技术=LLM+POI 数据→MVP=输入商圈出报告→资源=算法+地图数据+算力→指标=报告采纳率/节省时长。体现业务落地非炫技。"
   },
   {
     "id": "iq-mt-ai-3",
@@ -3382,7 +3382,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "中级",
     "company": "美团",
     "sourcePostId": "exp-auto-20260819-meituan-ai-app",
-    "referenceAnswer": "区分\"团队做了\"和\"你做了\"：用动词量化你的贡献（设计/推动/上线），讲清你提供的能力与结果，避免把团队成果说成个人。"
+    "referenceAnswer": "区分\"团队做了\"和\"你做了\"：用动词量化你的贡献（设计/推动/上线），讲清你提供的能力与结果，避免把团队成果说成个人。【实例】做“AI 客服摘要”：我负责需求定义（把会话摘要嵌入工单）+推动算法标注1000条训练数据+上线后客服处理时长-20%。明确“我做了定义与推动”，非团队整体。"
   },
   {
     "id": "iq-mt-ai-4",
@@ -3391,7 +3391,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "中级",
     "company": "美团",
     "sourcePostId": "exp-auto-20260819-meituan-ai-app",
-    "referenceAnswer": "用户调研（访谈/问卷）+ 行为数据 + 竞品对标，验证需求真实存在且高频，避免\"自嗨式 AI\"。AI 方向要落到具体用户痛点。"
+    "referenceAnswer": "用户调研（访谈/问卷）+ 行为数据 + 竞品对标，验证需求真实存在且高频，避免\"自嗨式 AI\"。AI 方向要落到具体用户痛点。【实例】想做“AI 行程规划”：先访谈20名用户（发现“临时改行程”最高频痛点）+看行为数据（行程页停留长但保存低）+对标竞品→验证需求真实高频，避免自嗨式 AI。"
   },
   {
     "id": "iq-xhs-pm-1",
@@ -3400,7 +3400,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "小红书",
     "sourcePostId": "exp-auto-20260819-xhs-pm",
-    "referenceAnswer": "从\"生活指南\"到\"兴趣社区\"：用兴趣图谱连接人与内容/人，提升留存与互动。对用户价值=找到同好；商业价值=更准的种草。讲清战略对产品设计的影响。"
+    "referenceAnswer": "从\"生活指南\"到\"兴趣社区\"：用兴趣图谱连接人与内容/人，提升留存与互动。对用户价值=找到同好；商业价值=更准的种草。讲清战略对产品设计的影响。【实例】小红书从“生活指南”升级：用兴趣图谱把“露营”爱好者互连，相关笔记互动+25%、留存+8%；商业上露营装备种草 GMV 季增40%。讲清战略对产品（推荐/话题）与商业的影响。"
   },
   {
     "id": "iq-xhs-pm-2",
@@ -3409,7 +3409,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "小红书",
     "sourcePostId": "exp-auto-20260819-xhs-pm",
-    "referenceAnswer": "先定位男性兴趣场景（数码/汽车/运动），做内容供给与分发倾斜，避免破坏社区调性；用\"分兴趣圈层\"而非强行改版，逐步扩大结构。"
+    "referenceAnswer": "先定位男性兴趣场景（数码/汽车/运动），做内容供给与分发倾斜，避免破坏社区调性；用\"分兴趣圈层\"而非强行改版，逐步扩大结构。【实例】男性占30%：先定位“数码/汽车/运动”兴趣场景，给这类内容供给倾斜（邀请男性 KOL）+分发上对男性用户加权，而非改版首页；3个月后男性占比升至38%、相关内容发布+50%。"
   },
   {
     "id": "iq-xhs-pm-3",
@@ -3418,7 +3418,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "小红书",
     "sourcePostId": "exp-auto-20260819-xhs-pm",
-    "referenceAnswer": "拆：新增/留存/活跃/流失；内容供给质量；分发效率；竞品分流；外部季节。定位是\"没人来/来了不走/走了不回\"哪环，再定策略。"
+    "referenceAnswer": "拆：新增/留存/活跃/流失；内容供给质量；分发效率；竞品分流；外部季节。定位是\"没人来/来了不走/走了不回\"哪环，再定策略。【实例】某季度 DAU -6%：拆新增稳、留存降→内容供给质量掉（优质笔记占比-10%）→分发效率（推荐 CTR -3%）→竞品（某平台补贴抢人）→外部（假期后回落）。定位“内容质量+竞品”两环再定策略。"
   },
   {
     "id": "iq-xhs-pm-4",
@@ -3427,7 +3427,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "中级",
     "company": "小红书",
     "sourcePostId": "exp-auto-20260819-xhs-pm",
-    "referenceAnswer": "用目标与数据对齐；拆 MVP 先验证；技术权衡讲清成本；找共同上级拍板时带方案。核心\"对事不对人，用证据推进\"。"
+    "referenceAnswer": "用目标与数据对齐；拆 MVP 先验证；技术权衡讲清成本；找共同上级拍板时带方案。核心\"对事不对人，用证据推进\"。【实例】想做“笔记 AI 配图”研发说成本高：用目标（提升发布转化）对齐→拆 MVP（先做模板图）先验证→讲清“模板图”成本仅1人周→拍板时带 A/B 方案。对事不对人用证据推进。"
   },
   {
     "id": "iq-xhs-co-1",
@@ -3436,7 +3436,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "中级",
     "company": "小红书",
     "sourcePostId": "exp-auto-20260819-xhs-content-ops",
-    "referenceAnswer": "爆款=选题（情绪/痛点/时效）+ 内容结构（前3秒钩子）+ 视觉 + 互动设计。结合热点要\"快+角度独特+不硬蹭\"，内容运营岗要有作品感。"
+    "referenceAnswer": "爆款=选题（情绪/痛点/时效）+ 内容结构（前3秒钩子）+ 视觉 + 互动设计。结合热点要\"快+角度独特+不硬蹭\"，内容运营岗要有作品感。【实例】某猫罐头新品笔记：选题“猫咪挑食自救”戳痛点+前3秒“我家猫终于吃饭了”钩子+真实对比图+评论区答疑→90天销售额200万、ROI 较投流提升3倍。结合热点（宠物经济）快+角度独特。"
   },
   {
     "id": "iq-xhs-co-2",
@@ -3445,7 +3445,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "中级",
     "company": "小红书",
     "sourcePostId": "exp-auto-20260819-xhs-content-ops",
-    "referenceAnswer": "小红书重\"真实种草+图文审美+搜索心智\"；博主靠\"信任感+实用价值\"而非纯流量。强调平台差异认知要具体，而非泛泛而谈。"
+    "referenceAnswer": "小红书重\"真实种草+图文审美+搜索心智\"；博主靠\"信任感+实用价值\"而非纯流量。强调平台差异认知要具体，而非泛泛而谈。【实例】小红书博主靠“真实测评+实用教程”建立信任带来高转化（如美妆教程类）；对比抖音博主更重“人设+流量爆发”。强调平台差异：小红书=信任种草，抖音=内容爆发。"
   },
   {
     "id": "iq-xhs-co-3",
@@ -3454,7 +3454,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "初级",
     "company": "小红书",
     "sourcePostId": "exp-auto-20260819-xhs-content-ops",
-    "referenceAnswer": "点赞=认同、收藏=实用/想回看、评论=引发讨论、分享=破圈价值。不同指标反映不同内容价值，指导选题与优化方向。"
+    "referenceAnswer": "点赞=认同、收藏=实用/想回看、评论=引发讨论、分享=破圈价值。不同指标反映不同内容价值，指导选题与优化方向。【实例】一篇“搬家收纳”笔记：点赞高=认同、收藏8万=实用想回看、评论=讨论收纳神器、分享2万=破圈给朋友。收藏/分享高说明“实用+可转发”，指导后续做“清单类”选题。"
   },
   {
     "id": "iq-xhs-co-4",
@@ -3463,7 +3463,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "初级",
     "company": "小红书",
     "sourcePostId": "exp-auto-20260819-xhs-content-ops",
-    "referenceAnswer": "考察审美与洞察：能否说出\"好在哪\"（选题/排版/钩子/转化），而不只是\"我喜欢\"。用结构化理由替代主观偏好。"
+    "referenceAnswer": "考察审美与洞察：能否说出\"好在哪\"（选题/排版/钩子/转化），而不只是\"我喜欢\"。用结构化理由替代主观偏好。【实例】评官方号三条：①选题“学生党平价”切中人群；②排版统一三图+对比清晰；③钩子“评论领清单”促转化。能说清“好在哪”而非“我喜欢”，展现审美与洞察。"
   },
   {
     "id": "iq-xhs-ec-1",
@@ -3472,7 +3472,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "小红书",
     "sourcePostId": "exp-auto-20260819-xhs-ecommerce-pm",
-    "referenceAnswer": "浏览/搜索→点击→加购→下单→支付→备货→发货→物流→签收→售后。电商 PM 要端到端讲清每环节体验与指标，而非只盯前端。"
+    "referenceAnswer": "浏览/搜索→点击→加购→下单→支付→备货→发货→物流→签收→售后。电商 PM 要端到端讲清每环节体验与指标，而非只盯前端。【实例】小红书买“香薰”：浏览笔记→搜“助眠香薰”→点商品→加购→下单→支付→品牌备货→发货→物流→签收→售后退货。电商 PM 要讲清每环节体验与指标（如支付转化率、履约时长）。"
   },
   {
     "id": "iq-xhs-ec-2",
@@ -3481,7 +3481,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "小红书",
     "sourcePostId": "exp-auto-20260819-xhs-ecommerce-pm",
-    "referenceAnswer": "按\"用户-商品-交易-履约-营销\"模块对比：货架电商（淘宝）重搜索与 SKU，内容电商（抖音）重兴趣分发，社区电商（小红书）重信任种草。"
+    "referenceAnswer": "按\"用户-商品-交易-履约-营销\"模块对比：货架电商（淘宝）重搜索与 SKU，内容电商（抖音）重兴趣分发，社区电商（小红书）重信任种草。【实例】淘宝=货架（搜索+SKU 丰富，用户目的明确）；抖音=内容（兴趣分发，用户被种草）；小红书=社区（信任种草，决策前看笔记）。按“用户-商品-交易-履约-营销”五模块对比差异。"
   },
   {
     "id": "iq-xhs-ec-3",
@@ -3490,7 +3490,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "小红书",
     "sourcePostId": "exp-auto-20260819-xhs-ecommerce-pm",
-    "referenceAnswer": "美团=交易心智强（搜索+履约）、抖音=内容流量大（短视频引流）、小红书=决策种草（笔记转化）。各擅场景不同，面试常考格局对比。"
+    "referenceAnswer": "美团=交易心智强（搜索+履约）、抖音=内容流量大（短视频引流）、小红书=决策种草（笔记转化）。各擅场景不同，面试常考格局对比。【实例】美团=交易心智强（搜“火锅”直接下单+30分钟达）；抖音=内容流量大（探店短视频引流）；小红书=决策种草（“周末去哪吃”笔记转化）。各擅场景不同。"
   },
   {
     "id": "iq-xhs-ec-4",
@@ -3499,7 +3499,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "中级",
     "company": "小红书",
     "sourcePostId": "exp-auto-20260819-xhs-ecommerce-pm",
-    "referenceAnswer": "硬广破坏社区信任与调性、伤害核心体验；小红书电商优势在\"社区氛围\"带来的自然种草，而非强行变现。社区与电商要结合而非互斥。"
+    "referenceAnswer": "硬广破坏社区信任与调性、伤害核心体验；小红书电商优势在\"社区氛围\"带来的自然种草，而非强行变现。社区与电商要结合而非互斥。【实例】早期在信息流强插硬广导致“广告感”笔记收藏率-15%、用户流失；后改为“笔记自然种草+商品挂车”软转化，社区信任保留、电商 GMV 仍涨。社区与电商结合非互斥。"
   },
   {
     "id": "iq-tt-store-1",
@@ -3508,7 +3508,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "中级",
     "company": "字节跳动（TikTok Shop）",
     "sourcePostId": "exp-auto-20260819-tiktokshop-store-ops",
-    "referenceAnswer": "内容电商（短视频+直播）驱动交易，核心在\"内容×兴趣分发×闭环交易\"。竞争力=流量效率+达人生态+低门槛转化，考察内容电商全链路理解。"
+    "referenceAnswer": "内容电商（短视频+直播）驱动交易，核心在\"内容×兴趣分发×闭环交易\"。竞争力=流量效率+达人生态+低门槛转化，考察内容电商全链路理解。【实例】印尼美妆品牌借 TikTok Shop：短视频种草+达人直播→小店闭环，单月 GMV 从5亿印尼盾涨到30亿；竞争力=流量效率（兴趣分发）+达人生态+低门槛（0保证金开店）。"
   },
   {
     "id": "iq-tt-store-2",
@@ -3517,7 +3517,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "字节跳动（TikTok Shop）",
     "sourcePostId": "exp-auto-20260819-tiktokshop-store-ops",
-    "referenceAnswer": "按市场差异：东南亚价格敏感+直播强；欧美品牌与信任优先；中东宗教与物流特殊。策略在选品、内容、履约上本地化，多市场差异是高频题。"
+    "referenceAnswer": "按市场差异：东南亚价格敏感+直播强；欧美品牌与信任优先；中东宗教与物流特殊。策略在选品、内容、履约上本地化，多市场差异是高频题。【实例】东南亚（印尼）：价格敏感→主打9.9包邮+直播；欧美（英美）：品牌与信任→引入官方旗舰店+正品保障；中东：宗教合规（斋月营销）+货到付款。选品内容履约本地化。"
   },
   {
     "id": "iq-tt-store-3",
@@ -3526,7 +3526,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "中级",
     "company": "字节跳动（TikTok Shop）",
     "sourcePostId": "exp-auto-20260819-tiktokshop-store-ops",
-    "referenceAnswer": "选品→开店与装修→供应链→短视频/直播启动→投流→数据复盘；每阶段设里程碑与指标，先跑通单点再扩，避免一次性铺太大。"
+    "referenceAnswer": "选品→开店与装修→供应链→短视频/直播启动→投流→数据复盘；每阶段设里程碑与指标，先跑通单点再扩，避免一次性铺太大。【实例】新店冷启动：第1周选品（跟热榜5款）+开店装修→第2周供应链谈样→第3周每天2场短视频+1场直播→第4周投小店随心推→数据复盘优化。先跑通单点再扩。"
   },
   {
     "id": "iq-tt-store-4",
@@ -3535,7 +3535,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "中级",
     "company": "字节跳动（TikTok Shop）",
     "sourcePostId": "exp-auto-20260819-tiktokshop-store-ops",
-    "referenceAnswer": "观看=预告+投流+固定时段；互动=福利/问答/抽奖+主播话术+评论区运营。用数据看\"进房-停留-互动-转化\"漏斗优化，而非凭感觉。"
+    "referenceAnswer": "观看=预告+投流+固定时段；互动=福利/问答/抽奖+主播话术+评论区运营。用数据看\"进房-停留-互动-转化\"漏斗优化，而非凭感觉。【实例】某服饰店：预告（开播前短视频剧透）+投流（相似达人粉丝）+固定晚8点；互动=整点抽奖+主播“扣1上链接”+评论区答疑。看“进房-停留-互动-转化”漏斗，停留从40秒→90秒、转化+12%。"
   },
   {
     "id": "iq-tt-train-1",
@@ -3544,7 +3544,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "字节跳动（TikTok Shop）",
     "sourcePostId": "exp-auto-20260819-tiktokshop-ecom-trainee",
-    "referenceAnswer": "全托管：平台掌运营，品牌省心但失定价/数据；亚马逊：品牌自主但需自建运营。吸引力=低门槛出海；弊端=利润与控制权。考察模式理解深度。"
+    "referenceAnswer": "全托管：平台掌运营，品牌省心但失定价/数据；亚马逊：品牌自主但需自建运营。吸引力=低门槛出海；弊端=利润与控制权。考察模式理解深度。【实例】全托管：义乌小商品卖家把货给 TikTok 平台运营，省心但拿不到用户数据、定价被控；亚马逊 FBA：品牌自建运营、利润高但需自己投广告。吸引力=低门槛出海，弊端=利润/控制权。"
   },
   {
     "id": "iq-tt-train-2",
@@ -3553,7 +3553,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "字节跳动（TikTok Shop）",
     "sourcePostId": "exp-auto-20260819-tiktokshop-ecom-trainee",
-    "referenceAnswer": "全托管重转化与信任→专业型（成分功效）更契合；但若需破圈声量，娱乐型补位。按阶段目标组合，而非二选一。"
+    "referenceAnswer": "全托管重转化与信任→专业型（成分功效）更契合；但若需破圈声量，娱乐型补位。按阶段目标组合，而非二选一。【实例】法国美妆全托管重转化与信任→专业型（成分党讲“某精华功效”）更契合；但若新品要破圈声量，用娱乐型（搞笑测评）补位。按阶段组合而非二选一。"
   },
   {
     "id": "iq-tt-train-3",
@@ -3562,7 +3562,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "字节跳动（TikTok Shop）",
     "sourcePostId": "exp-auto-20260819-tiktokshop-ecom-trainee",
-    "referenceAnswer": "强调\"平台背书+正品保障+价格优势+无忧售后\"，用统一叙事降低决策风险，而非单品叫卖。信任是跨境转化的前提。"
+    "referenceAnswer": "强调\"平台背书+正品保障+价格优势+无忧售后\"，用统一叙事降低决策风险，而非单品叫卖。信任是跨境转化的前提。【实例】“Summer Sale” 核心叙事：平台背书（官方仓发货）+正品保障（品牌授权书）+价格优势（比官网低20%）+无忧售后（30天退）。统一叙事降决策风险，而非单品叫卖。"
   },
   {
     "id": "iq-tt-train-4",
@@ -3571,7 +3571,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "字节跳动（TikTok Shop）",
     "sourcePostId": "exp-auto-20260819-tiktokshop-ecom-trainee",
-    "referenceAnswer": "转化率、GMV、点击率、退货率、好评率综合加权；低质高退商品降权，保障用户体验与平台口碑。排序逻辑要兼顾平台与用户长期价值。"
+    "referenceAnswer": "转化率、GMV、点击率、退货率、好评率综合加权；低质高退商品降权，保障用户体验与平台口碑。排序逻辑要兼顾平台与用户长期价值。【实例】排序综合：转化率（权重高）+GMV+点击率，扣减退货率/差评率；某“货不对板”女装退货率40%被降权。兼顾平台口碑与用户长期价值。"
   },
   {
     "id": "iq-tt-search-1",
@@ -3580,7 +3580,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "字节跳动（TikTok Shop）",
     "sourcePostId": "exp-auto-20260819-tiktokshop-search-pm",
-    "referenceAnswer": "指标：相关性/覆盖率/点击率/转化率；策略：召回优化（query 理解+类目）→排序（多目标）→展现（图文样式）；风险：低质内容。框架要完整。"
+    "referenceAnswer": "指标：相关性/覆盖率/点击率/转化率；策略：召回优化（query 理解+类目）→排序（多目标）→展现（图文样式）；风险：低质内容。框架要完整。【实例】时尚搜索：指标相关性/覆盖率/CTR/转化；召回优化 query 理解（“小个子显高”→连衣裙类目）+排序多目标（点击×转化）+展现图文卡片；风险低质内容降权。"
   },
   {
     "id": "iq-tt-search-2",
@@ -3589,7 +3589,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "字节跳动（TikTok Shop）",
     "sourcePostId": "exp-auto-20260819-tiktokshop-search-pm",
-    "referenceAnswer": "美国重品牌与精准；印尼重性价比与本地语言/宗教合规。适配在词表、排序权重、类目与合规，考察全球化多市场思维。"
+    "referenceAnswer": "美国重品牌与精准；印尼重性价比与本地语言/宗教合规。适配在词表、排序权重、类目与合规，考察全球化多市场思维。【实例】美国重品牌精准（搜“Nike”要官方）+英语合规；印尼重性价比（搜“baju murah”=便宜衣服）+本地语言/清真合规。词表、排序权重、类目适配不同。"
   },
   {
     "id": "iq-tt-search-3",
@@ -3598,7 +3598,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "字节跳动（TikTok Shop）",
     "sourcePostId": "exp-auto-20260819-tiktokshop-search-pm",
-    "referenceAnswer": "定义低质标准（标题党/货不对板）→用规则+模型打标→聚类归因→下架/降权+反馈给供给端，形成\"识别-治理-反哺\"闭环。"
+    "referenceAnswer": "定义低质标准（标题党/货不对板）→用规则+模型打标→聚类归因→下架/降权+反馈给供给端，形成\"识别-治理-反哺\"闭环。【实例】定义低质=标题党（无实物）/货不对板→规则+模型打标→聚类发现“减肥茶”类目集中违规→下架+降权+反馈供给端。形成“识别-治理-反哺”闭环。"
   },
   {
     "id": "iq-tt-search-4",
@@ -3607,7 +3607,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "中级",
     "company": "字节跳动（TikTok Shop）",
     "sourcePostId": "exp-auto-20260819-tiktokshop-search-pm",
-    "referenceAnswer": "埋点采集行为→分群分析流失→AB 实验验证→迭代；形成\"数据-假设-实验-上线\"闭环，电商搜索要内容消费思维。"
+    "referenceAnswer": "埋点采集行为→分群分析流失→AB 实验验证→迭代；形成\"数据-假设-实验-上线\"闭环，电商搜索要内容消费思维。【实例】某词 CTR 降→埋点看“搜后无点击”流失→假设展现图不吸引→AB 换图（大图+价格）→点击+15%。形成“数据-假设-实验-上线”闭环，电商搜索要内容消费思维。"
   },
   {
     "id": "iq-bd-dpm-ai-1",
@@ -3616,7 +3616,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260820-bytedance-data-pm-ai",
-    "referenceAnswer": "难点：自然语言→准确 SQL（schema 理解、多表关联、歧义）。方案：表结构检索增强+少样本+执行校验+结果可视化；产品侧控\"准确率与可解释\"，AI+数据产品考察落地能力。"
+    "referenceAnswer": "难点：自然语言→准确 SQL（schema 理解、多表关联、歧义）。方案：表结构检索增强+少样本+执行校验+结果可视化；产品侧控\"准确率与可解释\"，AI+数据产品考察落地能力。【实例】难点：自然语言“上月各渠道 GMV”需理解 schema（order 表 channel 字段）、多表关联（order×user）。方案：检索表结构增强+少样本示例+执行校验（报错即重试）+结果图表化；产品控准确率与可解释。"
   },
   {
     "id": "iq-bd-dpm-ai-2",
@@ -3625,7 +3625,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260820-bytedance-data-pm-ai",
-    "referenceAnswer": "问题：非技术同学取数难；优势：降门槛提效率；用户：分析师/业务/运营。讲清 owner 视角的价值闭环，而非只堆技术。"
+    "referenceAnswer": "问题：非技术同学取数难；优势：降门槛提效率；用户：分析师/业务/运营。讲清 owner 视角的价值闭环，而非只堆技术。【实例】问题：运营每周找数据同学取数排队2天；优势：自助问“上周复购率”秒出；用户=分析师/业务/运营。owner 视角讲价值闭环而非堆技术。"
   },
   {
     "id": "iq-bd-dpm-ai-3",
@@ -3634,7 +3634,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260820-bytedance-data-pm-ai",
-    "referenceAnswer": "内部重\"快+贴合自家业务\"、颗粒度粗；外部重\"通用+稳定+合规\"、颗粒度细、要培训与文档。面向内外部产品思维差异是高频考点。"
+    "referenceAnswer": "内部重\"快+贴合自家业务\"、颗粒度粗；外部重\"通用+稳定+合规\"、颗粒度细、要培训与文档。面向内外部产品思维差异是高频考点。【实例】内部“字节数仓”工具：快迭代、贴合抖音业务、颗粒粗；外部“火山引擎 BI”：通用稳定、合规细、要培训文档。面向内外思维差异高频考点。"
   },
   {
     "id": "iq-bd-dpm-ai-4",
@@ -3643,7 +3643,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260820-bytedance-data-pm-ai",
-    "referenceAnswer": "用价值/紧迫/影响面评估；分阶段交付；对外承诺透明；必要时向上对齐资源。体现多边资源协调与\"对业务负责\"。"
+    "referenceAnswer": "用价值/紧迫/影响面评估；分阶段交付；对外承诺透明；必要时向上对齐资源。体现多边资源协调与\"对业务负责\"。【实例】内部紧急取数需求 vs 外部客户 BI 交付冲突：用价值（外部收入高）/紧迫（合同 SLA）/影响面评估→内部先低优交付、外部排期透明承诺→向上对齐资源。体现多边协调。"
   },
   {
     "id": "iq-mt-dpm-1",
@@ -3652,7 +3652,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "美团",
     "sourcePostId": "exp-auto-20260820-meituan-data-pm",
-    "referenceAnswer": "起点问题→洞察路径→方案→上线成效（量化指标，如决策时长降 X%、覆盖 Y 业务）。讲清\"问题-方案-价值\"，美团数据产品面试极专业。"
+    "referenceAnswer": "起点问题→洞察路径→方案→上线成效（量化指标，如决策时长降 X%、覆盖 Y 业务）。讲清\"问题-方案-价值\"，美团数据产品面试极专业。【实例】从0到1做“商圈经营看板”：起点=城市经理靠 Excel 慢→洞察=用 POI+订单数据自动出报告→方案=看板→成效=决策时长降50%、覆盖30城。讲清“问题-方案-价值”。"
   },
   {
     "id": "iq-mt-dpm-2",
@@ -3661,7 +3661,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "美团",
     "sourcePostId": "exp-auto-20260820-meituan-data-pm",
-    "referenceAnswer": "分业务/过程/北极星指标；收敛口径防泛滥：建指标字典、owner 制、评审机制，统一定义。防止\"指标打架\"。"
+    "referenceAnswer": "分业务/过程/北极星指标；收敛口径防泛滥：建指标字典、owner 制、评审机制，统一定义。防止\"指标打架\"。【实例】美团外卖指标体系：北极星=日订单量；拆业务（商家/用户/骑手）×过程（曝光-下单-支付-履约）×北极星；建指标字典+owner 制+季度评审，防止“GMV”各团队口径不一。"
   },
   {
     "id": "iq-mt-dpm-3",
@@ -3670,7 +3670,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "美团",
     "sourcePostId": "exp-auto-20260820-meituan-data-pm",
-    "referenceAnswer": "按\"事件-属性\"模型；统一规范；只埋必要字段；分层（基础+业务）；文档化，避免噪音与遗漏。可追溯可扩展是埋点设计核心。"
+    "referenceAnswer": "按\"事件-属性\"模型；统一规范；只埋必要字段；分层（基础+业务）；文档化，避免噪音与遗漏。可追溯可扩展是埋点设计核心。【实例】按“事件-属性”模型：事件“购买”含属性（商品名/数量/金额/渠道）；基础层（PV/点击）+业务层（加购/支付）；只埋必要字段、文档化。神策等埋点规范可借鉴，后端埋点优于前端防丢失。"
   },
   {
     "id": "iq-mt-dpm-4",
@@ -3679,7 +3679,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "中级",
     "company": "美团",
     "sourcePostId": "exp-auto-20260820-meituan-data-pm",
-    "referenceAnswer": "监测（告警）→定位（血缘排查）→修复（补数/重跑）→责任界定（owner+SLa）。流程化不靠人盯，数据质量是决策地基。"
+    "referenceAnswer": "监测（告警）→定位（血缘排查）→修复（补数/重跑）→责任界定（owner+SLa）。流程化不靠人盯，数据质量是决策地基。【实例】某指标突掉：监测告警（同环比-20%）→血缘排查（上游 ETL 延迟）→修复重跑补数→定 owner+SLA。流程化不靠人盯，数据质量是决策地基。"
   },
   {
     "id": "iq-xhs-dpm-1",
@@ -3688,7 +3688,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "中级",
     "company": "小红书",
     "sourcePostId": "exp-auto-20260820-xhs-data-pm",
-    "referenceAnswer": "把数据能力产品化，让用户低门槛完成\"取数-分析-决策\"；区别于报表，重交互与场景闭环。面试官明确考察\"逻辑性+产品 sense\"两条线。"
+    "referenceAnswer": "把数据能力产品化，让用户低门槛完成\"取数-分析-决策\"；区别于报表，重交互与场景闭环。面试官明确考察\"逻辑性+产品 sense\"两条线。【实例】小红书“灵犀”类：把笔记数据产品化，运营自助查“品类搜索趋势”完成取数-分析-决策；区别于静态报表，重交互（可下钻品类）与场景闭环。"
   },
   {
     "id": "iq-xhs-dpm-2",
@@ -3697,7 +3697,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "小红书",
     "sourcePostId": "exp-auto-20260820-xhs-data-pm",
-    "referenceAnswer": "成功：真实种草+搜索心智+社区信任；问题：变现与内容平衡、男性与下沉渗透、信息茧房。展现用户视角与社区产品理解深度。"
+    "referenceAnswer": "成功：真实种草+搜索心智+社区信任；问题：变现与内容平衡、男性与下沉渗透、信息茧房。展现用户视角与社区产品理解深度。【实例】成功=真实种草+搜索心智（“xx 好物”直接搜）+社区信任；问题=变现与内容平衡（硬广伤体验）、男性/下沉渗透低、信息茧房。展现用户视角深度。"
   },
   {
     "id": "iq-xhs-dpm-3",
@@ -3706,7 +3706,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "中级",
     "company": "小红书",
     "sourcePostId": "exp-auto-20260820-xhs-data-pm",
-    "referenceAnswer": "例：\"小红书是决策前的信任社区，用户来问和种草，而非单纯刷\"。考察提炼力与一句话差异化表达。"
+    "referenceAnswer": "例：\"小红书是决策前的信任社区，用户来问和种草，而非单纯刷\"。考察提炼力与一句话差异化表达。【实例】“小红书是决策前的信任社区，用户来问和种草，而非单纯刷”；对比抖音=杀时间内容流、淘宝=目的性货架。考察提炼与差异化表达。"
   },
   {
     "id": "iq-xhs-dpm-4",
@@ -3715,7 +3715,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "中级",
     "company": "小红书",
     "sourcePostId": "exp-auto-20260820-xhs-data-pm",
-    "referenceAnswer": "逻辑线：用分析案例证明拆解；产品线：用原型/需求文档证明用户感知。过往经历要能映射到两线，按维度准备而非泛泛。"
+    "referenceAnswer": "逻辑线：用分析案例证明拆解；产品线：用原型/需求文档证明用户感知。过往经历要能映射到两线，按维度准备而非泛泛。【实例】逻辑线：用“猫罐头品类上涨分析”证明拆解；产品线：用原型“品类趋势看板”证明用户感知。过往经历映射到两线，按维度准备。"
   },
   {
     "id": "iq-mt-dpm-xhs-1",
@@ -3724,7 +3724,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "中级",
     "company": "美团",
     "sourcePostId": "exp-auto-20260820-meituan-data-pm-xhs",
-    "referenceAnswer": "用 SQL/Python 取数，先描后析：分布、异常、相关性；不是等别人给表，主动探查。美团数据产品重实操（SQL+看板搭建）。"
+    "referenceAnswer": "用 SQL/Python 取数，先描后析：分布、异常、相关性；不是等别人给表，主动探查。美团数据产品重实操（SQL+看板搭建）。【实例】用 SQL 查“CTR 异常”：先描分布（分城市）、发现某城异常低→析相关性（新素材）、主动探查而非等表。美团数据产品重实操 SQL+看板。"
   },
   {
     "id": "iq-mt-dpm-xhs-2",
@@ -3733,7 +3733,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "中级",
     "company": "美团",
     "sourcePostId": "exp-auto-20260820-meituan-data-pm-xhs",
-    "referenceAnswer": "设阈值告警+同环比；优化点：维度下钻、口径统一、可视化清晰。讲清\"你发现的优化\"，而非只说\"我搭了看板\"。"
+    "referenceAnswer": "设阈值告警+同环比；优化点：维度下钻、口径统一、可视化清晰。讲清\"你发现的优化\"，而非只说\"我搭了看板\"。【实例】曝光率/点击率看板：设阈值告警（点击率<基准-2σ）+同环比；优化=维度下钻（分广告位）、口径统一（去重规则）、可视化（热力图）。讲“你发现的优化”。"
   },
   {
     "id": "iq-mt-dpm-xhs-3",
@@ -3742,7 +3742,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "中级",
     "company": "美团",
     "sourcePostId": "exp-auto-20260820-meituan-data-pm-xhs",
-    "referenceAnswer": "异动→拆维度（渠道/人群/时间）→定位→归因（活动/外部）→动作。复盘形成方法论，美团榜单与 TT 实习是高频素材。"
+    "referenceAnswer": "异动→拆维度（渠道/人群/时间）→定位→归因（活动/外部）→动作。复盘形成方法论，美团榜单与 TT 实习是高频素材。【实例】大促 GMV 异动：拆维度（渠道/人群/时间）→定位“某渠道优惠券未生效”→归因配置错误→动作修复+复盘文档。方法论化，美团榜单与 TT 实习高频素材。"
   },
   {
     "id": "iq-mt-dpm-xhs-4",
@@ -3751,7 +3751,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "初级",
     "company": "美团",
     "sourcePostId": "exp-auto-20260820-meituan-data-pm-xhs",
-    "referenceAnswer": "转行动机讲\"从执行到定义价值\"的升华；产品=发现真问题、设计方案、对结果负责。讲清差异化理解，而非\"产品更牛\"。"
+    "referenceAnswer": "转行动机讲\"从执行到定义价值\"的升华；产品=发现真问题、设计方案、对结果负责。讲清差异化理解，而非\"产品更牛\"。【实例】从运营转：动机“从执行到定义价值”；产品=发现真问题（用户流失）→设计方案（召回 push）→对结果负责（留存+）。讲差异化理解非“产品更牛”。"
   },
   {
     "id": "iq-bd-dc-1",
@@ -3760,7 +3760,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260820-bytedance-data-center-arhar",
-    "referenceAnswer": "四象限（紧急×重要）+ 价值/影响面；分阶段交付；坦诚沟通排期。不盲目接，明确目标和边界比埋头干活更重要。"
+    "referenceAnswer": "四象限（紧急×重要）+ 价值/影响面；分阶段交付；坦诚沟通排期。不盲目接，明确目标和边界比埋头干活更重要。【实例】5个业务方同时要看板：用紧急×重要矩阵+价值（影响 GMV）/影响面（使用人数）排；低优的先给临时 SQL、高优的排期；坦诚沟通排期。不盲目接。"
   },
   {
     "id": "iq-bd-dc-2",
@@ -3769,7 +3769,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260820-bytedance-data-center-arhar",
-    "referenceAnswer": "北极星→用户旅程→拆二三级指标→口径统一→分级管理更新。对齐业务目标，避免指标泛滥与口径打架。"
+    "referenceAnswer": "北极星→用户旅程→拆二三级指标→口径统一→分级管理更新。对齐业务目标，避免指标泛滥与口径打架。【实例】北极星=营收；用户旅程（触达-激活-转化-留存-推荐）拆二三级；口径统一（“活跃”定义全公司一致）；分级管理季度更新。对齐业务目标防泛滥。"
   },
   {
     "id": "iq-bd-dc-3",
@@ -3778,7 +3778,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260820-bytedance-data-center-arhar",
-    "referenceAnswer": "先问 3 问：目标？现状？证据？真实需求往往是\"流失根因/转化卡点\"而非表面指标。倾听+提问挖掘深层需求。"
+    "referenceAnswer": "先问 3 问：目标？现状？证据？真实需求往往是\"流失根因/转化卡点\"而非表面指标。倾听+提问挖掘深层需求。【实例】业务方要“DAU”，先问3问：目标？（拉新还是促活）现状？（已跌）证据？（渠道掉）。真实需求是“某渠道流失根因”而非表面 DAU。倾听+提问。"
   },
   {
     "id": "iq-bd-dc-4",
@@ -3787,7 +3787,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260820-bytedance-data-center-arhar",
-    "referenceAnswer": "调研差异→联合数据团队定标准→上报拿背书→换算 ROI 推动落地。治理靠机制不是吵，跨部门协同是数据 PM 日常。"
+    "referenceAnswer": "调研差异→联合数据团队定标准→上报拿背书→换算 ROI 推动落地。治理靠机制不是吵，跨部门协同是数据 PM 日常。【实例】A 线“GMV”含退款、B 线不含→调研差异→联合数据中台定标准（不含退款为准）→上报拿 VP 背书→换算 ROI 推落地。治理靠机制不是吵。"
   },
   {
     "id": "iq-bd-dc-5",
@@ -3796,7 +3796,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "中级",
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260820-bytedance-data-center-arhar",
-    "referenceAnswer": "先区分表达问题 vs 内容问题；做用户访谈+观察使用；优化信息与交互。用户反馈是重要信号，先做调研再改。"
+    "referenceAnswer": "先区分表达问题 vs 内容问题；做用户访谈+观察使用；优化信息与交互。用户反馈是重要信号，先做调研再改。【实例】被吐槽看板乱：先区分表达（图太花）vs 内容（指标无用）；做用户访谈+观察使用；优化（核心指标置顶+下钻）。先做调研再改，用户反馈是信号。"
   },
   {
     "id": "iq-bd-aipm-1",
@@ -3805,7 +3805,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260822-bytedance-ai-pm",
-    "referenceAnswer": "用对比思维：生态整合、长文本、Agent、多模态等维度；指出差异与不足，别只夸一个。展现产品判断与\"认知筛选\"能力。"
+    "referenceAnswer": "用对比思维：生态整合、长文本、Agent、多模态等维度；指出差异与不足，别只夸一个。展现产品判断与\"认知筛选\"能力。【实例】评豆包 vs Kimi：维度生态整合（豆包接抖音/飞书）、长文本（Kimi 200万）、Agent（豆包 Coze）、多模态。指出 Kimi 长文本强但生态弱、豆包生态强但长文本弱。展现判断。"
   },
   {
     "id": "iq-bd-aipm-2",
@@ -3814,7 +3814,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260822-bytedance-ai-pm",
-    "referenceAnswer": "RAG=检索增强生成：先查资料再生成，减少瞎编。产品层：知识库+反馈按钮+免责声明+引用来源，技术与产品双层降幻觉。"
+    "referenceAnswer": "RAG=检索增强生成：先查资料再生成，减少瞎编。产品层：知识库+反馈按钮+免责声明+引用来源，技术与产品双层降幻觉。【实例】企业知识库问答用 RAG：先检索“报销制度”文档再生成，引用来源；产品层加“反馈纠错”按钮+免责声明+引用高亮。昕诺飞用 PIKE-RAG 准确率+12%；一汽丰田智能客服独立解决率37%→84%。技术与产品双层降幻觉。"
   },
   {
     "id": "iq-bd-aipm-3",
@@ -3823,7 +3823,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260822-bytedance-ai-pm",
-    "referenceAnswer": "通识类（BLEU/ROUGE/准确性）+ 体验类（回复时长/打断率/留存）；按场景选指标，不唯算法。区分\"像不像人\"与\"好不好用\"。"
+    "referenceAnswer": "通识类（BLEU/ROUGE/准确性）+ 体验类（回复时长/打断率/留存）；按场景选指标，不唯算法。区分\"像不像人\"与\"好不好用\"。【实例】文本生成评 BLEU/ROUGE+准确性人工评；对话评回复时长/打断率/留存。某客服 AIGC：准确性人工评4.2/5、用户打断率降、留存+。按场景选指标不唯算法。"
   },
   {
     "id": "iq-bd-aipm-4",
@@ -3832,7 +3832,7 @@ const INTERVIEW_QA_SEED = [
     "difficulty": "高级",
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260822-bytedance-ai-pm",
-    "referenceAnswer": "难点：意图理解+商品匹配+可信推荐。路径：场景定义→数据/知识库→MVP→评估→迭代；考复杂问题拆解与经验迁移（二面重点）。"
+    "referenceAnswer": "难点：意图理解+商品匹配+可信推荐。路径：场景定义→数据/知识库→MVP→评估→迭代；考复杂问题拆解与经验迁移（二面重点）。【实例】抖音电商 AI 导购：难点意图理解（“显白连衣裙”→类目+属性）+商品匹配（库存/评价）+可信推荐（带评价）。路径：场景定义→商品知识库→MVP（对话推荐）→评估（转化/满意度）→迭代。"
   }
 ];
 // INTERVIEW_QA_SEED-END
@@ -6819,15 +6819,25 @@ function renderAll() {
 function mergeInterviewQA() {
   try {
     const list = getData(KEYS.training) || [];
-    const existing = new Set(list.map(x => x.id));
-    let added = 0;
-    (typeof INTERVIEW_QA_SEED !== 'undefined' ? INTERVIEW_QA_SEED : []).forEach(it => {
-      if (!existing.has(it.id)) {
+    const map = {};
+    list.forEach(x => { if (x && x.id) map[x.id] = x; });
+    const seed = (typeof INTERVIEW_QA_SEED !== 'undefined' ? INTERVIEW_QA_SEED : []);
+    let added = 0, updated = 0;
+    seed.forEach(it => {
+      const cur = map[it.id];
+      if (!cur) {
         list.push(Object.assign({ hidden: false, date: '2026-08-22', myAnswer: '', aiCritique: '', starred: false }, it));
         added++;
+      } else {
+        // 按 id 用新种子刷新参考答案与元数据，但保留用户已有的 hidden / myAnswer / aiCritique / starred
+        if (cur.referenceAnswer !== it.referenceAnswer) { cur.referenceAnswer = it.referenceAnswer; updated++; }
+        cur.title = it.title;
+        cur.type = it.type;
+        cur.difficulty = it.difficulty;
+        cur.company = it.company;
       }
     });
-    if (added > 0) setData(KEYS.training, list);
+    if (added > 0 || updated > 0) setData(KEYS.training, list);
   } catch (e) { /* best-effort */ }
 }
 function hideTrainingItem(id) {
