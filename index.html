@@ -900,6 +900,24 @@ a { color: var(--primary); text-decoration: none; }
   gap: 14px;
   align-items: flex-start;
 }
+.exp-meta-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 2px 0 10px;
+}
+.exp-meta-pill {
+  font-size: 12.5px;
+  color: var(--primary);
+  background: #EEF1FF;
+  border-radius: 999px;
+  padding: 3px 12px;
+  white-space: nowrap;
+}
+.exp-meta-muted {
+  color: var(--text-2);
+  background: #F3F4F6;
+}
 .exp-sidebar {
   flex-shrink: 0;
   width: 200px;
@@ -1607,6 +1625,7 @@ a { color: var(--primary); text-decoration: none; }
           <input type="text" class="filter-input" id="expPostSearchK" placeholder="搜索标题、内容、标签..." oninput="renderExpKnowledge()" style="flex:1;min-width:150px">
           <button class="btn btn-sm btn-danger" onclick="confirmClearModule('expPosts')">清空数据</button>
         </div>
+        <div id="expKMeta" class="exp-meta-bar"></div>
         <div id="expPostListK"></div>
       </div>
     </div>
@@ -6239,15 +6258,27 @@ function renderExpKnowledge() {
   if (sidebar) sidebar.classList.toggle('collapsed', !!expView.sidebarK);
   const sideFilters = document.getElementById('expSideFiltersK');
   if (sideFilters) sideFilters.innerHTML = expSidebarFiltersHtml('knowledge');
-  let filtered = list.filter(p => expPostType(p) === 'knowledge');
+  const allKnowledge = list.filter(p => expPostType(p) === 'knowledge');
+  let filtered = allKnowledge.slice();
   if (expView.knowledgeTopic) filtered = filtered.filter(p => (p.category || '其他') === expView.knowledgeTopic);
   if (searchTerm) filtered = filtered.filter(p => expPostSearchMatch(p, searchTerm));
+  // 顶部计数与筛选状态提示：让"总数 vs 实际显示"透明，便于定位分类/筛选问题
+  const metaEl = document.getElementById('expKMeta');
+  if (metaEl) {
+    const totalK = allKnowledge.length;
+    const totalAll = list.length;
+    const topicLabel = expView.knowledgeTopic ? ` · 当前主题筛选「${expView.knowledgeTopic}」` : '';
+    const searchLabel = searchTerm ? ` · 搜索「${searchTerm}」` : '';
+    const interviewCount = list.filter(p => expPostType(p) === 'interview').length;
+    metaEl.innerHTML = `<span class="exp-meta-pill">知识库内容 <b>${filtered.length}</b> 条${topicLabel}${searchLabel}</span>` +
+      (totalK !== totalAll ? `<span class="exp-meta-pill exp-meta-muted">经验贴总计 ${totalAll} 条，其中求职贴 ${interviewCount} 条、知识库 ${totalK} 条</span>` : '');
+  }
   if (filtered.length === 0) {
-    const empty = list.filter(p => expPostType(p) === 'knowledge').length === 0;
+    const empty = allKnowledge.length === 0;
     container.innerHTML = `
       <div class="exp-post-empty">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-        <div>${empty ? '还没有知识经验贴，点击"手动添加"开始收藏' : '没有匹配的经验贴'}</div>
+        <div>${empty ? '还没有知识经验贴，点击"手动添加"开始收藏' : '没有匹配的经验贴（可点击左侧「全部主题」或清空搜索）'}</div>
       </div>
     `;
     return;
