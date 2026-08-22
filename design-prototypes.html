@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Design Prototypes — Light SaaS Admin Dashboard (4 scenes)</title>
+<style>
+  /* ===== Design Tokens (from the prompt) ===== */
+  :root{
+    --bg-grad-1:#EEF1FF; --bg-grad-2:#F5F7FF; --bg-grad-3:#FAFAFE;
+    --panel:#FFFFFF;
+    --shadow-panel:0 20px 60px -20px rgba(95,108,255,.18), 0 8px 24px -8px rgba(95,108,255,.10);
+    --shadow-card:0 4px 16px rgba(95,108,255,.06);
+    --shadow-card-hover:0 8px 24px rgba(95,108,255,.12);
+    --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:24px; --r-pill:999px;
+    --brand:#4F6BFF; --brand-hover:#3D57E6; --brand-soft:#E8EDFF; --brand-soft-2:#EEF1FF;
+    --t1:#1A2233; --t2:#6B7280; --t3:#9CA3AF;
+    --line:#EEF0F5; --grid:#F1F3F9;
+    --success:#16A34A; --success-bg:#E7F8EF;
+    --danger:#DC2626; --danger-bg:#FEE7E7;
+    --warn:#F59E0B; --warn-bg:#FFF6E0;
+    --info:#2563EB; --info-bg:#E8F0FE;
+    --c1:#4F6BFF; --c2:#8C9EFF; --c3:#B8C2FF; --c4:#16A34A; --c5:#F59E0B; --c6:#DC2626; --c7:#9CA3AF;
+    --font:"Inter","PingFang SC",system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family:var(--font);
+    background:linear-gradient(135deg,var(--bg-grad-1),var(--bg-grad-2) 45%,var(--bg-grad-3));
+    color:var(--t1);
+    -webkit-font-smoothing:antialiased;
+    padding:28px;
+    min-height:100vh;
+  }
+  /* ===== Scene tabs ===== */
+  .scene-tabs{
+    display:flex; gap:8px; justify-content:center; margin-bottom:18px; flex-wrap:wrap;
+  }
+  .scene-tab{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--r-pill);
+    padding:9px 18px; font-size:13px; font-weight:600; color:var(--t2); cursor:pointer;
+    box-shadow:var(--shadow-card); transition:all .18s ease-out;
+  }
+  .scene-tab:hover{color:var(--t1);}
+  .scene-tab.active{background:var(--brand); color:#fff; border-color:var(--brand);}
+  /* ===== Browser shell ===== */
+  .browser{
+    max-width:1320px; margin:0 auto; background:var(--panel); border-radius:var(--r-xl);
+    box-shadow:var(--shadow-panel); overflow:hidden;
+  }
+  .browser-bar{
+    height:40px; background:#FBFBFD; border-bottom:1px solid var(--line);
+    display:flex; align-items:center; gap:14px; padding:0 16px;
+  }
+  .dots{display:flex; gap:7px;}
+  .dots i{width:11px;height:11px;border-radius:50%;display:block;}
+  .dots .r{background:#FF5F57;} .dots .y{background:#FEBC2E;} .dots .g{background:#28C840;}
+  .nav-btns{display:flex; gap:10px; color:var(--t3); font-size:15px;}
+  .url{
+    flex:1; background:#F1F3F9; border-radius:var(--r-pill); height:24px;
+    display:flex; align-items:center; padding:0 14px; font-size:12px; color:var(--t2); gap:8px;
+  }
+  .url .padlock{color:var(--success);}
+  .bar-actions{display:flex; gap:12px; color:var(--t3); font-size:14px;}
+  /* ===== App layout ===== */
+  .app{display:flex; min-height:760px;}
+  /* Sidebar */
+  .sidebar{
+    width:240px; background:var(--panel); border-right:1px solid var(--line);
+    padding:20px 14px; display:flex; flex-direction:column; flex-shrink:0;
+  }
+  .logo{display:flex; align-items:center; gap:11px; padding:6px 8px 18px;}
+  .logo .mark{
+    width:34px;height:34px;border-radius:10px; background:var(--brand);
+    display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px;
+    box-shadow:0 6px 14px -4px rgba(79,107,255,.5);
+  }
+  .logo .name{font-weight:700;font-size:17px;color:var(--t1);}
+  .user-card{
+    display:flex;align-items:center;gap:11px;padding:11px;border-radius:var(--r-md);
+    margin-bottom:14px; transition:background .18s;
+  }
+  .user-card:hover{background:var(--brand-soft-2);}
+  .user-card img, .user-card .av{
+    width:42px;height:42px;border-radius:50%;object-fit:cover;
+    background:linear-gradient(135deg,#8C9EFF,#4F6BFF); flex-shrink:0;
+  }
+  .user-card .nm{font-weight:700;font-size:14px;line-height:1.2;}
+  .user-card .rl{font-size:12px;color:var(--t2);}
+  .menu{display:flex;flex-direction:column;gap:3px;}
+  .menu-group{font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;
+    letter-spacing:.05em; padding:14px 12px 6px;}
+  .mi{
+    display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:var(--r-md);
+    font-size:14px;font-weight:500;color:var(--t1);cursor:pointer;transition:all .15s;
+  }
+  .mi svg{width:19px;height:19px;stroke:var(--t2);fill:none;stroke-width:1.75;flex-shrink:0;}
+  .mi:hover{background:var(--brand-soft-2);}
+  .mi.active{background:var(--brand-soft-2); color:var(--brand); font-weight:600;}
+  .mi.active svg{stroke:var(--brand);}
+  .menu-foot{margin-top:auto;padding-top:14px;border-top:1px solid var(--line);}
+  /* Main */
+  .main{flex:1;display:flex;flex-direction:column;min-width:0;}
+  .topbar{
+    height:68px;background:var(--panel);border-bottom:1px solid var(--line);
+    display:flex;align-items:center;gap:18px;padding:0 26px;flex-shrink:0;
+  }
+  .topbar .tt{font-size:22px;font-weight:700;}
+  .topbar .ts{font-size:13px;color:var(--t2);margin-top:2px;}
+  .topbar .spacer{flex:1;}
+  .search{
+    width:300px;height:40px;background:#F4F6FF;border:1px solid var(--line);border-radius:var(--r-md);
+    display:flex;align-items:center;gap:9px;padding:0 13px;color:var(--t3);font-size:13px;
+  }
+  .search:focus-within{border-color:var(--brand);box-shadow:0 0 0 3px rgba(79,107,255,.12);}
+  .icon-btn{
+    width:40px;height:40px;border-radius:var(--r-md);background:#F4F6FF;border:none;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;color:var(--t2);position:relative;transition:background .15s;
+  }
+  .icon-btn:hover{background:var(--brand-soft);}
+  .icon-btn .dot{position:absolute;top:9px;right:10px;width:7px;height:7px;border-radius:50%;background:var(--danger);border:2px solid #F4F6FF;}
+  .avatar-sm{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#8C9EFF,#4F6BFF);}
+  .sel{
+    height:40px;border-radius:var(--r-md);border:1px solid var(--line);background:#fff;
+    padding:0 14px;font-size:13px;font-weight:600;color:var(--t1);display:flex;align-items:center;gap:8px;cursor:pointer;
+  }
+  .btn-primary{
+    height:40px;border-radius:var(--r-md);background:var(--brand);color:#fff;border:none;cursor:pointer;
+    padding:0 18px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;box-shadow:0 6px 16px -6px rgba(79,107,255,.6);
+  }
+  .btn-primary:hover{background:var(--brand-hover);}
+  /* Content */
+  .content{padding:24px 26px 30px;overflow:auto;}
+  .grid-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:20px;}
+  .card{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);
+    box-shadow:var(--shadow-card);transition:box-shadow .2s ease-out;
+  }
+  .card:hover{box-shadow:var(--shadow-card-hover);}
+  .kpi{padding:18px 20px;position:relative;}
+  .kpi .kh{display:flex;justify-content:space-between;align-items:flex-start;}
+  .kpi .kt{font-size:13px;color:var(--t2);font-weight:500;}
+  .kpi .more{width:24px;height:24px;border-radius:6px;color:var(--t3);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+  .kpi .kv{font-size:30px;font-weight:700;margin-top:10px;font-variant-numeric:tabular-nums;letter-spacing:-.5px;}
+  .kpi .ktrend{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px;}
+  .chip{display:inline-flex;align-items:center;gap:3px;font-weight:600;font-size:12px;padding:2px 8px;border-radius:var(--r-pill);}
+  .chip.up{color:var(--success);background:var(--success-bg);}
+  .chip.down{color:var(--danger);background:var(--danger-bg);}
+  .kpi .ksub{color:var(--t3);font-weight:400;font-size:13px;}
+  .kpi .spark{position:absolute;right:16px;top:18px;}
+  /* chart row */
+  .row{display:grid;gap:18px;margin-bottom:20px;}
+  .row.c-2{grid-template-columns:1.6fr 1fr;}
+  .row.c-3{grid-template-columns:1.4fr 1fr 1fr;}
+  .chart-card{padding:20px 22px;}
+  .chart-card .ch-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+  .chart-card .ch-title{font-size:15px;font-weight:700;}
+  .chart-card .ch-sub{font-size:12px;color:var(--t2);}
+  .legend{display:flex;gap:14px;font-size:12px;color:var(--t2);}
+  .legend i{width:9px;height:9px;border-radius:3px;display:inline-block;margin-right:5px;vertical-align:middle;}
+  /* donut center */
+  .donut-wrap{display:flex;align-items:center;gap:18px;}
+  .donut-center{position:relative;}
+  .donut-center .dc-val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .donut-center .dc-val b{font-size:22px;}
+  .donut-center .dc-val span{font-size:11px;color:var(--t2);}
+  .donut-side{display:flex;flex-direction:column;gap:9px;font-size:13px;}
+  .donut-side .ds{display:flex;align-items:center;gap:8px;color:var(--t2);}
+  .donut-side .ds b{color:var(--t1);}
+  /* status ring */
+  .status-ring{display:flex;flex-direction:column;align-items:center;gap:14px;}
+  .ring-center{position:relative;}
+  .ring-center .rc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .ring-center .rc b{font-size:26px;}
+  .ring-center .rc span{font-size:11px;color:var(--t2);}
+  .status-mini{display:flex;gap:24px;}
+  .status-mini .sm b{font-size:18px;}
+  .status-mini .sm span{font-size:12px;color:var(--t2);display:block;}
+  /* table card */
+  .table-card{padding:18px 20px 8px;}
+  .table-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;}
+  .table-head .th-title{font-size:16px;font-weight:700;}
+  .table-head .spacer{flex:1;}
+  .tb-btn{height:36px;border-radius:10px;background:var(--brand-soft);border:none;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;width:36px;color:var(--t2);transition:background .15s;}
+  .tb-btn:hover{background:var(--brand-soft-2);}
+  .tb-add{height:36px;border-radius:10px;background:var(--brand);color:#fff;border:none;cursor:pointer;
+    padding:0 15px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:7px;}
+  .sel-2{height:36px;border-radius:10px;border:1px solid var(--line);background:#fff;padding:0 12px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:7px;color:var(--t1);cursor:pointer;}
+  table{width:100%;border-collapse:collapse;}
+  thead th{
+    text-align:left;font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.04em;
+    padding:12px 14px;border-bottom:1px solid var(--line);white-space:nowrap;
+  }
+  thead th.num{text-align:right;}
+  tbody td{padding:13px 14px;border-bottom:1px solid var(--grid);font-size:14px;color:var(--t1);vertical-align:middle;}
+  tbody tr{transition:background .15s;}
+  tbody tr:hover{background:#F8FAFF;}
+  tbody tr:hover td:first-child{box-shadow:inset 3px 0 0 var(--brand);}
+  .cell-user{display:flex;align-items:center;gap:11px;}
+  .cell-user .av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#8C9EFF,#4F6BFF);flex-shrink:0;}
+  .cell-user .nm{font-weight:600;font-size:14px;line-height:1.2;}
+  .cell-user .em{font-size:12px;color:var(--t2);}
+  .pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:3px 11px;border-radius:var(--r-pill);white-space:nowrap;}
+  .pill.green{color:var(--success);background:var(--success-bg);}
+  .pill.blue{color:var(--info);background:var(--info-bg);}
+  .pill.yellow{color:var(--warn);background:var(--warn-bg);}
+  .pill.red{color:var(--danger);background:var(--danger-bg);}
+  .pill i{width:6px;height:6px;border-radius:50%;background:currentColor;}
+  .num{text-align:right;font-variant-numeric:tabular-nums;font-weight:600;}
+  .progress{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--t2);}
+  .progress .bar{width:80px;height:6px;border-radius:var(--r-pill);background:var(--grid);overflow:hidden;}
+  .progress .bar i{display:block;height:100%;border-radius:var(--r-pill);background:var(--brand);}
+  .days{display:flex;gap:5px;}
+  .days .d{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:11px;font-weight:600;background:var(--grid);color:var(--t3);}
+  .days .d.on{background:var(--brand);color:#fff;}
+  .svc{display:flex;gap:6px;flex-wrap:wrap;}
+  .svc .s{font-size:11px;font-weight:600;padding:3px 9px;border-radius:var(--r-pill);background:var(--brand-soft);color:var(--brand);}
+  /* selection banner */
+  .sel-banner{display:flex;align-items:center;gap:10px;background:var(--brand-soft-2);border:1px solid var(--brand-soft);
+    border-radius:var(--r-md);padding:10px 14px;margin-bottom:14px;font-size:13px;font-weight:600;color:var(--brand);}
+  .sel-banner .acts{display:flex;gap:6px;margin-left:auto;}
+  .sel-banner .acts .a{width:30px;height:30px;border-radius:8px;background:#fff;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--t2);cursor:pointer;}
+  .sel-banner .acts .check{background:var(--brand);color:#fff;border:none;}
+  .sel-banner .acts .del{color:var(--danger);}
+  /* footer pagination */
+  .table-foot{display:flex;align-items:center;justify-content:space-between;padding:14px 14px 16px;font-size:13px;color:var(--t2);}
+  .pager{display:flex;gap:6px;align-items:center;}
+  .pager button{height:32px;min-width:32px;border-radius:8px;border:1px solid var(--line);background:#fff;cursor:pointer;color:var(--t2);font-size:13px;padding:0 9px;}
+  .pager button.active{background:var(--brand);color:#fff;border-color:var(--brand);}
+  /* recent activity */
+  .activity{padding:6px 4px;}
+  .act-item{display:flex;gap:13px;padding:11px 4px;border-bottom:1px solid var(--grid);}
+  .act-item:last-child{border-bottom:none;}
+  .act-item .ic{width:34px;height:34px;border-radius:10px;background:var(--brand-soft);display:flex;align-items:center;justify-content:center;color:var(--brand);flex-shrink:0;}
+  .act-item .txt{font-size:13px;line-height:1.5;}
+  .act-item .txt b{font-weight:600;}
+  .act-item .txt .tm{color:var(--t3);font-size:12px;}
+  .view-report{color:var(--brand);font-size:13px;font-weight:600;cursor:pointer;}
+  .hint{text-align:center;color:var(--t3);font-size:12px;margin-top:18px;}
+</style>
+</head>
+<body>
+  <div class="scene-tabs" id="sceneTabs"></div>
+  <div class="browser">
+    <div class="browser-bar">
+      <div class="dots"><i class="r"></i><i class="y"></i><i class="g"></i></div>
+      <div class="nav-btns"><span>‹</span><span>›</span></div>
+      <div class="url"><span class="padlock">🔒</span><span id="urlText">app.nexus.com/dashboard</span></div>
+      <div class="bar-actions"><span>⟳</span><span>⤢</span><span>＋</span><span>☰</span></div>
+    </div>
+    <div class="app">
+      <aside class="sidebar" id="sidebar"></aside>
+      <main class="main">
+        <header class="topbar" id="topbar"></header>
+        <div class="content" id="content"></div>
+      </main>
+    </div>
+  </div>
+  <div class="hint">基于你提供的 4 张参考图提炼的设计 Token 复刻 · 顶部切换 4 个场景 · 纯 HTML/CSS/SVG，无图表库</div>
+
+<script>
+/* ===================== SVG helpers ===================== */
+function sparkline(points, w=84, h=30){
+  const max=Math.max(...points), min=Math.min(...points);
+  const rng=(max-min)||1;
+  const step=w/(points.length-1);
+  const pts=points.map((p,i)=>[i*step, h-((p-min)/rng)*(h-6)-3]);
+  const d=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+  const area=d+` L ${w} ${h} L 0 ${h} Z`;
+  const id='g'+Math.random().toString(36).slice(2,7);
+  return `<svg class="spark" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+    <defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4F6BFF" stop-opacity=".28"/><stop offset="100%" stop-color="#4F6BFF" stop-opacity="0"/>
+    </linearGradient></defs>
+    <path d="${area}" fill="url(#${id})"/>
+    <path d="${d}" fill="none" stroke="#4F6BFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="${pts[pts.length-1][0].toFixed(1)}" cy="${pts[pts.length-1][1].toFixed(1)}" r="3" fill="#4F6BFF"/>
+  </svg>`;
+}
+function barChart(data, opts={}){
+  const w=520,h=200,pad=24, gap=14;
+  const max=Math.max(...data.map(d=>Math.max(d.a,d.b)))*1.12;
+  const bw=(w-pad*2-gap*(data.length-1))/data.length/2;
+  const groupW=bw*2+gap;
+  const y=v=>h-pad-(v/max)*(h-pad*2);
+  let bars='';
+  data.forEach((d,i)=>{
+    const x=pad+i*groupW;
+    bars+=`<rect x="${x.toFixed(1)}" y="${y(d.a).toFixed(1)}" width="${bw.toFixed(1)}" height="${(h-pad-y(d.a)).toFixed(1)}" rx="5" fill="#B8C2FF"/>`;
+    bars+=`<rect x="${(x+bw).toFixed(1)}" y="${y(d.b).toFixed(1)}" width="${bw.toFixed(1)}" height="${(h-pad-y(d.b)).toFixed(1)}" rx="5" fill="#4F6BFF"/>`;
+    bars+=`<text x="${(x+groupW/2).toFixed(1)}" y="${h-6}" font-size="11" fill="#9CA3AF" text-anchor="middle">${d.m}</text>`;
+  });
+  // gridlines
+  let grid='';
+  for(let i=0;i<=3;i++){const gy=pad+i*((h-2*pad)/3);grid+=`<line x1="${pad}" y1="${gy}" x2="${w-pad}" y2="${gy}" stroke="#F1F3F9"/>`;}
+  return `<svg width="100%" viewBox="0 0 ${w} ${h}">${grid}${bars}</svg>`;
+}
+function donut(segments){
+  const size=140, r=54, c=size/2, cx=2*Math.PI*r;
+  let off=0, arcs='';
+  segments.forEach(s=>{
+    const len=s.p/100*cx;
+    arcs+=`<circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="${s.c}" stroke-width="16"
+      stroke-dasharray="${len.toFixed(1)} ${(cx-len).toFixed(1)}" stroke-dashoffset="${(-off).toFixed(1)}"
+      transform="rotate(-90 ${c} ${c})" stroke-linecap="butt"/>`;
+    off+=len;
+  });
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${arcs}</svg>`;
+}
+function statusRing(pct){
+  const size=150, r=58, c=size/2, cx=2*Math.PI*r, len=pct/100*cx;
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+    <circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="#F1F3F9" stroke-width="14"/>
+    <circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="#4F6BFF" stroke-width="14"
+      stroke-dasharray="${len.toFixed(1)} ${(cx-len).toFixed(1)}" stroke-linecap="round"
+      transform="rotate(-90 ${c} ${c})"/>
+  </svg>`;
+}
+function icon(name){
+  const p={
+    grid:'<path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/>',
+    chart:'<path d="M3 3v18h18"/><path d="M7 14l3-4 3 3 4-6"/>',
+    box:'<path d="M21 8l-9-5-9 5v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/>',
+    users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13A4 4 0 0 1 16 11"/>',
+    msg:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+    cal:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+    ticket:'<path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/>',
+    guest:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+    file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',
+    set:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>',
+    logout:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/>',
+    pin:'<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>',
+    steth:'<path d="M4 3v6a5 5 0 0 0 10 0V3M9 14v4a5 5 0 0 0 10 0v-2"/>'
+  };
+  return `<svg viewBox="0 0 24 24">${p[name]||p.grid}</svg>`;
+}
+
+/* ===================== Scene data ===================== */
+const SCENES = {
+  dashboard:{
+    url:'app.nexus.com/dashboard',
+    brand:'Nexus', mark:'N',
+    user:{name:'Rayan Paul', role:'Product Lead'},
+    menu:[
+      {group:'GENERAL', items:[
+        {id:'dashboard', label:'Dashboard', icon:'grid', active:true},
+        {id:'analytics', label:'Analytics', icon:'chart'},
+        {id:'orders', label:'Orders', icon:'box'},
+      ]},
+      {group:'PRODUCT', items:[
+        {id:'customers', label:'Customers', icon:'users'},
+        {id:'messages', label:'Messages', icon:'msg'},
+        {id:'settings', label:'Settings', icon:'set'},
+      ]},
+    ],
+    topbar:{title:'Hello, Rayan!', sub:"Here's your analytic detail", showSearch:true, sel:'Month ▾', btn:'Export ▾'},
+    render:()=>`
+      <div class="grid-kpi">
+        ${kpiCard('Total Revenue','$1,25,400','+20.1%','up','+2,123 this month',[12,18,15,22,20,28,26,34,30,38])}
+        ${kpiCard('Total Sales','8,492','+12.3%','up','+340 this month',[8,9,11,10,13,12,15,14,17,18])}
+        ${kpiCard('Total Profit','$42,180','-10.0%','down','-980 this month',[40,38,42,36,34,33,30,28,31,27])}
+        ${kpiCard('Total Users','1,29,230','+15.8%','up','+9,012 this month',[60,70,68,80,85,90,95,100,110,120])}
+      </div>
+      <div class="row c-3">
+        <div class="card chart-card">
+          <div class="ch-head">
+            <div><div class="ch-title">Revenue</div><div class="ch-sub">Jan – Dec</div></div>
+            <div class="legend"><span><i style="background:#B8C2FF"></i>Profit</span><span><i style="background:#4F6BFF"></i>Loss</span></div>
+          </div>
+          ${barChart([{m:'J',a:40,b:30},{m:'F',a:55,b:38},{m:'M',a:48,b:52},{m:'A',a:62,b:45},{m:'M',a:70,b:58},{m:'J',a:58,b:66},{m:'J',a:80,b:60},{m:'A',a:75,b:72},{m:'S',a:90,b:68},{m:'O',a:85,b:80},{m:'N',a:98,b:74},{m:'D',a:88,b:92}])}
+        </div>
+        <div class="card chart-card">
+          <div class="ch-head"><div class="ch-title">Traffic Channel</div></div>
+          <div class="donut-wrap">
+            <div class="donut-center">${donut([{p:39,c:'#4F6BFF'},{p:24,c:'#16A34A'},{p:11,c:'#F59E0B'},{p:26,c:'#B8C2FF'}])}
+              <div class="dc-val"><b>1.05</b><span>Average range</span></div></div>
+            <div class="donut-side">
+              <div class="ds"><i style="background:#4F6BFF;width:9px;height:9px;border-radius:3px;display:inline-block"></i> Direct <b>39%</b></div>
+              <div class="ds"><i style="background:#16A34A;width:9px;height:9px;border-radius:3px;display:inline-block"></i> Organic <b>24%</b></div>
+              <div class="ds"><i style="background:#F59E0B;width:9px;height:9px;border-radius:3px;display:inline-block"></i> Referral <b>11%</b></div>
+              <div class="ds"><i style="background:#B8C2FF;width:9px;height:9px;border-radius:3px;display:inline-block"></i> Social <b>26%</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="card chart-card">
+          <div class="ch-head"><div class="ch-title">Status Attendees</div></div>
+          <div class="status-ring">
+            <div class="ring-center">${statusRing(80)}
+              <div class="rc"><b>1042</b><span>Total Status Attendees</span></div></div>
+            <div class="status-mini">
+              <div class="sm"><b>832 <span style="color:#16A34A">↗ 79%</span></b><span>Checked in</span></div>
+              <div class="sm"><b>210 <span style="color:#F59E0B">↗ 21%</span></b><span>Pending</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card table-card">
+        <div class="table-head">
+          <div class="th-title">Recent Activity</div>
+          <div class="spacer"></div>
+          <span class="view-report">View all →</span>
+        </div>
+        <div class="activity">
+          ${actItem('box','<b>New order #1024</b> placed by Acme Co. <span class="tm">· 12 min ago</span>')}
+          ${actItem('users','<b>3 new users</b> signed up from Organic <span class="tm">· 1 hr ago</span>')}
+          ${actItem('chart','<b>Revenue +20.1%</b> vs last month <span class="tm">· 3 hr ago</span>')}
+          ${actItem('msg','<b>Rayan</b> commented on Q3 roadmap <span class="tm">· 5 hr ago</span>')}
+        </div>
+      </div>`
+  },
+  events:{
+    url:'crowdpass.com/attendance',
+    brand:'CrowdPass', mark:'C',
+    user:{name:'Benjamin Cole', role:'Event Organizer'},
+    menu:[
+      {group:'MANAGE', items:[
+        {id:'events', label:'Events', icon:'cal'},
+        {id:'attendance', label:'Attendance', icon:'guest', active:true},
+        {id:'tickets', label:'Tickets', icon:'ticket'},
+        {id:'guests', label:'Guests', icon:'users'},
+      ]},
+      {group:'INSIGHTS', items:[
+        {id:'reports', label:'Reports', icon:'file'},
+        {id:'settings', label:'Settings', icon:'set'},
+      ]},
+    ],
+    topbar:{title:'Attendance', sub:'Summer Music Festival 2026', showSearch:true, sel:'Today ▾', btn:'+ Add Attendee'},
+    render:()=>`
+      <div class="row c-3" style="margin-bottom:20px">
+        <div class="card chart-card">
+          <div class="ch-head"><div class="ch-title">Check-in Timeline</div><div class="ch-sub">Gate A</div></div>
+          ${barChart([{m:'9',a:10,b:6},{m:'10',a:22,b:18},{m:'11',a:40,b:30},{m:'12',a:35,b:28},{m:'13',a:50,b:40},{m:'14',a:60,b:48},{m:'15',a:48,b:38},{m:'16',a:70,b:55}])}
+        </div>
+        <div class="card chart-card">
+          <div class="ch-head"><div class="ch-title">Status</div></div>
+          <div class="status-ring">
+            <div class="ring-center">${statusRing(79)}
+              <div class="rc"><b>832</b><span>Checked in</span></div></div>
+            <div class="status-mini">
+              <div class="sm"><b>210 <span style="color:#F59E0B">↗ 21%</span></b><span>Pending</span></div>
+              <div class="sm"><b>0 <span style="color:#16A34A">↗ 0%</span></b><span>Denied</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="card chart-card">
+          <div class="ch-head"><div class="ch-title">Channel</div></div>
+          <div class="donut-wrap">
+            <div class="donut-center">${donut([{p:52,c:'#4F6BFF'},{p:28,c:'#16A34A'},{p:20,c:'#F59E0B'}])}
+              <div class="dc-val"><b>1.04K</b><span>Total</span></div></div>
+            <div class="donut-side">
+              <div class="ds"><i style="background:#4F6BFF;width:9px;height:9px;border-radius:3px;display:inline-block"></i> App <b>52%</b></div>
+              <div class="ds"><i style="background:#16A34A;width:9px;height:9px;border-radius:3px;display:inline-block"></i> QR <b>28%</b></div>
+              <div class="ds"><i style="background:#F59E0B;width:9px;height:9px;border-radius:3px;display:inline-block"></i> Manual <b>20%</b></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card table-card">
+        <div class="sel-banner">
+          <span>1 Attendee Selected</span>
+          <div class="acts">
+            <div class="a">✉</div><div class="a">🖨</div><div class="a">⤢</div><div class="a">⟳</div>
+            <div class="a check">✓ Check In</div><div class="a del">🗑 Delete</div>
+          </div>
+        </div>
+        <div class="table-head">
+          <div class="th-title">Attendees</div>
+          <div class="spacer"></div>
+          <div class="tb-btn" title="Search">⌕</div>
+          <div class="tb-btn" title="Columns">▦</div>
+          <div class="tb-btn" title="Density">≣</div>
+          <div class="tb-btn" title="Filter">⚲</div>
+          <div class="tb-btn" title="Export">⤓</div>
+          <button class="tb-add">+ Add Attendee</button>
+        </div>
+        <table>
+          <thead><tr>
+            <th style="width:32px"></th><th>Attendee</th><th>Check-in</th><th>Status</th><th>Type</th><th class="num">Amount</th>
+          </tr></thead>
+          <tbody>
+            ${attRow('Olivia Bennett','olivia@email.com','09:42','green','Verified','VIP','$120')}
+            ${attRow('Liam Carter','liam@email.com','10:15','blue','Signed Up','GA','$80')}
+            ${attRow('Emma Davis','emma@email.com','—','red','Replication Needed','Comp','$0')}
+            ${attRow('Noah Evans','noah@email.com','11:03','yellow','New Customer','GA','$80')}
+            ${attRow('Ava Foster','ava@email.com','—','red','Code Suspended','VIP','$0')}
+            ${attRow('Sophia Gray','sophia@email.com','12:31','green','Verified','GA','$80')}
+          </tbody>
+        </table>
+        <div class="table-foot">
+          <span>Showing 6 of 1,042</span>
+          <div class="pager"><button>‹ Prev</button><button class="active">1</button><button>2</button><button>3</button><button>…</button><button>Next ›</button></div>
+        </div>
+      </div>`
+  },
+  locations:{
+    url:'konoom.com/locations',
+    brand:'Konoom', mark:'K',
+    user:{name:'Alisa Wong', role:'Location Manager'},
+    menu:[
+      {group:'OPERATIONS', items:[
+        {id:'overview', label:'Overview', icon:'grid'},
+        {id:'locations', label:'Locations', icon:'pin', active:true},
+        {id:'employees', label:'Employees', icon:'users'},
+        {id:'assets', label:'Assets', icon:'box'},
+      ]},
+      {group:'REPORTS', items:[
+        {id:'reports', label:'Reports', icon:'file'},
+        {id:'settings', label:'Settings', icon:'set'},
+      ]},
+    ],
+    topbar:{title:'Locations', sub:'12 active sites · 3 regions', showSearch:true, sel:'All ▾', btn:'+ Add Location'},
+    render:()=>`
+      <div class="card table-card">
+        <div class="table-head">
+          <div class="th-title">Locations</div>
+          <div class="spacer"></div>
+          <div class="tb-btn" title="Search">⌕</div>
+          <div class="tb-btn" title="Columns">▦</div>
+          <div class="tb-btn" title="Density">≣</div>
+          <div class="tb-btn" title="Filter">⚲</div>
+          <div class="tb-btn" title="Export">⤓</div>
+          <button class="tb-add">+ Add Location</button>
+        </div>
+        <table>
+          <thead><tr>
+            <th style="width:32px"></th><th>Location</th><th>Region</th><th>Status</th><th>Utilization</th><th class="num">Revenue</th>
+          </tr></thead>
+          <tbody>
+            ${locRow('Tokyo Hub','tokyo@konoom.com','APAC','green','Active',82,'$48.2K')}
+            ${locRow('Berlin Site','berlin@konoom.com','EMEA','blue','Onboarding',60,'$31.5K')}
+            ${locRow('Austin Branch','austin@konoom.com','AMER','green','Active',74, '$39.8K')}
+            ${locRow('Singapore Pt','sg@konoom.com','APAC','yellow','Scaling',45,'$22.1K')}
+            ${locRow('São Paulo','sp@konoom.com','AMER','red','Suspended',12,'$4.6K')}
+            ${locRow('Toronto Office','toronto@konoom.com','AMER','green','Active',68,'$35.3K')}
+          </tbody>
+        </table>
+        <div class="table-foot">
+          <span>Showing 6 of 12</span>
+          <div class="pager"><button>‹ Prev</button><button class="active">1</button><button>2</button><button>Next ›</button></div>
+        </div>
+      </div>`
+  },
+  staff:{
+    url:'zendenta.com/staff',
+    brand:'Zendenta', mark:'Z',
+    user:{name:'Dr. Rayan', role:'Clinic Admin'},
+    menu:[
+      {group:'CLINIC', items:[
+        {id:'overview', label:'Overview', icon:'grid'},
+        {id:'appointments', label:'Appointments', icon:'cal'},
+        {id:'patients', label:'Patients', icon:'users'},
+        {id:'staff', label:'Staff', icon:'steth', active:true},
+      ]},
+      {group:'FINANCE', items:[
+        {id:'billing', label:'Billing', icon:'file'},
+      ]},
+      {group:'PHYSICAL ASSET', items:[
+        {id:'inventory', label:'Inventory', icon:'box'},
+        {id:'settings', label:'Settings', icon:'set'},
+      ]},
+    ],
+    topbar:{title:'Staff', sub:'18 members · 4 departments', showSearch:true, sel:'All ▾', btn:'+ Add Staff'},
+    render:()=>`
+      <div class="card table-card">
+        <div class="table-head">
+          <div class="th-title">Staff List</div>
+          <div class="spacer"></div>
+          <div class="tb-btn" title="Search">⌕</div>
+          <div class="tb-btn" title="Columns">▦</div>
+          <div class="tb-btn" title="Density">≣</div>
+          <div class="tb-btn" title="Filter">⚲</div>
+          <div class="tb-btn" title="Export">⤓</div>
+          <button class="tb-add">+ Add Staff</button>
+        </div>
+        <table>
+          <thead><tr>
+            <th style="width:32px"></th><th>Member</th><th>Role</th><th>Working Days</th><th>Services</th><th>Status</th>
+          </tr></thead>
+          <tbody>
+            ${staffRow('Dr. Rayan','rayan@zendenta.com','Dentist','1001110',['Cleaning','Root Canal','Whitening'],'green','Available')}
+            ${staffRow('Mia Chen','mia@zendenta.com','Hygienist','1111100',['Cleaning','Polish'],'blue','On Shift')}
+            ${staffRow('Leo Park','leo@zendenta.com','Reception','1111111',['Booking','Billing'],'yellow','Part-time')}
+            ${staffRow('Sara Kim','sara@zendenta.com','Orthodontist','0011100',['Braces','Aligners'],'green','Available')}
+            ${staffRow('Tom Reed','tom@zendenta.com','Assistant','1101100',['Sterilize','Assist'],'red','Off')}
+            ${staffRow('Nina Lopez','nina@zendenta.com','Dentist','1010110',['Cleaning','Extraction'],'green','Available')}
+          </tbody>
+        </table>
+        <div class="table-foot">
+          <span>Showing 6 of 18</span>
+          <div class="pager"><button>‹ Prev</button><button class="active">1</button><button>2</button><button>3</button><button>Next ›</button></div>
+        </div>
+      </div>`
+  }
+};
+
+/* ===================== cell renderers ===================== */
+function kpiCard(t,v,trend,dir,sub,pts){
+  const arrow = dir==='up'?'↗':'↘';
+  return `<div class="card kpi">
+    <div class="kh"><div class="kt">${t}</div><div class="more">⋯</div></div>
+    ${sparkline(pts)}
+    <div class="kv">${v}</div>
+    <div class="ktrend"><span class="chip ${dir}">${arrow} ${trend}</span><span class="ksub">${sub}</span></div>
+  </div>`;
+}
+function actItem(ic, txt){
+  return `<div class="act-item"><div class="ic">${icon(ic)}</div><div class="txt">${txt}</div></div>`;
+}
+function attRow(nm,em,time,pc,label,typ,amt){
+  return `<tr>
+    <td><input type="checkbox"></td>
+    <td><div class="cell-user"><div class="av"></div><div><div class="nm">${nm}</div><div class="em">${em}</div></div></div></td>
+    <td>${time}</td>
+    <td><span class="pill ${pc}"><i></i>${label}</span></td>
+    <td>${typ}</td>
+    <td class="num">${amt}</td>
+  </tr>`;
+}
+function locRow(nm,em,reg,pc,label,prog,amt){
+  return `<tr>
+    <td><input type="checkbox"></td>
+    <td><div class="cell-user"><div class="av"></div><div><div class="nm">${nm}</div><div class="em">${em}</div></div></div></td>
+    <td>${reg}</td>
+    <td><span class="pill ${pc}"><i></i>${label}</span></td>
+    <td><div class="progress"><div class="bar"><i style="width:${prog}%"></i></div>${prog}%</div></td>
+    <td class="num">${amt}</td>
+  </tr>`;
+}
+function staffRow(nm,em,role,days,svcs,pc,label){
+  const dn=['S','M','T','W','T','F','S'];
+  const dayEls=dn.map((d,i)=>`<div class="d ${days[i]==='1'?'on':''}">${d}</div>`).join('');
+  const svcEls=svcs.map(s=>`<span class="s">${s}</span>`).join('');
+  return `<tr>
+    <td><input type="checkbox"></td>
+    <td><div class="cell-user"><div class="av"></div><div><div class="nm">${nm}</div><div class="em">${em}</div></div></div></td>
+    <td>${role}</td>
+    <td><div class="days">${dayEls}</div></td>
+    <td><div class="svc">${svcEls}</div></td>
+    <td><span class="pill ${pc}"><i></i>${label}</span></td>
+  </tr>`;
+}
+
+/* ===================== render engine ===================== */
+function renderScene(key){
+  const s=SCENES[key];
+  document.getElementById('urlText').textContent=s.url;
+  // sidebar
+  let sb=`<div class="logo"><div class="mark">${s.mark}</div><div class="name">${s.brand}</div></div>
+    <div class="user-card"><div class="av"></div><div><div class="nm">${s.user.name}</div><div class="rl">${s.user.role}</div></div></div>
+    <div class="menu">`;
+  s.menu.forEach(g=>{
+    sb+=`<div class="menu-group">${g.group}</div>`;
+    g.items.forEach(it=>{
+      sb+=`<div class="mi ${it.active?'active':''}">${icon(it.icon)}<span>${it.label}</span></div>`;
+    });
+  });
+  sb+=`</div><div class="menu-foot"><div class="mi">${icon('logout')}<span>Log out</span></div></div>`;
+  document.getElementById('sidebar').innerHTML=sb;
+  // topbar
+  const t=s.topbar;
+  document.getElementById('topbar').innerHTML=`
+    <div><div class="tt">${t.title}</div><div class="ts">${t.sub}</div></div>
+    <div class="spacer"></div>
+    ${t.showSearch?`<div class="search">⌕ Search here…</div>`:''}
+    <button class="icon-btn">◐</button>
+    <button class="icon-btn">✉</button>
+    <button class="icon-btn">🔔<span class="dot"></span></button>
+    <div class="avatar-sm"></div>
+    <button class="sel">${t.sel}</button>
+    <button class="btn-primary">⤓ ${t.btn}</button>`;
+  // content
+  document.getElementById('content').innerHTML=s.render();
+}
+/* tabs */
+const tabsOrder=['dashboard','events','locations','staff'];
+const tabsLabel={dashboard:'① Dashboard · Nexus',events:'② Events · CrowdPass',locations:'③ Locations · Konoom',staff:'④ Staff · Zendenta'};
+const tabsEl=document.getElementById('sceneTabs');
+tabsOrder.forEach(k=>{
+  const b=document.createElement('div');
+  b.className='scene-tab'+(k==='dashboard'?' active':'');
+  b.textContent=tabsLabel[k];
+  b.onclick=()=>{
+    document.querySelectorAll('.scene-tab').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    renderScene(k);
+    try{ history.replaceState(null,'','#'+k); }catch(e){ location.hash=k; }
+  };
+  tabsEl.appendChild(b);
+});
+function sceneFromHash(){
+  const h=(location.hash||'').replace('#','');
+  return SCENES[h]?h:'dashboard';
+}
+renderScene(sceneFromHash());
+</script>
+</body>
+</html>
