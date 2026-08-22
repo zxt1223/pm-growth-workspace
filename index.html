@@ -743,6 +743,102 @@ a { color: var(--primary); text-decoration: none; }
 }
 .dashboard-svg { width: 100%; max-width: 200px; height: auto; margin: 0 auto; }
 
+/* ===== 日报 / 周报 子标签 ===== */
+.subtabs {
+  display: flex;
+  gap: 6px;
+  margin: 16px 0 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 5px;
+  box-shadow: var(--shadow);
+}
+.subtab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 10px;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-2);
+  transition: all .18s ease;
+}
+.subtab svg { width: 16px; height: 16px; }
+.subtab.active {
+  background: var(--gradient);
+  color: #fff;
+  box-shadow: var(--shadow-md);
+}
+.subtab:not(.active):hover { background: var(--gradient-soft); color: var(--primary); }
+
+.report-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.report-hint { font-size: 12.5px; color: var(--text-3); }
+.report-week-pick { display: flex; align-items: center; gap: 8px; }
+
+/* 日报卡片 */
+.daily-day {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+.daily-day-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--gradient-soft);
+  border-bottom: 1px solid var(--border-light);
+}
+.daily-day-title { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; color: var(--text); }
+.daily-day-title .day-badge {
+  font-size: 11px; font-weight: 600; color: #fff; background: var(--primary);
+  padding: 2px 9px; border-radius: 20px;
+}
+.daily-day-actions { display: flex; gap: 6px; }
+.daily-item {
+  padding: 12px 16px;
+  border-bottom: 1px dashed var(--border-light);
+}
+.daily-item:last-child { border-bottom: none; }
+.daily-item-what { font-weight: 600; color: var(--text); margin-bottom: 6px; display: flex; gap: 6px; align-items: flex-start; }
+.daily-item-what .idx {
+  flex: none; width: 20px; height: 20px; border-radius: 6px; background: var(--primary-light); color: #fff;
+  font-size: 12px; display: inline-flex; align-items: center; justify-content: center; margin-top: 1px;
+}
+.daily-item-label { font-size: 11px; font-weight: 700; color: var(--primary); margin: 8px 0 3px; letter-spacing: .5px; }
+.daily-item-text { font-size: 13.5px; color: var(--text-2); white-space: pre-wrap; line-height: 1.7;
+  background: #FBFAFF; border-radius: 8px; padding: 8px 10px; border: 1px solid var(--border-light); }
+.daily-item-result .daily-item-text { color: var(--success); background: #F0FDF9; border-color: #D1FAE5; }
+.daily-empty { text-align: center; color: var(--text-3); padding: 40px 16px; }
+.daily-empty svg { width: 40px; height: 40px; opacity: .4; margin-bottom: 8px; }
+
+/* 周报卡片 */
+.weekly-report pre {
+  white-space: pre-wrap;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 13.5px;
+  line-height: 1.8;
+  color: var(--text);
+  background: #FBFAFF;
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  padding: 16px;
+  margin: 0;
+}
+
 /* Weekly report */
 .weekly-report {
   background: var(--bg-card);
@@ -1733,16 +1829,52 @@ a { color: var(--primary); text-decoration: none; }
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6M3 12a9 9 0 0 1 9-9 9 9 0 0 1 6.7 3M3 22v-6h6M21 12a9 9 0 0 1-9 9 9 9 0 0 1-6.7-3"/></svg>
           VS Code同步
         </button>
-        <button class="btn btn-sm btn-secondary" onclick="generateWeeklyReport()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
-          生成周报
-        </button>
         <button class="btn btn-sm" onclick="openModal('tasks')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
           添加任务
         </button>
       </div>
     </div>
+
+    <!-- ===== 日报 / 周报 子标签 ===== -->
+    <div class="subtabs" id="reportSubtabs">
+      <button class="subtab active" data-rtab="daily" onclick="switchReportTab('daily')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        日报
+      </button>
+      <button class="subtab" data-rtab="weekly" onclick="switchReportTab('weekly')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+        周报
+      </button>
+    </div>
+
+    <!-- ===== 日报区域 ===== -->
+    <div id="reportDailyArea">
+      <div class="report-actions">
+        <button class="btn btn-sm" onclick="openDailyModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+          写今日日报
+        </button>
+        <span class="report-hint">记录今天做的事，以及你做判断的步骤</span>
+      </div>
+      <div id="dailyReportList"></div>
+    </div>
+
+    <!-- ===== 周报区域 ===== -->
+    <div id="reportWeeklyArea" style="display:none">
+      <div class="report-actions">
+        <div class="report-week-pick">
+          <label class="form-label" style="margin:0">选择周：</label>
+          <input type="date" class="form-input" id="weeklyPickDate" onchange="renderWeeklyReport()" style="width:auto">
+        </div>
+        <button class="btn btn-sm" onclick="renderWeeklyReport()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.5 0 4.8 1 6.4 2.6L21 8"/><path d="M21 3v5h-5"/></svg>
+          生成本周周报
+        </button>
+      </div>
+      <div id="weeklyReportArea"></div>
+    </div>
+
     <div class="filters">
       <select class="filter-select" id="taskFilterView" onchange="renderTasks()">
         <option value="all">全部任务</option>
@@ -1760,7 +1892,6 @@ a { color: var(--primary); text-decoration: none; }
     </div>
     <div class="dashboard" id="dashboard"></div>
     <div id="taskList"></div>
-    <div id="weeklyReportArea"></div>
     </div>
 
   <!-- ========== Panel: 工具应用 (Tools / Applications) ========== -->
@@ -2059,6 +2190,7 @@ const KEYS = {
   tasks: 'wb_pm_tasks',
   expPosts: 'wb_pm_exp_posts',
   jobs: 'wb_pm_jobs',
+  dailyReports: 'wb_pm_daily_reports',  // 日报/周报数据（每天做的事 + 判断步骤；周报由日报聚合）
   textOverrides: 'wb_pm_text_overrides',  // ⚠️ NEVER clear this key — user's custom text edits must persist forever
   settings: 'wb_pm_settings'
 };
@@ -4363,7 +4495,7 @@ function switchTab(tab) {
     t.classList.toggle('active', t.dataset.tab === tab);
   });
   // 切换到任务看板时强制重渲染（列表初始隐藏在其他面板后面，需主动渲染）
-  if (tab === 'tasks') renderTasks();
+  if (tab === 'tasks') { renderTasks(); renderDailyReports(); }
   // 知识库 / 求职贴 同样初始隐藏，切 tab 时主动重渲以正常展示列表
   if (tab === 'expKnowledge') renderExpKnowledge();
   if (tab === 'expInterview') renderExpInterview();
@@ -5333,54 +5465,260 @@ function pieChartSVG(data) {
   `;
 }
 
-function generateWeeklyReport() {
-  const list = getData(KEYS.tasks);
-  const now = new Date();
-  const weekStart = new Date(now);
-  weekStart.setDate(now.getDate() - now.getDay());
-  weekStart.setHours(0, 0, 0, 0);
+/* ========== 日报 / 周报 ========== */
+// 返回某日期所在周的周一（ISO：周一为起始）
+function mondayOf(dateStr) {
+  const d = new Date(dateStr);
+  if (isNaN(d)) return today();
+  const day = d.getDay(); // 0=周日..6=周六
+  const diffToMonday = (day === 0 ? 6 : day - 1);
+  const m = new Date(d);
+  m.setDate(d.getDate() - diffToMonday);
+  m.setHours(0, 0, 0, 0);
+  return m.toISOString().slice(0, 10);
+}
+function weekRange(mondayStr) {
+  const m = new Date(mondayStr);
+  const e = new Date(m);
+  e.setDate(m.getDate() + 6);
+  return { start: mondayStr, end: e.toISOString().slice(0, 10) };
+}
 
-  const weekTasks = list.filter(t => {
-    const d = new Date(t.dueDate || t.completedDate || today());
-    return d >= weekStart;
+// 子标签切换
+function switchReportTab(tab) {
+  document.querySelectorAll('#reportSubtabs .subtab').forEach(b => {
+    b.classList.toggle('active', b.dataset.rtab === tab);
   });
+  document.getElementById('reportDailyArea').style.display = (tab === 'daily') ? '' : 'none';
+  document.getElementById('reportWeeklyArea').style.display = (tab === 'weekly') ? '' : 'none';
+  if (tab === 'daily') renderDailyReports();
+  if (tab === 'weekly') renderWeeklyReport();
+}
 
-  const done = weekTasks.filter(t => t.status === '已完成');
-  const pending = weekTasks.filter(t => t.status !== '已完成');
-  const overdue = pending.filter(t => isOverdue(t.dueDate));
+// 取某天日报（没有则结构占位）
+function getDailyReport(dateStr) {
+  const list = getData(KEYS.dailyReports);
+  return list.find(r => r.date === dateStr) || null;
+}
+function upsertDailyReport(dateStr, items) {
+  const list = getData(KEYS.dailyReports);
+  const idx = list.findIndex(r => r.date === dateStr);
+  if (idx >= 0) {
+    list[idx].items = items;
+    list[idx].updatedAt = new Date().toISOString();
+  } else {
+    list.push({ id: 'dr-' + dateStr, date: dateStr, items: items, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+  }
+  setData(KEYS.dailyReports, list);
+}
 
-  const report = `===== 周报 ${today()} =====
+// 打开写日报弹窗（默认今天，可编辑已有）
+function openDailyModal(dateStr) {
+  dateStr = dateStr || today();
+  const existing = getDailyReport(dateStr);
+  const items = existing ? existing.items : [];
+  const rowsHtml = items.map((it, i) => dailyItemRowHtml(i, it)).join('')
+    || dailyItemRowHtml(0, { what: '', steps: '', result: '' });
 
-【本周完成】(${done.length}项)
-${done.map(t => '  - ' + t.title + ' [' + t.priority + ']').join('\n') || '  无'}
+  const content = document.getElementById('modalContent');
+  content.innerHTML = `
+    <div class="modal-header">
+      <div class="modal-title">${dateStr === today() ? '写今日日报' : '编辑日报'} · ${dateStr}</div>
+      <button class="modal-close" onclick="closeModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div style="background:var(--gradient-soft);border-radius:8px;padding:10px 12px;margin-bottom:14px;font-size:12.5px;color:var(--text-2);line-height:1.7">
+      <strong style="color:var(--primary)">填写说明：</strong>「事项」写今天做了什么；「判断步骤」写你做决策/判断时的思考过程（可多步）；「结果/产出」写最终结论或交付物。
+    </div>
+    <div id="dailyRows">${rowsHtml}</div>
+    <button class="btn btn-sm btn-secondary" style="margin-bottom:14px" onclick="addDailyRow()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+      再加一条事项
+    </button>
+    <div class="form-actions">
+      <button class="btn btn-secondary" onclick="closeModal()">取消</button>
+      <button class="btn" onclick="saveDailyReport('${dateStr}')">保存日报</button>
+    </div>
+  `;
+  document.getElementById('modalOverlay').classList.add('show');
+}
 
-【待处理】(${pending.length}项)
-${pending.map(t => '  - ' + t.title + ' [' + t.priority + '] 截止:' + (t.dueDate || '无')).join('\n') || '  无'}
+function dailyItemRowHtml(i, it) {
+  return `
+    <div class="daily-row" data-idx="${i}" style="border:1px solid var(--border-light);border-radius:10px;padding:12px;margin-bottom:10px;background:#FBFAFF">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span style="font-weight:700;color:var(--primary);font-size:13px">事项 ${i + 1}</span>
+        <button type="button" class="btn btn-sm btn-danger" onclick="removeDailyRow(this)">删除</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">做了什么 *</label>
+        <input type="text" class="form-input" data-f="what" value="${escapeHtml(it.what || '')}" placeholder="例如：完成竞品分析报告初稿">
+      </div>
+      <div class="form-group">
+        <label class="form-label">判断步骤（你是怎么思考/决策的）</label>
+        <textarea class="form-textarea" data-f="steps" placeholder="例如：1. 先对齐老板要的维度；2. 拉了3家数据对比；3. 砍掉不重要的模块聚焦核心差异..." style="min-height:80px">${escapeHtml(it.steps || '')}</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">结果 / 产出</label>
+        <textarea class="form-textarea" data-f="result" placeholder="例如：报告已发评审群，待周三评审会确认方向" style="min-height:60px">${escapeHtml(it.result || '')}</textarea>
+      </div>
+    </div>
+  `;
+}
 
-【逾期项】(${overdue.length}项)
-${overdue.map(t => '  - ' + t.title + ' 截止:' + t.dueDate).join('\n') || '  无'}
+function addDailyRow() {
+  const wrap = document.getElementById('dailyRows');
+  const idx = wrap.querySelectorAll('.daily-row').length;
+  const div = document.createElement('div');
+  div.innerHTML = dailyItemRowHtml(idx, { what: '', steps: '', result: '' });
+  wrap.appendChild(div.firstElementChild);
+}
+function removeDailyRow(btn) {
+  const row = btn.closest('.daily-row');
+  if (row) row.remove();
+}
 
-【数据概览】
-  完成率: ${weekTasks.length > 0 ? Math.round(done.length / weekTasks.length * 100) : 0}% (${done.length}/${weekTasks.length})
-  逾期数: ${overdue.length}
+function saveDailyReport(dateStr) {
+  const rows = Array.from(document.querySelectorAll('#dailyRows .daily-row'));
+  const items = rows.map(r => ({
+    what: (r.querySelector('[data-f="what"]').value || '').trim(),
+    steps: (r.querySelector('[data-f="steps"]').value || '').trim(),
+    result: (r.querySelector('[data-f="result"]').value || '').trim()
+  })).filter(it => it.what || it.steps || it.result);
+  upsertDailyReport(dateStr, items);
+  closeModal();
+  renderDailyReports();
+  showToast(items.length ? '日报已保存' : '已清空当日日报');
+}
 
-【下周计划】
-  (请补充...)
-`;
+function deleteDailyReport(dateStr) {
+  if (!confirm('确定删除 ' + dateStr + ' 的日报吗？此操作不可撤销。')) return;
+  const list = getData(KEYS.dailyReports).filter(r => r.date !== dateStr);
+  setData(KEYS.dailyReports, list);
+  renderDailyReports();
+  showToast('已删除');
+}
 
-  document.getElementById('weeklyReportArea').innerHTML = `
+function renderDailyReports() {
+  const list = getData(KEYS.dailyReports);
+  const container = document.getElementById('dailyReportList');
+  if (!container) return;
+  if (list.length === 0) {
+    container.innerHTML = `<div class="daily-empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      <p>还没有日报，点「写今日日报」记录你今天做了什么、怎么判断的</p>
+    </div>`;
+    return;
+  }
+  const sorted = [...list].sort((a, b) => b.date.localeCompare(a.date));
+  container.innerHTML = sorted.map(r => {
+    const items = r.items && r.items.length ? r.items : [];
+    const itemHtml = items.length ? items.map((it, i) => `
+      <div class="daily-item">
+        <div class="daily-item-what"><span class="idx">${i + 1}</span><span>${escapeHtml(it.what || '(未填写事项)')}</span></div>
+        ${it.steps ? `<div class="daily-item-label">判断步骤</div><div class="daily-item-text">${escapeHtml(it.steps)}</div>` : ''}
+        ${it.result ? `<div class="daily-item-label daily-item-result">结果 / 产出</div><div class="daily-item-text daily-item-result">${escapeHtml(it.result)}</div>` : ''}
+      </div>
+    `).join('') : `<div class="daily-item" style="color:var(--text-3)">（当天无内容）</div>`;
+    const isTodayR = r.date === today();
+    return `
+      <div class="daily-day">
+        <div class="daily-day-head">
+          <div class="daily-day-title">
+            <span>${r.date}</span>
+            ${isTodayR ? '<span class="day-badge">今天</span>' : ''}
+            <span style="font-size:12px;color:var(--text-3);font-weight:500">${items.length} 项</span>
+          </div>
+          <div class="daily-day-actions">
+            <button class="btn btn-sm btn-secondary" onclick="openDailyModal('${r.date}')">编辑</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteDailyReport('${r.date}')">删除</button>
+          </div>
+        </div>
+        ${itemHtml}
+      </div>
+    `;
+  }).join('');
+}
+
+// 周报：基于所选周（默认本周）的日报聚合整理
+function renderWeeklyReport() {
+  const pick = document.getElementById('weeklyPickDate');
+  const base = (pick && pick.value) ? pick.value : today();
+  const monday = mondayOf(base);
+  const { start, end } = weekRange(monday);
+
+  const all = getData(KEYS.dailyReports);
+  const weekReports = all.filter(r => r.date >= start && r.date <= end)
+    .sort((a, b) => a.date.localeCompare(b.date));
+
+  const totalItems = weekReports.reduce((s, r) => s + (r.items ? r.items.length : 0), 0);
+
+  let body;
+  if (weekReports.length === 0 || totalItems === 0) {
+    body = `【${start} ~ ${end}】本周暂无日报记录。\n\n提示：先在「日报」标签里写下每天做的事和判断步骤，周报会自动从这里整理出来。`;
+  } else {
+    const lines = [];
+    lines.push(`===== 周报（${start} ~ ${end}）=====`);
+    lines.push(`本周共 ${weekReports.length} 天有记录，合计 ${totalItems} 项工作。\n`);
+    lines.push(`【一、本周工作概览】`);
+    let n = 1;
+    weekReports.forEach(r => {
+      (r.items || []).forEach(it => {
+        lines.push(`  ${n}. [${r.date}] ${it.what || ''}${it.result ? ' —— ' + it.result : ''}`);
+        n++;
+      });
+    });
+    lines.push(`\n【二、关键判断与决策过程】`);
+    let m = 1;
+    weekReports.forEach(r => {
+      (r.items || []).forEach(it => {
+        if (it.steps) {
+          lines.push(`  ${m}. [${r.date}] ${it.what || ''}`);
+          lines.push(`     判断步骤：${it.steps}`);
+          m++;
+        }
+      });
+    });
+    if (m === 1) lines.push(`  （本周日报中未填写"判断步骤"，可在日报里补充决策思考）`);
+    lines.push(`\n【三、下周计划】`);
+    lines.push(`  （根据本周进展补充下周重点...）`);
+    body = lines.join('\n');
+  }
+
+  const area = document.getElementById('weeklyReportArea');
+  if (!area) return;
+  area.innerHTML = `
     <div class="weekly-report fade-in">
       <div class="module-header">
         <div class="module-title">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
-          <span>本周周报</span>
+          <span>周报 ${start} ~ ${end}</span>
         </div>
-        <button class="btn btn-sm btn-secondary" onclick="copyReport()">复制周报</button>
+        <button class="btn btn-sm btn-secondary" onclick="copyWeeklyReport()">复制周报</button>
       </div>
-      <pre>${escapeHtml(report)}</pre>
+      <pre>${escapeHtml(body)}</pre>
     </div>
   `;
-  showToast('周报已生成');
+}
+
+function copyWeeklyReport() {
+  const pre = document.querySelector('#weeklyReportArea pre');
+  if (!pre) return;
+  const text = pre.textContent;
+  navigator.clipboard.writeText(text).then(() => showToast('已复制到剪贴板')).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    showToast('已复制到剪贴板');
+  });
+}
+
+// 兼容旧"生成周报"按钮：切到周报标签并生成
+function generateWeeklyReport() {
+  switchReportTab('weekly');
+  renderWeeklyReport();
+  document.getElementById('reportWeeklyArea').scrollIntoView({ behavior: 'smooth' });
 }
 
 function copyReport() {
