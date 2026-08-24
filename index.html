@@ -6456,7 +6456,41 @@ function mergeAutoExpSeed() {
   let settings = getData(KEYS.settings);
   if (!settings || typeof settings !== 'object' || Array.isArray(settings)) settings = {};
   const imported = settings.seedImported || {};
-  const list = getData(KEYS.expPosts);
+  let list = getData(KEYS.expPosts);
+  // ① 同 id 去重：本地若出现重复 id（如曾用不同分类多次写入），只保留一条
+  const seenIds = {};
+  list = list.filter(p => {
+    const id = p.id || '';
+    if (seenIds[id]) return false;
+    seenIds[id] = true;
+    return true;
+  });
+  // ② 以源码种子为权威，规范化属于种子的条目（修复旧分类错位，例如曾误写入「AI产品」）
+  const seedById = {};
+  seed.forEach(item => { const id = item.id || ('exp-auto-' + (item.title || '') + (item.sourceUrl || '')); seedById[id] = item; });
+  list = list.map(p => {
+    const s = seedById[p.id];
+    if (!s) return p; // 非种子条目（用户自建/编辑），原样保留，绝不改动
+    return {
+      id: p.id,
+      title: s.title || p.title || '未命名经验贴',
+      type: s.type === 'knowledge' ? 'knowledge' : 'interview',
+      company: s.company || '',
+      role: s.role || '',
+      platform: s.platform || '其他',
+      category: s.category || '其他',
+      sourceUrl: s.sourceUrl || '',
+      keyPoints: Array.isArray(s.keyPoints) ? s.keyPoints : (Array.isArray(p.keyPoints) ? p.keyPoints : []),
+      content: s.content || '',
+      summary: s.summary || '',
+      tags: s.tags || '',
+      links: Array.isArray(s.links) ? s.links : [],
+      isAIGenerated: true,
+      isAutoCollected: true,
+      date: s.date || p.date || today()
+    };
+  });
+  // ③ 新增源码有、本地仍缺的种子条目
   let added = 0;
   seed.forEach(item => {
     const id = item.id || ('exp-auto-' + (item.title || '') + (item.sourceUrl || ''));
@@ -6483,11 +6517,9 @@ function mergeAutoExpSeed() {
     });
     added++;
   });
-  if (added > 0) {
-    settings.seedImported = imported;
-    setData(KEYS.settings, settings);
-    setData(KEYS.expPosts, list);
-  }
+  settings.seedImported = imported;
+  setData(KEYS.settings, settings);
+  setData(KEYS.expPosts, list);
 }
 
 /* ========== 岗位投递自动同步 (from window.AUTO_JOB_SEED) ==========
