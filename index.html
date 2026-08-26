@@ -6512,8 +6512,7 @@ function mergeAutoExpSeed() {
   let added = 0;
   seed.forEach(item => {
     const id = item.id || ('exp-auto-' + (item.title || '') + (item.sourceUrl || ''));
-    if (imported[id]) return;
-    if (normalized.some(p => p.id === id)) return;
+    if (normalized.some(p => p.id === id)) return;  // 本地已有则不重复；本地缺失（曾删除/丢失）则重新补齐，修复幂等标记导致永久丢失的 bug
     imported[id] = true;
     normalized.unshift({
       id: id,
