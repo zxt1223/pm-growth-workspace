@@ -2457,6 +2457,25 @@ window.AUTO_EXP_SEED = [
 ];
 
 /* ============================================================
+   AUTO TASK SEED (任务看板自动注入)
+   每日任务计划：从 2026-08-28 起，每天一个，按顺序完成（共 5 天）。
+   mergeAutoTaskSeed() 在每次页面加载时把下列任务合并进 localStorage（KEYS.tasks），
+   按 id 去重、仅新增不删除 —— 已导入或用户已删除的任务不会被重复添加或复活。
+   Item format: { "id", "title", "priority"(P0/P1/P2), "status"(待办/已完成),
+                  "dueDate"(YYYY-MM-DD), "tags" }
+   ⚠️ 如需追加新一批每日任务，在 // AUTO-TASKS-START 与 // AUTO-TASKS-END 之间追加条目即可。
+   ============================================================ */
+window.AUTO_TASK_SEED = [
+  // AUTO-TASKS-START
+  { "id": "task-auto-olist-01-gmv", "title": "① GMV 增长与品类结构：定指标 → 下钻 → 归因", "priority": "P1", "status": "待办", "dueDate": "2026-08-28", "tags": "Olist电商分析" },
+  { "id": "task-auto-olist-02-seller", "title": "② 卖家生态：分层（Top 卖家占盘 / 二八法则 / 新老卖家对比）", "priority": "P1", "status": "待办", "dueDate": "2026-08-29", "tags": "Olist电商分析" },
+  { "id": "task-auto-olist-03-delivery", "title": "③ 配送与评价：体验（按时送达率 / 差评 / 转化漏斗）", "priority": "P1", "status": "待办", "dueDate": "2026-08-30", "tags": "Olist电商分析" },
+  { "id": "task-auto-olist-04-repurchase", "title": "④ 复购：用户分层（RFM / 复购率 / 高价值客户画像）", "priority": "P1", "status": "待办", "dueDate": "2026-08-31", "tags": "Olist电商分析" },
+  { "id": "task-auto-olist-05-report", "title": "⑤ 汇总成完整报告：SQL + 结论 + 建议，串成一份能讲的作品", "priority": "P0", "status": "待办", "dueDate": "2026-09-01", "tags": "Olist电商分析" }
+  // AUTO-TASKS-END
+];
+
+/* ============================================================
    AUTO-SYNCED JOB POSTINGS SEED (岗位投递自动同步)
    The recurring automation (daily) scans the Feishu bitable and
    writes the FULL latest snapshot of filtered jobs (广州/深圳/上海,
@@ -6819,6 +6838,41 @@ function mergeAutoExpSeed() {
   }
 }
 
+/* ========== Task Board Auto Seed (from window.AUTO_TASK_SEED) ==========
+   把「每日任务计划」合并进 localStorage（KEYS.tasks）。按 id 去重、仅新增不删除：
+   - 已导入（记录在 settings.seedTaskImported）的任务不再重复添加；
+   - 用户在看板里手动改/删的任务不会被复活或覆盖；
+   - 因此这份「每天一个、按顺序完成」的计划是一次性安全注入，可重复加载。 */
+function mergeAutoTaskSeed() {
+  const seed = (typeof window.AUTO_TASK_SEED !== 'undefined' && Array.isArray(window.AUTO_TASK_SEED)) ? window.AUTO_TASK_SEED : [];
+  if (!seed.length) return;
+  let settings = getData(KEYS.settings);
+  if (!settings || typeof settings !== 'object' || Array.isArray(settings)) settings = {};
+  const imported = settings.seedTaskImported || {};
+  let list = getData(KEYS.tasks);
+  let added = 0;
+  seed.forEach(item => {
+    const id = item.id || ('task-auto-' + (item.title || ''));
+    if (imported[id]) return;                                   // 已导入过，跳过（保留用户后续改动/删除）
+    if (list.some(t => t.id === id)) { imported[id] = true; return; } // 本地已有同 id，跳过
+    list.unshift({
+      id: id,
+      title: item.title || '未命名任务',
+      priority: item.priority || 'P1',
+      status: item.status || '待办',
+      dueDate: item.dueDate || '',
+      tags: item.tags || ''
+    });
+    imported[id] = true;
+    added++;
+  });
+  if (added > 0) {
+    settings.seedTaskImported = imported;
+    setData(KEYS.settings, settings);
+    setData(KEYS.tasks, list);
+  }
+}
+
 /* ========== 岗位投递自动同步 (from window.AUTO_JOB_SEED) ==========
    Replaces ALL auto-collected jobs (isAutoCollected/autoId) with the latest
    snapshot from the Feishu table on every load. User-added jobs are kept.
@@ -7690,6 +7744,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initSampleData();
   seedFetchedNews();    // Auto-inject fetched AI news from 9 sources
   mergeAutoExpSeed();   // Auto-collected experience posts (牛客/小红书 etc.)
+  mergeAutoTaskSeed();  // 每日任务计划自动注入任务看板
   mergeInterviewQA();   // Pilot: 字节/美团/小红书 面试 Q&A 注入训练题库
   populateCompanyFilter(); // 按企业筛选下拉
   mergeAutoJobSeed();   // Auto-synced job postings (Feishu table snapshot)
