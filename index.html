@@ -2427,6 +2427,31 @@ window.AUTO_EXP_SEED = [
     "tags": "SQL,MySQL,UNION ALL,COUNT,行数,数据探查,数据分析,Olist",
     "isAIGenerated": false,
     "date": "2026-08-28"
+  },
+  {
+    "id": "exp-auto-20260828-olist-ops-knowledge",
+    "type": "knowledge",
+    "title": "Olist 巴西电商数据集 · 8 个运营知识点（从行数、空值到 GMV 头部效应）",
+    "company": "",
+    "role": "",
+    "platform": "Olist 巴西电商数据集 · 说明书（第 0 课）",
+    "category": "运营知识",
+    "sourceUrl": "",
+    "summary": "从 Olist 真实数据里提炼 8 个可迁移的运营知识点：行数=生意体检、空值本身是信息、成交口径=分析生死线、客单件数→捆绑凑单、复购=利润命根子、评分结构比平均分重要、GMV 头部集中（二八法则）、订单≠成交。每个知识点都是“结论→数据印证→运营动作”三段式，可直接用于电商/本地生活/交易平台的分析与运营。",
+    "keyPoints": [
+      "行数 = 生意体检：orders 99,441 / order_items 112,650 → 平均每单约 1.13 件，客单件数低，“一次多买几件”（凑单/满减/捆绑）是现成抓手",
+      "空值本身是信息：reviews 评价文案大量为空→大多数人只打分不写字；products 品类/尺寸空→影响搜索推荐。取数第一步永远查空值",
+      "成交口径 = 分析生死线：只有 delivered（96,478，约97%）是真成交，canceled/unavailable 必须排除否则 GMV 虚高；第一步先跟业务确认口径",
+      "客单件数 → 捆绑与凑单：单笔件数上限高说明有人一次买很多，捆绑/满减有戏；若普遍 1 件→提升连带率（购物车推荐、满N件包邮）",
+      "复购 = 利润命根子：customer_unique_id 下多单=回头客，老客获客成本≈0。客户数用 unique_id、订单数用 customer_id，二者之比=人均订单数=复购水平",
+      "评分结构比平均分更重要：平均分 4.1 看着还行，但盯两极——5 分是口碑来源、1 分是流失预警；1 分订单要逐单归因（货不对板/物流慢/卖家态度）",
+      "GMV 头部集中（二八法则）：少数大单拉动 GMV；20% 订单贡献 80% GMV 时，重点服务这 20% 大客户比广撒网更划算",
+      "订单 ≠ 成交：order_status 里有 canceled/unavailable，算 GMV 前必须过滤，否则数字虚高——这是运营新人最易挨批的坑"
+    ],
+    "content": "# Olist 巴西电商数据集 · 8 个运营知识点（数据驱动的运营思维训练）\n\n> 来源：Olist 巴西电商数据集说明书（第 0 课）“认识你的数据”。以下把文中散落的 8 个 💡 运营知识点提炼成可迁移的方法论——每个都是「结论 → 数据印证 → 运营动作」三段式。\n\n## 数据集一句话背景\n- **Olist** 是巴西电商平台（类似淘宝/拼多多），对接多个 marketplace。\n- 时间范围：2016.9–2018.10（约两年）。\n- 规模：约 10 万订单、9.9 万客户、3,095 卖家、32,951 商品。\n- 货币 BRL（≈1.2–1.4 人民币）。\n- 9 张表靠公共 ID 关联：`orders`（订单主表）、`order_items`（订单商品明细，一笔可多行）、`order_payments`（支付，一笔可分多次）、`order_reviews`（评价）、`customers`（客户，customer_id 每单一个、customer_unique_id 每人一个）、`products`（商品）、`product_category_name_translation`（品类翻译，71 行）、`sellers`（卖家）、`geolocation`（地理，100 万行坐标）。\n\n---\n\n## 知识点 1：行数 = 生意体检\n**结论**：一张表多少行，就是你分析的“样本量”；行数对比能直接读出生意信号。\n**数据印证**：orders 99,441 行 vs order_items 112,650 行 → **平均每单约 1.13 件商品**。\n**运营动作**：客单件数这么低，“让人一次多买几件”（凑单、满减、捆绑销售）就是现成的运营抓手——两个数字就能读出来，无需建模。\n\n## 知识点 2：空值本身就是信息\n**结论**：空值不是“脏数据”，而是信息——某列大量为空，说明这个环节很多人没做/没发生。\n**数据印证**：reviews 的**评价文案**大量为空 → 大多数人只打分不写字；products 的品类/尺寸字段有空 → 前台缺字段。\n**运营动作**：① 做“差评归因”要记住：能看文案的只是少数订单，结论要谨慎；② 商品属性空缺会影响搜索与推荐，是治理项。取数的第一件事永远是查空值，否则 join/聚合会悄悄漏掉行。\n\n## 知识点 3：成交口径 = 分析的生死线\n**结论**：只有“真钱到账”的订单才算成交；口径错了后面全错。\n**数据印证**：orders 中 `order_status` 只有 `delivered`（96,478，约 97%）是真实成交；`canceled`（已取消）、`unavailable`（无法配送）必须排除，否则 GMV 虚高。\n**运营动作**：分析第一步永远是跟业务确认“成交口径”（下单算？付款算？签收算？）。另外 97% 成功送达说明履约整体还行，那 3%（cancel/unavailable）值得单独挖原因。\n\n## 知识点 4：客单件数 → 捆绑与凑单\n**结论**：单笔订单的件数上限，告诉你“有没有人在一次下单里买很多”。\n**数据印证**：`SELECT order_id, COUNT(*) FROM order_items GROUP BY order_id ORDER BY items DESC LIMIT 3` 看单笔最高件数。\n**运营动作**：若有人一次买很多 → 说明**捆绑、满减凑单**有戏；若大部分订单只有 1 件 → 运营往“提升连带率”想：购物车页推荐、满 N 件包邮、加购优惠。\n\n## 知识点 5：复购 = 利润的命根子\n**结论**：有人下多单，说明回头客存在；老客获客成本≈0，却贡献稳定 GMV。\n**数据印证**：`customers` 表里 `customer_unique_id` 下多单 → 回头客。`customer_id` 是订单维度、`customer_unique_id` 才是人维度。\n**运营动作**：算“客户数”用 `customer_unique_id`、算“订单数”用 `customer_id`，二者之比就是“人均订单数”，是判断复购水平的直接指标。会员、复购券、老客召回都围绕这个指标做。\n\n## 知识点 6：评分结构比平均分更重要\n**结论**：平均分只是个门面，运营真正盯的是两极。\n**数据印证**：平均分 4.1 看着不低；但 5 分是口碑来源、1 分是流失预警。\n**运营动作**：1 分订单应被拉出来逐单看——货不对板？物流太慢？卖家态度？差评背后就是“下次不买了”的用户。评分分布直接反映治理优先级：1 分占比高→先解决爆雷点；5 分占比高→放大好评路径。\n\n## 知识点 7：GMV 头部集中效应（二八法则）\n**结论**：GMV 往往由少数大单拉动。\n**数据印证**：`SELECT o.order_id, ROUND(SUM(oi.price+oi.freight_value),2) AS amt ... WHERE order_status NOT IN ('canceled','unavailable') GROUP BY o.order_id ORDER BY amt DESC LIMIT 5` 看 Top 单。\n**运营动作**：Top 单是“大客户/批发商”信号。如果 20% 订单贡献 80% 的 GMV，重点服务好这 20% 比广撒网更划算——这就是二八法则在运营里的应用。\n\n## 知识点 8：订单 ≠ 成交\n**结论**：订单数是“发生过的行为”，成交数是“真到账的钱”，两者不能混用。\n**数据印证**：`order_status` 含 `canceled`、`unavailable`，这些不算成交。\n**运营动作**：算 GMV/营收前必须先过滤掉未成交状态。这是运营新人最容易挨批的坑——汇报数字前先想清楚分母口径。\n\n---\n\n## 附：新手最容易踩的 5 个数据坑（与上面知识点呼应）\n1. “订单”不等于“成交”：算 GMV 前先过滤 canceled/unavailable。\n2. 一个订单会占多行：order_items 里同 order_id 多行，聚合到订单级必须 `GROUP BY order_id`。\n3. 没有“购买数量”字段：同款买 2 个 = 2 行；算件数/销量是数行数，不是读字段。\n4. customer_id ≠ 一个人：customer_id 是订单维度，customer_unique_id 才是人维度；复购率必须用 unique_id。\n5. 时间是巴西时区（UTC-3）：分析“几点下单最多”先想清楚时区问题。\n\n## 怎么用到你的工作台\n- 这些知识点是**数据 → 运营判断**的通用模板，凡是电商/本地生活/交易平台分析都可套用。\n- 配合本工作台「数据分析」分类里的 SQL 知识贴（GROUP BY 取数规则、UNION ALL 查多表行数、JOIN ... USING() 合并列）一起看，先会取数、再会读数。\n",
+    "tags": "运营,电商,Olist,数据分析,运营知识,GMV,复购,客单件数,成交口径,评分结构,二八法则",
+    "isAIGenerated": false,
+    "date": "2026-08-28"
   }
     // AUTO-EXPERIENCE-POSTS-END
 ];
@@ -6634,7 +6659,7 @@ function saveTask(id) {
 // Two major types:
 //  - knowledge (知识经验贴): from 小红书/抖音/B站 links → topic classification (竞品分析、用户画像…)
 //  - interview (面试经验贴): 面经 → company + role classification
-const EXP_KNOWLEDGE_TOPICS = ['竞品分析','用户画像','需求分析','功能设计','数据分析','AI产品','产品方法论','职场成长','其他'];
+const EXP_KNOWLEDGE_TOPICS = ['竞品分析','用户画像','需求分析','功能设计','数据分析','AI产品','产品方法论','职场成长','运营知识','其他'];
 const EXP_CATEGORIES = ['产品思维与方法论','职场成长与晋升','AI技术与趋势','用户研究与设计','数据分析','团队管理与沟通','其他'];
 
 /* View state for exp panels (persisted in settings.expView) */
