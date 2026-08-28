@@ -2381,7 +2381,53 @@ window.AUTO_EXP_SEED = [
   "tags": "AI产品,面试,AI Native,产品方法论,大模型,Agent,产品经理,认知",
   "isAIGenerated": false,
   "date": "2026-08-28"
-}
+},
+  {
+  "id": "exp-auto-20260828-mysql-using-join",
+  "type": "knowledge",
+  "title": "让同名列自动合并：MySQL JOIN ... USING() 语法（数据分析实用技巧）",
+  "company": "",
+  "role": "",
+  "platform": "PM成长工作台内部整理",
+  "category": "数据分析",
+  "sourceUrl": "",
+  "summary": "MySQL 取数技巧：当两表连接列同名时，用 JOIN ... USING(col) 代替 ON a.col = b.col。该列成为「合并列」，SELECT 中直接写列名不产生歧义，整条 SQL 不用任何表前缀、最省事。前提：两边连接列必须完全同名；若列名不同（如 order_id vs order_identifier），USING 无法使用，只能退回 ON + 给列加表前缀。",
+  "keyPoints": [
+    "适用前提：两张表的连接列名字完全相同（如都叫 order_id），才能用 USING(col) 简写",
+    "等价写法：USING(order_id) 等价于 ON order_items.order_id = orders.order_id，但更短",
+    "合并列机制：写在 USING 里的列自动成为「合并列」，SELECT 中可直接写 order_id，不会因两表都有该列而报 column ambiguous 歧义",
+    "最大好处：整条查询不用写任何表前缀（order_items. / orders.），SQL 更干净、最省事",
+    "限制与退路：USING 要求两边列名完全一致；若一张叫 order_id、另一张叫 order_identifier，USING 用不了，只能 ON a.order_id = b.order_identifier，并在 SELECT 给列加表前缀区分"
+  ],
+  "content": "# MySQL 让同名列自动合并：JOIN ... USING() 语法\n\n## 痛点\n两表连接时，连接列（如 order_id）在两表里都存在。用传统 ON 写法必须给每个表加前缀，整条 SQL 到处是 order_items. / orders.，又长又容易写错。\n\n## 解法：USING()\nMySQL 有个专门处理「两表连接列同名」的语法。连接条件写成 USING (order_id)，这个列就成了「合并列」，SELECT 里直接写 order_id 不会歧义：\n\n```sql\nSELECT order_id,\n       SUM(price + freight_value) AS amt\nFROM order_items\nJOIN orders USING (order_id)          -- 代替 ON order_items.order_id = orders.order_id\nWHERE order_status NOT IN ('canceled', 'unavailable')\nGROUP BY order_id\nORDER BY amt DESC\nLIMIT 5;\n```\n\n整条不用一个前缀，最省事。\n\n## 前提与限制\nUSING 能用的硬前提：两边的连接列必须名字完全相同。\n\n- 两表都叫 order_id → 可用 USING(order_id)\n- 一张叫 order_id、另一张叫 order_identifier → USING 用不了，只能退回 ON order_items.order_id = orders.order_identifier，并在 SELECT 里给列加表前缀区分\n\n## 什么时候用\n- 表连接列同名、且你想写短一点、干净一点 → 优先 USING\n- 列名不一致、或连接条件不止一个同名列、或需要非等值连接 → 用 ON + 前缀\n\n记忆：同名列 JOIN，USING 一行顶 ON 两遍；列名不同，老老实实 ON + 前缀。",
+  "tags": "MySQL,SQL,JOIN,USING,数据分析,取数,数据库",
+  "isAIGenerated": false,
+  "date": "2026-08-28"
+},
+  {
+    "id": "exp-auto-20260828-sql-union-all-rowcount",
+    "type": "knowledge",
+    "title": "一行 SQL 一键查出多张表的行数（UNION ALL + COUNT(*)）",
+    "company": "",
+    "role": "",
+    "platform": "PM成长工作台内部整理",
+    "category": "数据分析",
+    "sourceUrl": "",
+    "summary": "数据分析实用技巧：用 9 个 SELECT 'table' AS table_name, COUNT(*) AS row_cnt FROM <table> 串成 UNION ALL，就能一次性查出 schema 里所有表的行数。本例用 Olist 电商 9 张表的真实数据演示：orders 99,441 / order_items 112,650 / payments 103,886 / reviews 99,224 / customers 99,441 / products 32,951 / category_translation 71 / sellers 3,095 / geolocation 1,000,163。",
+    "keyPoints": [
+      "模式：SELECT '<table>' AS table_name, COUNT(*) AS row_cnt FROM <table> 写 9 遍，用 UNION ALL 串成一次查询，列对齐即可",
+      "为什么用 UNION ALL 而非 UNION：UNION 会去重（多表 COUNT 一般不会重复），但 UNION ALL 不去重更快；这里 row_cnt 是单值不存在重复，但 UNION ALL 是习惯写法",
+      "为什么用 COUNT(*)：在 InnoDB 上 COUNT(*) ≈ COUNT(1)，走主键索引做扫表计数，比 COUNT(col) 略快",
+      "防坑：UNION ALL 拼接要求每个 SELECT 的列数、列顺序、列类型一致；所以前面 AS table_name / AS row_cnt 写对才能 UNION 起来",
+      "适用场景：① 拿到一份陌生 SQL 文件，先快速感知每张表多大（决定要不要建索引）；② 数据分析第一步——判断哪张表是主表、哪张表是字典表（71 条的 category_translation、3095 条的 sellers）",
+      "进阶版：把表名写成变量 + 动态 SQL，或用 information_schema.tables + SUM 估全表行数（schema-wide 概览更通用）；本固定写法适合 9 张已知表场景",
+      "本例真实行数（Olist 公开电商数据）：orders 99,441 / order_items 112,650 / payments 103,886 / reviews 99,224 / customers 99,441 / products 32,951 / category_translation 71 / sellers 3,095 / geolocation 1,000,163"
+    ],
+    "content": "# 一行 SQL 一键查出多张表的行数：UNION ALL + COUNT(*)\n\n## 场景\n拿到一个陌生的 SQL 文件或者新数据库，第一步是\"摸清每张表有多少行\"——这是数据分析 / 产品取数前的必做动作。\n挨个 `SELECT COUNT(*) FROM <table>` 跑 9 次太慢；可以用 **`UNION ALL` 把多次 SELECT 拼成一个查询**，列对齐即可一次出结果。\n\n## 模板\n```sql\nSELECT '<table_A>' AS table_name, COUNT(*) AS row_cnt FROM <table_A>\nUNION ALL SELECT '<table_B>',                   COUNT(*) FROM <table_B>\nUNION ALL SELECT '<table_C>',                   COUNT(*) FROM <table_C>\n... （N 张表）\n;\n```\n\n## 实战：本图所示的 SQL（Olist 9 张表真实数据）\n```sql\nUSE olist;\n\nSELECT 'orders' AS table_name, COUNT(*) AS row_cnt FROM orders\nUNION ALL SELECT 'order_items',                COUNT(*) FROM order_items\nUNION ALL SELECT 'payments',                   COUNT(*) FROM payments\nUNION ALL SELECT 'reviews',                    COUNT(*) FROM reviews\nUNION ALL SELECT 'customers',                  COUNT(*) FROM customers\nUNION ALL SELECT 'products',                   COUNT(*) FROM products\nUNION ALL SELECT 'category_translation',       COUNT(*) FROM category_translation\nUNION ALL SELECT 'sellers',                    COUNT(*) FROM sellers\nUNION ALL SELECT 'geolocation',                COUNT(*) FROM geolocation\n;\n```\n\n## 运行结果（与图一致）\n| # | table_name | row_cnt |\n|---|---|---|\n| 1 | orders | 99,441 |\n| 2 | order_items | 112,650 |\n| 3 | payments | 103,886 |\n| 4 | reviews | 99,224 |\n| 5 | customers | 99,441 |\n| 6 | products | 32,951 |\n| 7 | category_translation | 71 |\n| 8 | sellers | 3,095 |\n| 9 | geolocation | 1,000,163 |\n\n## 数据一眼能读出的几条业务判断\n- **orders = order_items 主表行数 ≈ purchases 上限**：orders 99,441 < order_items 112,650，因为一笔 order 可包含多个 item（符合电商逻辑）。\n- **payments 行数 103,886 > orders 行数 99,441**：一笔单可能多次支付（部分支付/重试），payments > orders 是正常现象，值得排查支付失败/重试占比。\n- **reviews 99,224 ≈ orders 99,441**：评价覆盖率 ≈ 99.7%（极高质量），做漏斗时可视为自然完单。\n- **customers 99,441 = orders 99,441**：在 Olist 这个数据集里 customer 和 order 一对一一对应，可推断 customer_id 是按订单注册的。\n- **geolocation 1,000,163**：巴西邮编级别的地理字典（远大于 sellers/customer 数），是静态维度表，分析时一般只 join 不 load 全量。\n- **category_translation 71**：product 类目翻译表（小字典），做跨语言报表要用到。\n- **sellers 3,095**：卖家量级远小于买家，符合电商平台长尾结构。\n\n## 为什么用 UNION ALL（不用 UNION）\n- UNION 自动去重，对多张独立表的 COUNT 结果意义不大但耗性能（要做 DISTINCT 校验）。\n- UNION ALL 直接拼接，更快。9 张表 9 个 SELECT 互不复，这是反直觉但常用的\"数据探查 SQL 模板\"。\n\n## 为什么用 COUNT(*)\nMySQL InnoDB 上：\n- `COUNT(*)` ≈ `COUNT(1)`：优化器会走主键索引聚簇扫表，最快。\n- `COUNT(col)`：会忽略 NULL，行数可能偏小；除非确实只数非空列否则用 `*`。\n\n## UNION ALL 的硬性要求（避坑）\n1. 每个 SELECT 的**列数相同**。\n2. **列顺序**必须对齐（这里都先 table_name 再 row_cnt）。\n3. **数据类型兼容**：本例 `'<name>'` 是字符串常量、`COUNT(*)` 是 BIGINT，列对齐无歧义。\n\n## 何时用 / 何时换写法\n- **用本固定写法**：表不多（≤20 张）、表名已知、SQL 一次性写完舒服。\n- **用动态写法（更通用）**：\n  ```sql\n  SELECT table_name, table_rows\n  FROM information_schema.tables\n  WHERE table_schema = 'olist'\n  ORDER BY table_rows DESC;\n  ```\n  说明：基于统计信息估算、速度快但**非精确值**；要精确数仍需 `COUNT(*)`。\n- **信息_schema 框架**：写存储过程，对 schema 内所有表自动跑 `SELECT '...', COUNT(*) FROM ... UNION ALL ...`，通用但需要数据库权限。\n\n## 适用场景总结\n1. 摸底陌生数据库（分析任务第一天必做）。\n2. 数据校验：迁移/同步后核对两边行数。\n3. 异常数据感知（某张表暴涨/暴跌先看 row_cnt 趋势）。\n4. 教学/面试举例：把\"9 张表 + 行数\"放在一张图里讲业务关系。\n",
+    "tags": "SQL,MySQL,UNION ALL,COUNT,行数,数据探查,数据分析,Olist",
+    "isAIGenerated": false,
+    "date": "2026-08-28"
+  }
     // AUTO-EXPERIENCE-POSTS-END
 ];
 
