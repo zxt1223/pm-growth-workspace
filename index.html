@@ -1157,6 +1157,10 @@ a { color: var(--primary); text-decoration: none; }
 .dl-empty { font-size: 13px; color: var(--text-3); padding: 2px 0; }
 .dl-archive { font-size: 12px; color: var(--text-3); margin-top: 6px; }
 
+.dl-tabs { display:flex; gap:8px; margin:0 0 12px 2px; flex-wrap:wrap; }
+.dl-tab { border:1px solid #E5E7EB; background:#fff; color:#6B7280; border-radius:999px; padding:5px 14px; font-size:13px; cursor:pointer; transition:all .15s; }
+.dl-tab:hover { border-color:#7C3AED; color:#7C3AED; }
+.dl-tab-on { background:#7C3AED; border-color:#7C3AED; color:#fff; font-weight:600; }
 
 /* ========== 岗位投递 Table ========== */
 .jobs-table-wrap {
@@ -2590,7 +2594,6 @@ window.AUTO_TASK_SEED = [
    ============================================================ */
 window.AUTO_JOB_SEED = [
   // AUTO-JOBS-START
-
   {"autoId": "job-auto-良信电气-产品开发-产品技术支持-电子开发-电磁预研-软件开发-算法开-上海", "company": "良信电气", "title": "产品开发,产品技术支持,电子开发,电磁预研,软件开发,算法开发,技术支持工程师,经销商专员,产品专员,国内销售岗,海外销售岗,工艺工程师,质量专员,会计核算\\\\电气类、电气工程、电机与电器、电力电子、电子类、电子信息工程、机械类、机械工程、机械电器及其自动化、机电类、能源动力类、计算机、软件工程、智能电网、专业不限、市场营销类、英语、西班牙语、智能制造、机械制造、机电一体化、质量管理工程、会计相关专业", "location": "上海", "category": "产品", "type": "秋招", "url": "https://nader.m.zhiye.com/#/jobs?jc=2", "notes": "批次:秋招 | 招聘:2027届 | 截止:招满为止", "date": "2026-08-29"},
   {"autoId": "job-auto-三一集团-软件开发工程师-法务专员-战略与运营管理专员-行政管理专员-广州", "company": "三一集团", "title": "软件开发工程师，法务专员，战略与运营管理专员，行政管理专员，涉外法务专员，市场与品牌专员，国际接待与翻译专员，人力资源专员，财务专员，融资专员，国际财务专员，证券事务专员，制造管理专员，电气管理专员，安全环保工程师（HSE）, 嵌入式软件工程师，具身智能算法工程师，智能驾驶工程师，算法平台与工程化工程师，软件测试工程师，仿真与机理算法工程师，云计算工程师，工业智能与能源优化算法工程师，系统运维工程师，AI 应用工程师，数字化运营专员，数据工程师，大模型与智能体算法工程师，感知与定位算法工程师，智能驾驶与规划控制算法工程师，数字化产品经理（BA）, 电机工程师，系统解决方案工程师，资料工程师，研发管理工程师，结构设计工程师，热管理工程师，液压工程师，工装设计工程师，机械工程师，材料工程师，工业与物流工程师，测试工程师，输变电工程师，气动设计工程师，产品规划工程师，电气工程师，装配与装调工艺工程师，知识产权工程师，制造工艺工程师，仿真工程师，质量工程师，项目管理工程师，电控工程师，控制软件工程师，电池系统工程师，认证工程师，动力系统工程师，电驱系统工程师，设备工程师，交付专员，国际营销经理（小语种）, 国际服务与配件管理专员（小语种）, 国际营销经理，国内服务与配件管理专员，国际营销管理专员，国际服务工程师（小语种）, 国内营销管理专员，国际营销管理专员（小语种）, 国际服务工程师，国内服务工程师，国内营销经理，营销技术专员，国际服务与配件管理专员", "location": "广州", "category": "产品", "type": "秋招", "url": "https://sanycampus.zhiye.com/campus/jobs", "notes": "批次:秋招 | 招聘:2027届 | 截止:招满为止", "date": "2026-08-29"},
   {"autoId": "job-auto-三一集团-软件开发工程师-法务专员-战略与运营管理专员-行政管理专员-上海", "company": "三一集团", "title": "软件开发工程师，法务专员，战略与运营管理专员，行政管理专员，涉外法务专员，市场与品牌专员，国际接待与翻译专员，人力资源专员，财务专员，融资专员，国际财务专员，证券事务专员，制造管理专员，电气管理专员，安全环保工程师（HSE）, 嵌入式软件工程师，具身智能算法工程师，智能驾驶工程师，算法平台与工程化工程师，软件测试工程师，仿真与机理算法工程师，云计算工程师，工业智能与能源优化算法工程师，系统运维工程师，AI 应用工程师，数字化运营专员，数据工程师，大模型与智能体算法工程师，感知与定位算法工程师，智能驾驶与规划控制算法工程师，数字化产品经理（BA）, 电机工程师，系统解决方案工程师，资料工程师，研发管理工程师，结构设计工程师，热管理工程师，液压工程师，工装设计工程师，机械工程师，材料工程师，工业与物流工程师，测试工程师，输变电工程师，气动设计工程师，产品规划工程师，电气工程师，装配与装调工艺工程师，知识产权工程师，制造工艺工程师，仿真工程师，质量工程师，项目管理工程师，电控工程师，控制软件工程师，电池系统工程师，认证工程师，动力系统工程师，电驱系统工程师，设备工程师，交付专员，国际营销经理（小语种）, 国际服务与配件管理专员（小语种）, 国际营销经理，国内服务与配件管理专员，国际营销管理专员，国际服务工程师（小语种）, 国内营销管理专员，国际营销管理专员（小语种）, 国际服务工程师，国内服务工程师，国内营销经理，营销技术专员，国际服务与配件管理专员", "location": "上海", "category": "产品", "type": "秋招", "url": "https://sanycampus.zhiye.com/campus/jobs", "notes": "批次:秋招 | 招聘:2027届 | 截止:招满为止", "date": "2026-08-29"},
@@ -3858,9 +3861,38 @@ window.AUTO_JOB_SEED = [
   {"autoId": "job-auto-聚宽投资-AI算法实习生-量化策略实习生-市场营销实习生-基金研究实习-上海", "company": "聚宽投资", "title": "AI算法实习生、量化策略实习生、市场营销实习生、基金研究实习生、量化开发实习生、人力资源实习生、基金运营实习生；", "location": "上海", "category": "运营", "type": "日常实习", "url": "https://app.mokahr.com/campus-recruitment/joinquant/92347?locale=zh-CN#/jobs?page=1&anchorName=jobsList&commitment[0", "notes": "批次:日常实习 | 招聘:2027届 | 截止:2025.11.30", "date": "2026-08-29"},
   {"autoId": "job-auto-杉数科技-算法实习生-运筹优化方向-算法实习生-机器学习方向-大模型技-广州", "company": "杉数科技", "title": "算法实习生 - 运筹优化方向、算法实习生 - 机器学习方向、大模型技术实习生、产品经理实习生、售前实习生；", "location": "广州", "category": "产品", "type": "日常实习", "url": "https://app.mokahr.com/campus-recruitment/shanshu/57987?sessionid=&sourceToken=93ec90979b37d135160d23518fabfb05#/jobs?zhineng[0", "notes": "批次:日常实习 | 招聘:2027届 | 截止:招满即止", "date": "2026-08-29"},
   {"autoId": "job-auto-杉数科技-算法实习生-运筹优化方向-算法实习生-机器学习方向-大模型技-上海", "company": "杉数科技", "title": "算法实习生 - 运筹优化方向、算法实习生 - 机器学习方向、大模型技术实习生、产品经理实习生、售前实习生；", "location": "上海", "category": "产品", "type": "日常实习", "url": "https://app.mokahr.com/campus-recruitment/shanshu/57987?sessionid=&sourceToken=93ec90979b37d135160d23518fabfb05#/jobs?zhineng[0", "notes": "批次:日常实习 | 招聘:2027届 | 截止:招满即止", "date": "2026-08-29"}
-
 // AUTO-JOBS-END
 ];
+
+// AUTO-OFFICIAL-JOBS-START
+window.AUTO_OFFICIAL_JOB_SEED = [
+  {"id": "offjob-bytedance-ai-product-intern-aime", "company": "字节跳动", "title": "AI产品实习生-Aime（飞书AI智能伙伴方向）", "location": "北京/上海", "category": "产品", "type": "日常实习", "url": "https://jobs.bytedance.com/campus", "notes": "AI智能伙伴/LLM产品方向 | 招聘:2027届/日常实习", "date": "2026-08-28"},
+  {"id": "offjob-bytedance-pm-intern-ad-crm", "company": "字节跳动", "title": "产品经理实习生-国际化广告CRM", "location": "北京", "category": "产品", "type": "日常实习", "url": "https://jobs.bytedance.com/campus", "notes": "国际化广告CRM产品方向 | 招聘:2027届/日常实习", "date": "2026-08-28"},
+  {"id": "offjob-bytedance-user-product-intern-toutiao", "company": "字节跳动", "title": "用户产品实习生-今日头条", "location": "深圳", "category": "产品", "type": "日常实习", "url": "https://jobs.bytedance.com/campus", "notes": "今日头条用户产品方向 | 招聘:2027届/日常实习", "date": "2026-08-28"},
+  {"id": "offjob-bytedance-pm-intern-tiktokshop", "company": "字节跳动", "title": "商品产品经理实习生-TikTok Shop", "location": "珠海", "category": "产品", "type": "日常实习", "url": "https://jobs.bytedance.com/campus", "notes": "跨境电商商品产品方向 | 招聘:2027届/日常实习", "date": "2026-08-28"},
+  {"id": "offjob-meituan-pm-intern", "company": "美团", "title": "产品经理日常实习", "location": "北京", "category": "产品", "type": "日常实习", "url": "https://hr.meituan.com/web/campus", "notes": "本地生活产品方向 | 招聘:2027届/日常实习", "date": "2026-08-28"},
+  {"id": "offjob-meituan-ai-pm-intern", "company": "美团", "title": "AI产品经理实习生", "location": "北京/上海", "category": "产品", "type": "日常实习", "url": "https://hr.meituan.com/web/campus", "notes": "外卖/商家AI运营助手方向 | 招聘:2027届/日常实习", "date": "2026-08-28"},
+  {"id": "offjob-meituan-campus-pm", "company": "美团", "title": "校招产品经理（2027届）", "location": "北京", "category": "产品", "type": "校招", "url": "https://hr.meituan.com/web/campus", "notes": "2027届秋招产品岗 | 截止:招满即止", "date": "2026-08-28"},
+  {"id": "offjob-tencent-product-planner-trainee", "company": "腾讯", "title": "产品策划培训生（2027应届）", "location": "深圳/北京", "category": "产品", "type": "校招", "url": "https://join.qq.com/", "notes": "2027应届生招聘·产品策划 | 截止:以官网为准", "date": "2026-08-28"},
+  {"id": "offjob-tencent-ai-pm-trainee", "company": "腾讯", "title": "AI产品经理培训生", "location": "深圳/北京", "category": "产品", "type": "校招", "url": "https://join.qq.com/", "notes": "AI产品经理培训生项目 | 截止:以官网为准", "date": "2026-08-28"},
+  {"id": "offjob-tencent-pm-intern", "company": "腾讯", "title": "产品经理实习生", "location": "深圳", "category": "产品", "type": "日常实习", "url": "https://join.qq.com/", "notes": "日常实习产品岗 | 招聘:2027届/日常实习", "date": "2026-08-28"},
+  {"id": "offjob-ali-pm-intern", "company": "阿里巴巴", "title": "产品经理实习生", "location": "杭州", "category": "产品", "type": "日常实习", "url": "https://campus.alibaba.com", "notes": "电商/平台产品方向 | 招聘:2027届/日常实习", "date": "2026-08-28"},
+  {"id": "offjob-ali-ai-pm-intern-qianwen", "company": "阿里巴巴", "title": "AI产品经理日常实习（千问·主Chat组）", "location": "杭州", "category": "产品", "type": "日常实习", "url": "https://campus.alibaba.com", "notes": "通义千问主Chat组 | 招聘:2027届/日常实习", "date": "2026-08-28"},
+  {"id": "offjob-ali-campus-pm", "company": "阿里巴巴", "title": "校招产品经理（2027届）", "location": "杭州/北京", "category": "产品", "type": "校招", "url": "https://campus.alibaba.com", "notes": "2027届秋招产品岗 | 截止:招满即止", "date": "2026-08-28"},
+  {"id": "offjob-xhs-pm-intern", "company": "小红书", "title": "产品经理实习生", "location": "上海/北京", "category": "产品", "type": "日常实习", "url": "https://job.xiaohongshu.com/campus", "notes": "社区/电商产品方向 | 招聘:2027届/日常实习", "date": "2026-08-28"},
+  {"id": "offjob-xhs-ecom-pm-intern", "company": "小红书", "title": "电商产品经理实习生", "location": "上海", "category": "产品", "type": "日常实习", "url": "https://job.xiaohongshu.com/campus", "notes": "电商交易产品方向 | 招聘:2027届/日常实习", "date": "2026-08-28"},
+  {"id": "offjob-xhs-growth-pm-intern", "company": "小红书", "title": "增长产品经理实习生", "location": "上海", "category": "产品", "type": "日常实习", "url": "https://job.xiaohongshu.com/campus", "notes": "用户增长产品方向 | 招聘:2027届/日常实习", "date": "2026-08-28"},
+  {"id": "offjob-xhs-community-pm-intern", "company": "小红书", "title": "社区产品经理实习生", "location": "上海/杭州", "category": "产品", "type": "日常实习", "url": "https://job.xiaohongshu.com/campus", "notes": "社区生态产品方向 | 招聘:2027届/日常实习", "date": "2026-08-28"},
+  {"id": "offjob-xhs-ai-pm-intern", "company": "小红书", "title": "AI产品经理实习生", "location": "上海", "category": "产品", "type": "日常实习", "url": "https://job.xiaohongshu.com/campus", "notes": "AI内容/搜索产品方向 | 招聘:2027届/日常实习", "date": "2026-08-28"},
+  {"company": "DeepSeek", "title": "AI 产品经理", "location": "北京/杭州", "category": "产品", "type": "社招", "url": "https://app.mokahr.com/social-recruitment/high-flyer/140576#/job/e8f2004c-6599-42cd-b587-176ffc3ff1a3", "notes": "来源:官网talent.deepseek.com | 截止:招满即止", "date": "2026-08-29", "id": "offjob-DeepSeek-AI-产品经理"},
+  {"company": "DeepSeek", "title": "AI 产品运营（体验与服务方向）", "location": "北京/杭州", "category": "产品", "type": "社招", "url": "https://app.mokahr.com/social-recruitment/high-flyer/140576#/job/d6cff61d-f03f-4440-8a69-900cb407af5b", "notes": "来源:官网talent.deepseek.com | 截止:招满即止", "date": "2026-08-29", "id": "offjob-DeepSeek-AI-产品运营（体验与服务方向）"},
+  {"company": "DeepSeek", "title": "通用 Agent 数据产品经理（办公/生活/搜索）", "location": "北京/杭州", "category": "产品", "type": "社招", "url": "https://app.mokahr.com/social-recruitment/high-flyer/140576#/job/bdffaaf8-5d88-4aa5-9869-8ab76fcd862a", "notes": "来源:官网talent.deepseek.com | 截止:招满即止", "date": "2026-08-29", "id": "offjob-DeepSeek-通用-Agent-数据产品经理（办公-生活-搜索）"},
+  {"company": "DeepSeek", "title": "专业领域数据产品经理（小语种、医学法律等学科）", "location": "北京/杭州", "category": "产品", "type": "社招", "url": "https://app.mokahr.com/social-recruitment/high-flyer/140576#/job/141a78cd-784f-4139-9b72-8046afeec4e4", "notes": "来源:官网talent.deepseek.com | 截止:招满即止", "date": "2026-08-29", "id": "offjob-DeepSeek-专业领域数据产品经理（小语种、医学法律等学科）"},
+  {"company": "DeepSeek", "title": "AI 创作数据产品经理", "location": "北京/杭州", "category": "产品", "type": "社招", "url": "https://app.mokahr.com/social-recruitment/high-flyer/140576#/job/0238c1b1-7f2d-4b53-84da-581127a62954", "notes": "来源:官网talent.deepseek.com | 截止:招满即止", "date": "2026-08-29", "id": "offjob-DeepSeek-AI-创作数据产品经理"},
+  {"company": "DeepSeek", "title": "情感智能数据产品经理", "location": "北京/杭州", "category": "产品", "type": "社招", "url": "https://app.mokahr.com/social-recruitment/high-flyer/140576#/job/b8e62d9e-5cfb-4f24-bb6b-549bf45e1ee0", "notes": "来源:官网talent.deepseek.com | 截止:招满即止", "date": "2026-08-29", "id": "offjob-DeepSeek-情感智能数据产品经理"}
+];
+// AUTO-OFFICIAL-JOBS-END
+
 
 const DIMENSIONS = [
   { id: 'data', name: '数据逻辑', icon: 'M9 19V6l-7 4M9 19l7-4V6M9 19l7 4' },
@@ -7491,9 +7523,15 @@ function dlFmtMD(d) {
 }
 
 let dlRollingExpanded = false;
+let dlCatFilter = '全部';
+let dlLastList = [];
 function toggleDlRolling() {
   dlRollingExpanded = !dlRollingExpanded;
   renderJobs();
+}
+function setDlCat(c) {
+  dlCatFilter = c;
+  renderDeadlineBoard(dlLastList);
 }
 
 function dlRowHtml(g, daysClass, daysText) {
@@ -7513,7 +7551,11 @@ function dlRowHtml(g, daysClass, daysText) {
 function renderDeadlineBoard(list) {
   const box = document.getElementById('jobDeadlineBoard');
   if (!box) return;
-  const jobs = (list || []).filter(j => j.category === '产品' || j.category === '运营');
+  dlLastList = (list || []);
+  const catOk = (dlCatFilter === '全部')
+    ? (j => j.category === '产品' || j.category === '运营' || j.category === '市场')
+    : (j => j.category === dlCatFilter);
+  const jobs = dlLastList.filter(catOk);
   if (jobs.length === 0) { box.innerHTML = ''; return; }
 
   const groups = new Map();
@@ -7562,11 +7604,15 @@ function renderDeadlineBoard(list) {
 
   const daysLabel = g => (g.days === 0 ? '今天' : g.days === 1 ? '明天' : '剩 ' + g.days + ' 天');
 
+  const CATS = ['全部', '产品', '运营', '市场'];
   let html = ''
     + '<div class="dl-board-head">'
     + '<span class="dl-board-title">截止预警看板</span>'
-    + '<span class="dl-board-sub">' + new Date().toLocaleDateString('zh-CN') + ' · 产品 / 运营 · ' + groups.size + ' 个在投岗位'
+    + '<span class="dl-board-sub">' + new Date().toLocaleDateString('zh-CN') + ' · 在投 ' + groups.size + ' 个岗位'
     + (maxDate ? ' · 数据更新于 ' + escapeHtml(maxDate) : '') + '</span>'
+    + '</div>'
+    + '<div class="dl-tabs">'
+    + CATS.map(c => '<button class="dl-tab' + (c === dlCatFilter ? ' dl-tab-on' : '') + '" onclick="setDlCat(\'' + c + '\')">' + c + '</button>').join('')
     + '</div>'
     + '<div class="dl-stats">'
     + '<div class="dl-stat"><div class="dl-stat-label">3 天内截止</div><div class="dl-stat-num" style="color:#DC2626">' + urgent.length + '</div></div>'
@@ -7625,7 +7671,7 @@ function renderDeadlineBoard(list) {
 function renderJobs() {
   const list = getData(KEYS.jobs);
   fillJobFilter('jobFilterLocation', 'location', ['广州', '深圳', '上海']);
-  fillJobFilter('jobFilterCategory', 'category', ['产品', '运营', '风控']);
+  fillJobFilter('jobFilterCategory', 'category', ['产品', '运营', '市场', '风控']);
   fillJobFilter('jobFilterType', 'type', ['秋招', '实习', '春招', '提前批']);
   const filterLoc = document.getElementById('jobFilterLocation') ? document.getElementById('jobFilterLocation').value : '';
   const filterCat = document.getElementById('jobFilterCategory') ? document.getElementById('jobFilterCategory').value : '';
@@ -8255,6 +8301,45 @@ function populateCompanyFilter() {
   sel.value = cur;
 }
 
+/* ========== 官网/小红书岗位种子注入 (from window.AUTO_OFFICIAL_JOB_SEED) ==========
+   与 mergeAutoJobSeed 的区别：这里导入的是「手动岗位」（isAutoCollected:false，
+   没有 autoId），因此会被上面 mergeAutoJobSeed 的「仅保留手动岗位」逻辑承接，不会
+   被飞书同步（整体替换 AUTO_JOB_SEED）抹除。一次性幂等导入：已导入的 id 记录在
+   settings.officialJobSeedImported，用户删后不复活。 */
+function mergeAutoOfficialJobSeed() {
+  const seed = (typeof window.AUTO_OFFICIAL_JOB_SEED !== 'undefined' && Array.isArray(window.AUTO_OFFICIAL_JOB_SEED)) ? window.AUTO_OFFICIAL_JOB_SEED : [];
+  if (!seed.length) return;
+  let settings = getData(KEYS.settings);
+  if (!settings || typeof settings !== 'object' || Array.isArray(settings)) settings = {};
+  if (!settings.officialJobSeedImported || typeof settings.officialJobSeedImported !== 'object') settings.officialJobSeedImported = {};
+  const imported = settings.officialJobSeedImported;
+  const list = getData(KEYS.jobs);
+  let added = 0;
+  seed.forEach(item => {
+    const id = item.id || ('offjob-' + (item.company || '') + '-' + (item.title || ''));
+    if (imported[id]) return;
+    list.push({
+      id: id,
+      company: item.company || '',
+      title: item.title || '',
+      location: item.location || '',
+      category: item.category || '',
+      type: item.type || '',
+      url: item.url || '',
+      notes: item.notes || '',
+      isAutoCollected: false,
+      date: item.date || today()
+    });
+    imported[id] = true;
+    added++;
+  });
+  if (added > 0) {
+    settings.officialJobSeedImported = imported;
+    setData(KEYS.settings, settings);
+    setData(KEYS.jobs, list);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const VERSION = 'v6_exp_two_types';
   const storedVersion = localStorage.getItem('wb_pm_version');
@@ -8276,6 +8361,7 @@ document.addEventListener('DOMContentLoaded', () => {
   mergeInterviewQA();   // Pilot: 字节/美团/小红书 面试 Q&A 注入训练题库
   populateCompanyFilter(); // 按企业筛选下拉
   mergeAutoJobSeed();   // Auto-synced job postings (Feishu table snapshot)
+  mergeAutoOfficialJobSeed(); // 官网/小红书校招·实习岗位（独立通道，永久手动岗位）
   initTextEditing();
   renderAll();
   checkStorageHealth();   // Show storage status banner (normal / ephemeral / blocked)
