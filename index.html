@@ -1578,6 +1578,37 @@ a { color: var(--primary); text-decoration: none; }
 @media (min-width: 769px) {
   .bottom-tabs { display: none !important; }
 }
+
+/* ========== 面试题库 (Interview Question Bank) ========== */
+.bank-bar { display:flex; flex-direction:column; gap:10px; margin-bottom:14px; }
+.bank-head { display:flex; flex-direction:column; gap:6px; }
+.bank-progress { display:flex; align-items:center; gap:10px; }
+.bank-progress-bar { flex:1; height:10px; background:var(--border-light,#e5e7eb); border-radius:6px; overflow:hidden; }
+.bank-progress-fill { height:100%; background:linear-gradient(90deg,#ec4899,#8b5cf6); border-radius:6px; transition:width .3s; }
+.bank-progress-text { font-size:13px; font-weight:600; color:var(--text,#374151); white-space:nowrap; }
+.bank-tip { font-size:12px; color:var(--muted,#9ca3af); line-height:1.5; }
+.bank-controls { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.bank-toggle { display:flex; align-items:center; gap:5px; font-size:13px; color:var(--text,#374151); cursor:pointer; white-space:nowrap; user-select:none; }
+.bank-list { display:flex; flex-direction:column; gap:10px; }
+.bank-card { display:flex; gap:12px; background:#fff; border:1px solid var(--border-light,#eceef1); border-radius:12px; padding:14px 16px; transition:box-shadow .15s, border-color .15s; }
+.bank-card:hover { box-shadow:0 4px 16px rgba(17,24,39,.06); border-color:rgba(139,92,246,.35); }
+.bank-card.bank-done { opacity:.62; }
+.bank-rank { flex-shrink:0; width:26px; height:26px; border-radius:50%; background:linear-gradient(135deg,#ec4899,#8b5cf6); color:#fff; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; }
+.bank-main { flex:1; min-width:0; }
+.bank-q { display:flex; align-items:flex-start; gap:8px; flex-wrap:wrap; }
+.bank-cat { flex-shrink:0; font-size:11px; font-weight:600; color:#8b5cf6; background:rgba(139,92,246,.1); border-radius:6px; padding:2px 7px; white-space:nowrap; }
+.bank-qtext { font-size:14.5px; font-weight:600; color:var(--text,#1f2937); line-height:1.5; }
+.bank-card.bank-done .bank-qtext { text-decoration:line-through; }
+.bank-snips { margin-top:8px; display:flex; flex-direction:column; gap:5px; }
+.bank-snip { font-size:12.5px; color:var(--muted,#6b7280); line-height:1.55; padding-left:12px; border-left:2px solid var(--border-light,#eceef1); }
+.bank-companies { margin-top:9px; display:flex; flex-wrap:wrap; gap:6px; }
+.bank-co { font-size:11px; color:#475569; background:#f1f5f9; border-radius:6px; padding:2px 8px; }
+.bank-side { flex-shrink:0; display:flex; flex-direction:column; align-items:center; gap:10px; min-width:78px; }
+.bank-freq { font-size:18px; font-weight:800; color:#f97316; line-height:1; }
+.bank-freq-unit { font-size:11px; font-weight:600; color:var(--muted,#9ca3af); margin-left:2px; }
+.bank-check { display:flex; align-items:center; gap:5px; font-size:12px; color:var(--text,#374151); cursor:pointer; user-select:none; background:#f8fafc; border:1px solid var(--border-light,#eceef1); border-radius:8px; padding:5px 9px; transition:.15s; }
+.bank-check.on { background:rgba(16,185,129,.1); border-color:rgba(16,185,129,.4); color:#059669; }
+.bank-check input { width:14px; height:14px; accent-color:#8b5cf6; }
 </style>
 </head>
 <body>
@@ -1853,6 +1884,7 @@ a { color: var(--primary); text-decoration: none; }
     <div class="sub-tabs">
       <button class="sub-tab active" id="subTabPosts" onclick="switchExpSub('posts')">求职经验贴</button>
       <button class="sub-tab" id="subTabJobs" onclick="switchExpSub('jobs')">岗位投递</button>
+      <button class="sub-tab" id="subTabBank" onclick="switchExpSub('bank')">面试题库</button>
     </div>
     <div id="expPostsArea">
     <div class="exp-layout">
@@ -1954,6 +1986,30 @@ a { color: var(--primary); text-decoration: none; }
           <tbody id="jobsTableBody"></tbody>
         </table>
       </div>
+    </div>
+
+    <!-- ===== 面试题库（高频考点） ===== -->
+    <div id="expBankArea" style="display:none">
+      <div class="bank-bar">
+        <div id="expBankHead" class="bank-head"></div>
+        <div class="bank-controls">
+          <select class="filter-select" id="expBankCat" onchange="renderExpBank()">
+            <option value="">全部分类</option>
+            <option value="motive">自我介绍与动机</option>
+            <option value="thinking">产品思维与方法论</option>
+            <option value="user">用户·场景·体验</option>
+            <option value="data">数据分析与指标</option>
+            <option value="compete">竞品与行业</option>
+            <option value="ops">运营专项</option>
+            <option value="ai">AI产品专项</option>
+            <option value="case">情景 / Case 题</option>
+            <option value="hr">HR / 软实力</option>
+          </select>
+          <input type="text" class="filter-input" id="expBankSearch" placeholder="搜索题目 / 真题关键词..." oninput="renderExpBank()" style="flex:1;min-width:150px">
+          <label class="bank-toggle"><input type="checkbox" id="expBankUnchecked" onchange="renderExpBank()"> 只看未整理</label>
+        </div>
+      </div>
+      <div id="expBankList" class="bank-list"></div>
     </div>
   </div>
 
@@ -2680,7 +2736,15 @@ window.AUTO_EXP_SEED = [
   {"id": "exp-auto-20260831-tencent-ai-pm-recap", "type": "interview", "title": "腾讯AI产品经理面经：双非文科生四层考察通关", "company": "腾讯", "role": "AI产品经理", "platform": "ima知识库", "category": "AI产品", "sourceUrl": "https://ima.qq.com/wiki/?shareId=6415a0511a9e494cedfe66478bdf7332bf4667b6a98a356186eec484bf9b1b1e&mediaId=wechatarticle_0dfea68ee6d7bfd4990aa08f16062943_dfeee1a16c9de3d07b2313b593a7dbac7481371744289944&action=openDetailDrawer&webFrom=10000171", "summary": "腾讯AI产品经理面经：双非文科生通过项目深挖、产品思维、AI认知、文化匹配四层考察，PMTalk 2026-07", "keyPoints": ["双非文科背景通过项目经历与产品思维弥补学校短板", "第一层项目深挖：讲清背景、目标、动作、数据与反思", "第二层产品思维：开放性题目要有结构化拆解和优先级判断", "第三层AI认知：了解主流模型能力边界、Prompt工程与评估方法", "第四层文化匹配：展示长期主义、用户价值导向与团队协作"], "content": "PMTalk 2026年7月发布的腾讯AI产品经理面经（ima知识库转载），作者为双非文科背景。文章把面试考察归纳为四层：第一层项目深挖，要求讲清楚每个项目的背景、目标、关键动作、量化结果与事后反思，任何夸大都会被追问；第二层产品思维，开放性题目（如给某产品加一个AI功能）需要结构化拆解用户、场景、需求、方案、风险和优先级；第三层AI认知，面试官会问当前主流大模型的能力边界、Prompt Engineering基本思路、AI产品效果评估方法；第四层文化匹配，腾讯关注候选人是否具备长期主义、用户价值导向和跨团队协作意识。作者强调，双非或文科背景不是问题，关键是经历真实、逻辑自洽、对AI产品有独立思考。", "tags": "面经,AI产品经理,腾讯,双非文科,PMTalk", "date": "2026-08-31"},
   {"id": "exp-auto-20260831-tencent-ai-agent-pm", "type": "interview", "title": "腾讯AI Agent产品经理面经：从“能说”到“能干”的权重迁移", "company": "腾讯", "role": "AI Agent产品经理", "platform": "AI智能范式网", "category": "AI产品", "sourceUrl": "https://intelliparadigm.com/article/weixin_28224217/2185258", "summary": "腾讯AI Agent产品面经：考察Agent架构图、企业微信知识库切片、30%演示70%工程化的权重分配", "keyPoints": ["面试关注Agent从“能说”到“能干”的产品设计转变", "要求画出Agent整体架构图：感知、记忆、规划、工具、执行", "企业微信知识库切片与检索增强是高频落地场景", "30%演示效果与70%工程化能力的权重分配被重点追问", "Agent产品经理需同时理解模型能力、工程链路和产品体验"], "content": "AI智能范式网转载的一篇腾讯AI Agent产品经理面经。面试重点考察Agent产品从“能说”到“能干”的转变：候选人需要画出Agent的整体架构图，包括感知、记忆、规划、工具调用与执行反馈五个模块，并能讲清楚每个模块的输入输出和依赖关系。面试官围绕企业微信知识库切片与检索增强（RAG）场景反复追问：文档怎么切片、检索失败怎么兜底、如何评估召回质量。其中有一个权衡题让作者印象深刻：如果资源有限，你会把30%精力投入演示效果、70%投入工程化落地，还是反过来，为什么。作者认为腾讯AI Agent产品岗期望候选人既懂大模型能力边界，又懂工程链路，还能把复杂技术方案翻译成用户可理解的产品体验。", "tags": "面经,AI产品经理,腾讯,AI Agent,知识库,RAG", "date": "2026-08-31"},
   {"id": "exp-auto-20260831-ali-superagent-ai-native", "type": "interview", "title": "阿里巴巴2027届超级智能体AI产品经理面试题：AI native护城河十问", "company": "阿里巴巴", "role": "AI产品经理（AI native方向）", "platform": "实习僧", "category": "AI产品", "sourceUrl": "https://www.shixiseng.com/intern/inn_u2ksanabmemk", "summary": "阿里2027届超级智能体AI native方向：10选3思维热身题，涵盖千问建议、模糊prompt、AI原生护城河与交互形态", "keyPoints": ["阿里超级智能体项目面向2027届，提供10道AI native思维热身题", "题目覆盖：通义千问产品建议、模糊prompt处理、AI原生护城河、交互形态选择", "要求候选人选3题作答，展示结构化思维与对AI原生的理解", "面试会追问答案背后的假设、风险与可落地的验证路径", "适合准备阿里AI产品岗的同学做思维训练"], "content": "实习僧上阿里巴巴2027届超级智能体AI产品经理（AI native方向）招聘信息附带的面经分享。项目提供10道AI native思维热身题，候选人可任选3题作答，常见题目包括：给通义千问提3条产品建议；用户输入模糊prompt时，AI助手应如何引导澄清；你认为AI native产品的护城河是什么；未来AI助手的主流交互形态是聊天、卡片还是Agent自主执行。面试中面试官会追问每道题背后的假设、潜在风险和最小可落地验证路径。作者建议：不要只给结论，要展示结构化拆解能力；对阿里电商、云计算、钉钉等业务场景有基本认知；把答案落到可观测的指标和MVP上。", "tags": "面经,AI产品经理,阿里巴巴,AI native,超级智能体,2027届", "date": "2026-08-31"},
-  {"id": "exp-auto-20260831-xhs-ai-pm", "type": "interview", "title": "小红书AI产品经理（AI创新）面经：AI数据生产平台场景题十连问", "company": "小红书", "role": "AI产品经理（AI创新）", "platform": "牛客网", "category": "AI产品", "sourceUrl": "https://www.nowcoder.com/feed/main/detail/fed332c2c34f41259d8b7068e8b9323b", "summary": "小红书AI创新方向面经：围绕AI数据生产平台展开10道场景题，覆盖18个月路线图、ROI测算、LUI+GUI融合", "keyPoints": ["面试围绕AI数据生产平台，连续10道场景题，节奏紧凑", "高频题：18个月产品路线图、ROI测算、数据质量评估体系", "LUI+GUI融合：如何把自然语言交互与传统界面结合", "会追问技术可行性、成本、优先级与风险兜底", "重点考察AI产品从需求到数据到效果的完整闭环"], "content": "牛客网2026年8月小红书AI产品经理（AI创新方向）面经。面试围绕AI数据生产平台展开，面试官连续抛出10道场景题：如何为平台制定18个月产品路线图；数据生产的ROI怎么测算；如何建立数据质量评估体系；自然语言交互（LUI）与传统图形界面（GUI）如何融合；数据标注环节怎么降本增效；模型训练数据不足时怎么办；如何设计人工审核与AI自动审核的混合策略；多模态内容（图文视频）的数据处理优先级如何排；如何评估数据产品对下游业务的实际增益；出现数据偏差导致模型badcase如何归因和修复。面试官不断追问技术可行性、成本、优先级和风险兜底方案。作者建议：准备小红书AI产品岗，要把数据生产、模型评估、交互形态和商业收益串成完整闭环。", "tags": "面经,AI产品经理,小红书,AI创新,数据生产,LUI", "date": "2026-08-31"}
+  {"id": "exp-auto-20260831-xhs-ai-pm", "type": "interview", "title": "小红书AI产品经理（AI创新）面经：AI数据生产平台场景题十连问", "company": "小红书", "role": "AI产品经理（AI创新）", "platform": "牛客网", "category": "AI产品", "sourceUrl": "https://www.nowcoder.com/feed/main/detail/fed332c2c34f41259d8b7068e8b9323b", "summary": "小红书AI创新方向面经：围绕AI数据生产平台展开10道场景题，覆盖18个月路线图、ROI测算、LUI+GUI融合", "keyPoints": ["面试围绕AI数据生产平台，连续10道场景题，节奏紧凑", "高频题：18个月产品路线图、ROI测算、数据质量评估体系", "LUI+GUI融合：如何把自然语言交互与传统界面结合", "会追问技术可行性、成本、优先级与风险兜底", "重点考察AI产品从需求到数据到效果的完整闭环"], "content": "牛客网2026年8月小红书AI产品经理（AI创新方向）面经。面试围绕AI数据生产平台展开，面试官连续抛出10道场景题：如何为平台制定18个月产品路线图；数据生产的ROI怎么测算；如何建立数据质量评估体系；自然语言交互（LUI）与传统图形界面（GUI）如何融合；数据标注环节怎么降本增效；模型训练数据不足时怎么办；如何设计人工审核与AI自动审核的混合策略；多模态内容（图文视频）的数据处理优先级如何排；如何评估数据产品对下游业务的实际增益；出现数据偏差导致模型badcase如何归因和修复。面试官不断追问技术可行性、成本、优先级和风险兜底方案。作者建议：准备小红书AI产品岗，要把数据生产、模型评估、交互形态和商业收益串成完整闭环。", "tags": "面经,AI产品经理,小红书,AI创新,数据生产,LUI", "date": "2026-08-31"},
+  {"id": "exp-auto-20260831-tencent-ops", "type": "interview", "title": "腾讯2026届运营岗校招面经：10个高频真题与回答思路", "company": "腾讯", "role": "运营（校招）", "platform": "超级简历WonderCV", "category": "产品思维与方法论", "sourceUrl": "https://www.wondercv.com/mianjing/tencent-operations-2026-267", "summary": "腾讯运营岗校招10题：自我介绍突出产品思维与数据驱动，视频号DAU提升按AARRR展开，私域公域运营方法论是必考点", "keyPoints": ["自我介绍用定位-亮点-动机结构，突出数据成果（涨粉/阅读完成率提升）", "提DAU题按AARRR漏斗与用户生命周期分层展开，先拆解现状再定策略", "私域公域运营是高频题：引流-培育-转化-裂变四步方法论", "活动案例用STAR，重点在活动策划逻辑与量化结果", "AI对运营的影响：效率提升+千人千面精细化+能力模型变化"], "content": "腾讯2026届运营岗校招面经（超级简历WonderCV，基于学员反馈整理）。运营方向细分用户运营、内容运营、活动运营、产品运营、商业化运营，校招以运营专员入职后半年到一年定方向。10个高频题：①自我介绍——用定位-亮点-动机结构，突出产品思维和数据驱动两个标签；②为什么选腾讯运营——从产品规模、方法论沉淀、用户为本文化三维度答；③提升视频号DAU——按分析现状、拉新、激活留存、传播裂变、数据监控五步走；④分析一款腾讯产品的运营策略——从用户/内容/活动/商业化四维度，附具体案例；⑤私域和公域流量的理解——腾讯生态是私域运营最佳阵地，讲清引流-培育-转化-裂变；⑥职业规划——短期建基本功、中期深耕、长期向综合型运营管理；⑦活动增长案例——STAR模型，重点讲活动机制设计和增长数据；⑧数据异常波动排查——先确认真实性，再按时间/用户/渠道/内容维度拆解归因；⑨AI对运营的影响——效率提升、千人千面精细化、运营人从执行者转型为AI质量把控者；⑩反问——问团队核心项目、数据工具体系、与产品经理协作模式。要点：腾讯运营面重数据驱动和用户价值理解，每个故事准备三层追问应对。", "tags": "面经,运营,腾讯,校招,私域运营", "date": "2026-08-31"},
+  {"id": "exp-auto-20260831-meituan-product-ops", "type": "interview", "title": "美团2026届产品运营岗校招面经：10个经典题与本地生活场景", "company": "美团", "role": "产品运营（校招）", "platform": "超级简历WonderCV", "category": "产品思维与方法论", "sourceUrl": "https://www.wondercv.com/mianjing/meituan-product-operations-2026-310", "summary": "美团产品运营岗校招：岗位理解三维度、外卖午高峰活动策划、产品运营vs用户运营辨析、本地生活趋势题高频", "keyPoints": ["岗位理解从用户/业务/协作三维度展开，结合本地生活场景差异化", "活动策划题要有完整框架：主题、人群、机制、渠道、预算、效果评估", "产品运营vs用户运营：前者重产品功能与数据增长，后者重用户关系与分层运营", "数据分析题用STAR，展示SQL/Excel工具与下钻归因能力", "本地生活趋势：即时零售、数字化智能化、下沉市场、内容化运营"], "content": "美团2026届产品运营岗校招面经（超级简历WonderCV）。岗位定位是连接产品、技术和业务端的桥梁，对业务结果负责的操盘手。10个经典题：①自我介绍——1-2分钟，突出产品运营相关实习与数据成果；②如何理解产品运营——从用户维度（理解需求场景）、业务维度（对DAU/留存/转化负责）、协作维度（连接产品研发设计市场）展开；③用过美团吗有哪些可优化点——选熟悉模块从用户痛点提2-3个建议并分析对核心指标的影响；④策划提升外卖午高峰订单量的活动——先分析影响因素再给方案，展现数据思维和A/B迭代意识；⑤数据分析发现问题并推动解决——STAR法则，展示SQL/Excel工具与下钻归因；⑥产品运营和用户运营的区别——产品运营偏产品功能优化与数据增长，用户运营偏用户生命周期与分层运营，实际高度交叉；⑦团队分歧处理——倾听+数据/事实支撑+共赢方案；⑧活动数据不理想如何复盘——目标偏差-逐层归因-找关键原因-改进方案-沉淀方法论；⑨本地生活行业未来趋势——即时零售万物到家、AI驱动、下沉市场、内容化运营；⑩反问。要点：美团产品运营面核心是数据思维、用户洞察、执行落地，简历必须数据化表达。", "tags": "面经,产品运营,美团,校招,本地生活", "date": "2026-08-31"},
+  {"id": "exp-auto-20260831-xhs-commerce-pm", "type": "interview", "title": "小红书商业化产品实习面经：广告物料自动化与边听边读优化", "company": "小红书", "role": "商业化产品经理（实习）", "platform": "小红书（offer卿尘复盘）", "category": "产品思维与方法论", "sourceUrl": "https://www.xiaohongshu.com/search_result?keyword=%E5%B0%8F%E7%BA%A2%E4%B9%A6%E5%95%86%E4%B8%9A%E5%8C%96%E4%BA%A7%E5%93%81%E9%9D%A2%E7%BB%8F", "summary": "转正实习商业化产品面经：两段项目深挖（搜索品牌广告物料自动化+听书边听边读），重点考察结构化拆解、业务迁移能力", "keyPoints": ["项目深挖会连续追问：标签从哪来、为什么可枚举、怎么参与召回、效果差怎么回流", "给每段项目画链路图，把用户/商家/平台/数据/系统动作串起来", "每个关键决策准备三层回答：为什么这样做、没选什么方案、指标怎么证明", "商业化产品别只讲点击率提升，要讲到投放效率、商家经营、平台收入价值", "准备真实短板回答：缺在哪条链路、入职后怎么补"], "content": "小红书商业化产品转正实习面经（offer卿尘复盘第901篇）。候选人两段核心经历：搜索品牌广告物料自动化、听书边听边读体验优化。一面55分钟重点确认项目真实性，连续追问模板抽象、生成约束、标签召回和交互决策；二面45分钟考项目取舍、指标价值，以及能否把搜索广告经验迁移到小红书内容社区。考察核心：结构化拆解、用户意图识别、数据闭环、业务迁移。广告物料项目要点：上百套模板按频次点击率初筛后抽成可复用字段体系，文本物料自动化定义输入/约束/输出，素材标签映射到可枚举标签组再做召回排序，落地后单条物料制作时长从小时级压缩到秒级、点击率提升。听书项目要点：从数据发现边听边读用户被原链路流失，补播放器回正文捷径，听读同步操作率和单次听书时长均提升。面试官会问：搜索广告经验哪些可迁移到小红书（结构化匹配能力），哪些需重建（内容社区生态理解、广告原生性、负反馈指标）。要点：大厂面试官会顺着关键动作一直往下挖，每段项目准备链路图和三层回答。", "tags": "面经,商业化产品,小红书,广告,实习", "date": "2026-08-31"},
+  {"id": "exp-auto-20260831-huawei-ops", "type": "interview", "title": "华为运营岗面试题20道：岗位理解与跨部门协作", "company": "华为", "role": "运营（题库）", "platform": "人人文库", "category": "产品思维与方法论", "sourceUrl": "https://www.renrendoc.com:8443/paper/529856689.html", "summary": "华为运营岗20道核心真题：岗位理解、成功案例、文化契合、资源整合、跨部门不配合应对，重流程优化与协作", "keyPoints": ["岗位理解题：华为运营保障业务高效运转，优化流程协调资源确保稳定交付", "成功案例题：体现流程优化结果（如执行时间缩短30%）与跨部门组织能力", "企业文化题：奋斗、创新如何在运营中践行，快速适应华为工作节奏", "核心能力：资源整合、数据分析、沟通协调、应变能力四件套", "高频情景题：跨部门不配合、与上级意见不一致的处理方式"], "content": "2026华为运营面试题及答案（人人文库，汇总上百篇真实面经精选20道核心真题）。第一部分自我认知与岗位匹配：①对华为运营岗位的理解——保障公司业务高效运转，通过优化流程协调资源确保产品或服务稳定交付；②过往最能体现运营能力的一件事——合理调配人力优化进度，解决突发问题；③华为企业文化如何践行——奋斗者精神面对挑战、创新理念探索新模式；④入职后最大优势——数据分析洞察、沟通协调、适应能力；⑤优秀运营人员核心能力——资源整合、数据分析、沟通协调、应变能力；⑥如何快速适应公司文化和工作节奏。第二部分人际关系与情景题：①与团队工作理念分歧——倾听、客观阐述、求同存异、必要时向上级汇报；②跨部门不配合——主动沟通了解原因，展示运营能为其带来的价值，协商共赢点；③与上级意见不一致——先分析其合理性，用数据和案例支撑自己观点；④工作成果被误解——冷静沟通、清晰解释思路、必要时请上级协调；⑤与性格迥异的同事合作——尊重差异、扬长互补。要点：华为运营岗重流程优化意识、资源整合能力和跨部门协作，答情景题要体现以业务目标为导向的处理逻辑。", "tags": "面经,运营,华为,题库,跨部门协作", "date": "2026-08-31"},
+  {"id": "exp-auto-20260831-ali-ops", "type": "interview", "title": "阿里巴巴2026届运营岗校招面经：10题覆盖增长与数据驱动", "company": "阿里巴巴", "role": "运营（校招）", "platform": "超级简历WonderCV", "category": "产品思维与方法论", "sourceUrl": "https://www.wondercv.com/mianjing/alibaba-operations-2026-279", "summary": "阿里运营岗校招10题：最有成就感项目、增长理解（AARRR）、活动复盘漏斗归因、社区冷启动、运营vs产品配合", "keyPoints": ["最有成就感的运营项目用STAR，突出个人决策贡献与量化结果", "增长用AARRR或用户生命周期拆解，渠道/分层/激励都要具体", "活动效果不达预期：数据漏斗找下跌节点+假设归因+A/B验证", "社区冷启动：种子用户、人工保氛围、激励体系、垂直切入点", "运营vs产品：运营引导用户行为与业务指标，产品做功能设计与体验优化"], "content": "阿里巴巴2026届运营岗校招面经（超级简历WonderCV）。阿里运营岗是校招录用人数最多的岗位之一，按方向分用户增长运营、内容运营、商家运营、活动运营、数据运营等序列，应届生通常P5入职。10个高频题：①最有成就感的运营项目——STAR模型，特别突出数据结果和个人决策贡献；②如何理解增长——用AARRR或用户生命周期拆解，拉新讲渠道效率、留存讲分层运营与激励体系；③活动数据未达预期怎么分析——数据漏斗（曝光-点击-参与-完成-转化）找下跌节点，再做归因假设和A/B验证；④运营和产品的区别与配合——运营引导用户行为达成业务指标，产品做功能设计，运营以需求方角色与产品有效沟通；⑤通过数据分析发现运营问题并推动改进——STAR，讲清数据来源、工具、发现问题、假设、验证、结果；⑥新上线社区产品冷启动——种子用户、人工运营保内容质量、激励机制、垂直切入点；⑦对常用产品运营策略的理解和改进建议——选深度使用的产品，从定位、运营策略、具体改进建议三层讲；⑧如何管理优先级——四象限法和OKR/KPI视角；⑨内容运营的核心——以内容连接用户，选题/生产/分发/评估四策略；⑩最大挫折——四步展开：经过-感受-调整-收获。要点：阿里运营面考察全面，数据分析工具（Excel高级函数/SQL/Python）是硬加分项。", "tags": "面经,运营,阿里巴巴,校招,增长", "date": "2026-08-31"},
+  {"id": "exp-auto-20260831-ant-product-ops", "type": "interview", "title": "蚂蚁国际产品运营实习生岗位解读：营销活动与用户生命周期", "company": "支付宝（蚂蚁集团）", "role": "产品运营（实习）", "platform": "网易/蚂蚁招聘", "category": "产品思维与方法论", "sourceUrl": "https://www.163.com/dy/article/L04CP7CK0516DVCH.html", "summary": "蚂蚁国际产品运营实习生岗位：营销活动策划、用户生命周期触达、指标报表、竞品分析，要求数据分析与英语能力", "keyPoints": ["核心职责：营销活动策划、联动产品优化营销功能", "用户生命周期触达：线上线下渠道转化、提升用户活跃度", "协同数据团队设计关键指标监控报表，识别业务目标达成问题", "产出用户研究和竞品分析报告，保持业务场景洞察", "任职要求：本科以上、用户洞察力、数据分析能力、英语读写"], "content": "蚂蚁集团国际产品运营实习生岗位解读（网易/蚂蚁招聘信息）。岗位方向：蚂蚁国际-产品运营实习生。核心职责：①负责业务日常营销活动及年度促销活动策划，联动产品优化营销功能；②结合用户生命周期，根据不同产品功能及服务，利用线上线下渠道对用户做触达并转化，提升用户活跃度；③围绕重点业务场景或关键产品推广策略，协同市场团队宣传推广，为区域提供销售工具包，建立与区域的例会机制，共同为结果负责；④协同数据团队设计关键指标监控报表和日常洞察分析，识别业务目标达成中的关键问题，推动策略落地；⑤官网及门户更新维护，产出并沉淀对内外的用户培育内容；⑥定期产出用户研究和竞品分析报告。任职要求：本科及以上、有实习经验优先、优秀的用户洞察力和数据分析能力、擅于从数据中挖掘机会、良好的团队合作意识和学习能力、执行力和owner意识、熟练的英语听说读写能力。要点：蚂蚁国际产品运营岗重用户洞察、数据分析、跨区域协同和结果负责意识，面这类国际化运营岗建议准备一段可量化的用户增长或活动案例，并体现对海外市场的理解。", "tags": "面经,产品运营,支付宝,蚂蚁集团,国际业务", "date": "2026-08-31"},
+  {"id": "exp-auto-20260831-shopee-apprentice", "type": "interview", "title": "Shopee暑期实习Apprentice Program面经解析：四关流程与题型", "company": "Shopee", "role": "电商运营/产品（暑期实习）", "platform": "Mocky.pro", "category": "产品思维与方法论", "sourceUrl": "https://mocky.pro/interview/shopee_apprentice_program/analysis", "summary": "Shopee暑期实习四关全线上：在线测验、HR面、部门内部面、最终面，题型含数理逻辑、行为、情境分析，运营岗重SQL/Excel", "keyPoints": ["流程四关：在线测验、HR面、部门内部面、最终面，全程线上", "题型：数理逻辑、行为、情境分析与技术问题", "8大部门含商业营运、行销、数据、产品管理、店到店物流等", "运营岗核心考察：数据分析（SQL/Excel）、逻辑推理、中英文沟通", "需要具备电商理解能力，Case题从指标分析到运营建议要快"], "content": "Shopee虾皮购物2026暑期实习Apprentice Program面经解析（Mocky.pro，基于面试趣2951笔反馈整理）。流程：线上测验、HR面试、部门内部面试、最终面试共四关，全程线上进行，平均月薪约43.3K。8大部门：商业营运（数据驱动为买家提供优质选择）、行销（数据分析策划营销活动）、数据分析（Python/ML/财务分析）、营运（从搜索到收货全流程，欢迎Python/NLP能力）、产品管理（产品策略与AI潜力）、虾皮店到店（物流最后一公里）、直营（供应链整合）、人力资源。申请资格：大三以上学生，9周全职实习，中英文简历皆可。面试题型：数理逻辑、行为面试（过往经历深挖、为什么离职）、情境分析（如给你一笔预算投广告营销，你觉得应该投哪些渠道并给出rationale）、技术问题。考察重点：数据分析能力、逻辑推理、中英文沟通、电商理解。非技术岗面试官会问提升ROI的具体方法、供应链断货如何处理等场景题，看重解决突发问题的能力。要点：面Shopee重快速执行和数据驱动，运营岗需要能写基础SQL查询，Case题要从指标分析快速落到运营建议，避免过度设计解决方案。", "tags": "面经,Shopee,暑期实习,电商运营,Apprentice Program", "date": "2026-08-31"},
+  {"id": "exp-auto-20260831-bytedance-ops", "type": "interview", "title": "字节跳动2026届运营岗校招面经：10题与数据驱动方法论", "company": "字节跳动", "role": "运营（校招）", "platform": "超级简历WonderCV", "category": "产品思维与方法论", "sourceUrl": "https://www.wondercv.com/mianjing/bytedance-operations-2026-263", "summary": "字节运营岗校招10题：自我介绍三段式、抖音产品改进、次日留存提升、内容vs用户运营、0到1增长AARRR、数据异常排查", "keyPoints": ["自我介绍1.5-2分钟三段式，字节面试官不喜欢听废话", "产品改进题要具体可量化，从运营角度分析对DAU/时长/互动的影响", "次日留存题：数据拆解定位洼地-找根因-分策略-实验验证", "内容运营vs用户运营：内容重生产组织分发，用户重获取激活留存变现", "数据异常排查：确认真实性-多维度拆解-定位根因-制定应对-建预警"], "content": "字节跳动2026届运营岗校招面经（超级简历WonderCV）。字节运营岗方向宽泛：用户运营、内容运营、活动运营、产品运营、数据运营、社群运营，2026届数据运营和AI相关运营方向明显增多。10个高频题：①自我介绍——1.5-2分钟三段式（我是谁+做过什么+为什么适合），直奔主题；②抖音/今日头条有什么可改进——给具体可量化建议，分析对DAU/停留时长/互动率的影响；③提升某产品次日留存率——拆新老用户/渠道/设备找留存洼地，定位根因，分策略干预，A/B验证；④描述一次活动策划并评估效果——STAR，突出策划过程和核心指标（参与人数/分享率/新增/ROI）；⑤内容运营和用户运营的区别——内容重生产组织分发，用户重获取激活留存变现，两者相互支撑；⑥全新产品从0到1做用户增长——AARRR框架（获客/激活/留存/变现/传播）；⑦数据指标异常下降怎么办——确认真实性-多维度拆解-定位根因-制定应对-改进监控；⑧如何看待加班——能扛住+有方法；⑨做运营最大优势和不足——优势用具体经历支撑，不足真实但不致命；⑩最近关注什么产品或趋势——具体到某个产品或趋势并说出思考，结合字节业务更佳。要点：字节运营面重数据驱动+快速迭代，简历每个数字都可能被追问，准备时多做横向比较题（如抖音vs快手运营策略）。", "tags": "面经,运营,字节跳动,校招,数据驱动", "date": "2026-08-31"}
     // AUTO-EXPERIENCE-POSTS-END
 ];
 
@@ -8492,13 +8556,185 @@ function switchExpSub(sub) {
   jobView.sub = sub;
   const postsArea = document.getElementById('expPostsArea');
   const jobsArea = document.getElementById('expJobsArea');
+  const bankArea = document.getElementById('expBankArea');
   const tPosts = document.getElementById('subTabPosts');
   const tJobs = document.getElementById('subTabJobs');
+  const tBank = document.getElementById('subTabBank');
   if (postsArea) postsArea.style.display = sub === 'posts' ? '' : 'none';
   if (jobsArea) jobsArea.style.display = sub === 'jobs' ? '' : 'none';
+  if (bankArea) bankArea.style.display = sub === 'bank' ? '' : 'none';
   if (tPosts) tPosts.classList.toggle('active', sub === 'posts');
   if (tJobs) tJobs.classList.toggle('active', sub === 'jobs');
+  if (tBank) tBank.classList.toggle('active', sub === 'bank');
   if (sub === 'jobs') renderJobs();
+  if (sub === 'bank') renderExpBank();
+}
+
+/* ========== 面试题库 (Interview Question Bank) ==========
+   从所有面试经验贴（种子 + 手动 + AI 生成）实时提取高频考点：
+   每道题的频率 = 命中该题关键词的「面经篇数」，按频率降序排列（高频在最上）。
+   用户可勾选「已整理」跟踪备考进度（持久化到 localStorage）。 */
+const INTERVIEW_BANK_CATS = {
+  motive: '自我介绍与动机',
+  thinking: '产品思维与方法论',
+  user: '用户·场景·体验',
+  data: '数据分析与指标',
+  compete: '竞品与行业',
+  ops: '运营专项',
+  ai: 'AI产品专项',
+  case: '情景 / Case 题',
+  hr: 'HR / 软实力'
+};
+const INTERVIEW_BANK = [
+  // 自我介绍与动机
+  { id:'b_motive_intro', cat:'motive', q:'请做自我介绍（定位-亮点-动机结构，突出量化成果）', kw:['自我介绍','定位-亮点-动机','三段式','1.5-2分钟','2分钟','介绍实习内容'] },
+  { id:'b_motive_why', cat:'motive', q:'为什么想做产品经理 / 为什么选择我们公司或岗位', kw:['为什么想做','为什么选择','为什么投','为什么选','选择小红书','选择我们','最吸引'] },
+  { id:'b_motive_plan', cat:'motive', q:'你的职业规划是什么（短期 / 长期）', kw:['职业规划','长期规划','长期主义','职业稳定性','长期价值'] },
+  { id:'b_motive_edge', cat:'motive', q:'你做PM的优势 / 与他人的差异化是什么', kw:['做PM的优势','优势','差异化','弥补','双非'] },
+  { id:'b_motive_tools', cat:'motive', q:'（AI岗）常用的AI工具 / 模型、读过哪些AI论文', kw:['常用的AI工具','AI工具与模型','AI论文','读过哪些','常用模型'] },
+  // 产品思维与方法论
+  { id:'b_think_open', cat:'thinking', q:'开放性产品定义题（如「微信做老年版怎么设计」）并连环追问为什么', kw:['老年版','开放性产品定义','产品定义题','开放性题目','开放性','结构化拆解','优先级判断'] },
+  { id:'b_think_fav', cat:'thinking', q:'你最近使用 / 喜欢的一款产品，如何改进它', kw:['喜欢的App','最近玩的一款','一款产品','可改进处','产品改进题','产品改进','改进'] },
+  { id:'b_think_good', cat:'thinking', q:'如何定义一个好产品 / 如何判断产品价值', kw:['好产品','产品价值','用户价值','价值判断'] },
+  { id:'b_think_balance', cat:'thinking', q:'用户需求 vs 商业目标如何平衡（社区调性 vs 商业化）', kw:['用户体验','商业目标','社区调性','商业化目标','调性与商业化','平衡'] },
+  { id:'b_think_0to1', cat:'thinking', q:'从0到1 / 规模化落地的产品经历', kw:['从0到1','0到1','规模化落地','规模化'] },
+  // 用户·场景·体验
+  { id:'b_user_research', cat:'user', q:'通过用户调研发现需求并推动产品优化的经历', kw:['用户调研','调研发现需求','发现需求','需求并推动'] },
+  { id:'b_user_ux', cat:'user', q:'如何理解并提升用户体验（极致体验案例）', kw:['用户体验的极致','用户体验','体验改进','体验优化','体验'] },
+  { id:'b_user_segment', cat:'user', q:'特定人群 / 场景的产品设计（如提升男性参与度、老年版）', kw:['男性电商参与度','男性','女性用户','老年版','提升男性','人群'] },
+  { id:'b_user_conflict', cat:'user', q:'产品方案与技术团队存在分歧，如何协调推进', kw:['技术团队存在分歧','分歧','需求实现不了','技术同理心','协调推进','协调资源'] },
+  // 数据分析与指标
+  { id:'b_data_attr', cat:'data', q:'某指标（复购率 / 留存 / 活跃）下降的归因分析', kw:['复购率','留存','下降','归因','下跌','数据异常','数据拆解','洼地','根因','下钻','漏斗','排查'] },
+  { id:'b_data_metric', cat:'data', q:'如何设计 / 评估功能的核心数据指标（DAU / 活跃等）', kw:['核心数据指标','核心指标','数据指标','监控报表','关键指标','提DAU','DAU题'] },
+  { id:'b_data_ab', cat:'data', q:'A/B测试 / 对比实验设计', kw:['A/B','对比实验','实验验证','对照','对照组','干预'] },
+  { id:'b_data_tool', cat:'data', q:'数据分析工具与下钻能力（SQL / Excel）', kw:['SQL','Excel','数据分析题','下钻归因','数据能力','数理逻辑'] },
+  // 竞品与行业
+  { id:'b_comp_rival', cat:'compete', q:'竞品分析（如千问 / ChatGPT / 豆包差异、最该补齐的短板）', kw:['竞品','千问','ChatGPT','豆包','Kimi','DeepSeek','差异','短板'] },
+  { id:'b_comp_trend', cat:'compete', q:'对XX业务 / 行业趋势的理解（本地生活 / 即时零售 / AI原生等）', kw:['本地生活','即时零售','下沉市场','内容化','AI原生','AI native','行业','趋势','战略','种拔一体','商业化'] },
+  // 运营专项
+  { id:'b_ops_activity', cat:'ops', q:'活动策划（主题 / 人群 / 机制 / 渠道 / 预算 / 效果评估）', kw:['活动策划','活动案例','活动效果','活动策划逻辑','营销活动','活动'] },
+  { id:'b_ops_growth', cat:'ops', q:'用户增长：AARRR 或用户生命周期拆解', kw:['AARRR','用户生命周期','用户增长','生命周期','拉新','裂变'] },
+  { id:'b_ops_private', cat:'ops', q:'私域 / 公域运营方法论（引流-培育-转化-裂变）', kw:['私域','公域','引流','培育','转化','私域公域'] },
+  { id:'b_ops_diff', cat:'ops', q:'产品运营 vs 用户运营 vs 内容运营 的区别', kw:['产品运营','用户运营','内容运营','运营vs产品','产品运营vs用户运营','内容运营vs用户运营','运营岗','岗位理解'] },
+  { id:'b_ops_cold', cat:'ops', q:'社区冷启动 / 种子用户运营', kw:['冷启动','种子用户','种子','社区冷启动'] },
+  // AI产品专项
+  { id:'b_ai_principle', cat:'ai', q:'Transformer / 注意力机制 / 扩散模型等基本原理', kw:['Transformer','注意力机制','扩散模型','预训练','SFT','RLHF','原理'] },
+  { id:'b_ai_agent', cat:'ai', q:'Agent 与 Workflow 的区别，何时该用Agent', kw:['Agent','Workflow','工作流','能干','能说','agent设计','main agent','subject agent'] },
+  { id:'b_ai_rag', cat:'ai', q:'RAG / 检索增强 / 知识库切片与召回', kw:['RAG','检索增强','知识库切片','召回','检索','索引'] },
+  { id:'b_ai_prompt', cat:'ai', q:'Prompt工程 / 上下文窗口 / 多意图与模糊表达识别', kw:['Prompt','上下文窗口','多意图','模糊表达','意图识别','prompt工程'] },
+  { id:'b_ai_search', cat:'ai', q:'AI搜索：Query改写、召回与相关性匹配', kw:['Query改写','Query','改写','召回率','相关性','意图分布','兜底路径'] },
+  { id:'b_ai_hallu', cat:'ai', q:'模型幻觉归因与AI效果评估（模型 / 检索 / prompt / 策略）', kw:['幻觉','reward','质量评估','评估方法','效果评估','技术指标','评估'] },
+  { id:'b_ai_native', cat:'ai', q:'AI原生思维：AI能自动闭环多少比例、四重错配', kw:['AI native','AI原生','自动闭环','四重错配','模型错配','交互错配','传统方案','值得用AI'] },
+  { id:'b_ai_loop', cat:'ai', q:'AI产品从需求→数据→效果的完整闭环 / 路线图与ROI', kw:['路线图','ROI','数据质量','数据生产','LUI','GUI','完整闭环','闭环'] },
+  { id:'b_ai_land', cat:'ai', q:'企业级AI落地（企业微信知识库、客服Agent降本等）', kw:['企业微信','客服Agent','降本','工程化','演示效果','工程化能力','落地'] },
+  // 情景 / Case 题
+  { id:'b_case_xfunc', cat:'case', q:'跨部门不配合 / 与上级意见不一致如何处理', kw:['跨部门','不配合','与上级意见','意见不一致','组织能力'] },
+  { id:'b_case_rebuild', cat:'case', q:'某流程 / 功能如何用AI重构提效（给出量化案例）', kw:['重构','提效','5人2周','2天','可被模型替代','自动化'] },
+  { id:'b_case_live', cat:'case', q:'给一个业务 / 产品问题让你现场拆解（Case面）', kw:['case','Case','情境分析','情景','现场','业务题','指标分析到运营建议'] },
+  { id:'b_case_trade', cat:'case', q:'技术可行性 / 成本 / 优先级 / 风险兜底的权衡', kw:['技术可行性','成本','优先级','风险兜底','权衡','取舍','论证'] },
+  // HR / 软实力
+  { id:'b_hr_star', cat:'hr', q:'你最有成就感的项目（STAR，突出个人贡献与量化结果）', kw:['成就感','STAR','个人决策贡献','量化结果','成功案例','成就'] },
+  { id:'b_hr_weak', cat:'hr', q:'你的失败 / 短板是什么，如何改进', kw:['短板','失败','反思','缺在哪','真实短板','不足之处'] },
+  { id:'b_hr_salary', cat:'hr', q:'期望薪资 / 为什么离职 / 职业稳定性', kw:['薪资','薪酬','离职','稳定性','稳定'] },
+  { id:'b_hr_colab', cat:'hr', q:'你如何与不同角色（设计 / 研发 / 算法）协作', kw:['协作','与设计','与研发','与算法','设计协作','研发协作'] }
+];
+const BANK_PROGRESS_KEY = 'wb_pm_bank_progress';
+function getBankProgress(){ try { return JSON.parse(localStorage.getItem(BANK_PROGRESS_KEY)) || {}; } catch { return {}; } }
+function setBankProgress(obj){ try { localStorage.setItem(BANK_PROGRESS_KEY, JSON.stringify(obj)); } catch (e) {} }
+
+function bankPostText(p){
+  return [p.title, p.summary, p.category, p.company, p.role, p.tags, (p.keyPoints||[]).join(' '), p.content]
+    .filter(Boolean).join(' ').toLowerCase();
+}
+function bankPosts(){
+  const list = getData(KEYS.expPosts);
+  return list.filter(p => expPostType(p) === 'interview');
+}
+function bankCompute(q, posts){
+  const hits = [];
+  const snippets = [];
+  posts.forEach(p => {
+    const t = bankPostText(p);
+    const matched = q.kw.some(k => t.includes(k.toLowerCase()));
+    if (matched) {
+      hits.push(p);
+      (p.keyPoints||[]).forEach(kp => {
+        if (snippets.length < 2 && q.kw.some(k => kp.toLowerCase().includes(k.toLowerCase()))) {
+          snippets.push((p.company||'') + ' · ' + (p.role||'') + '：「' + kp + '」');
+        }
+      });
+    }
+  });
+  return { count: hits.length, posts: hits, snippets: [...new Set(snippets)].slice(0, 2) };
+}
+function renderExpBank(){
+  const posts = bankPosts();
+  const prog = getBankProgress();
+  const listEl = document.getElementById('expBankList');
+  const headEl = document.getElementById('expBankHead');
+  const searchEl = document.getElementById('expBankSearch');
+  const searchTerm = (searchEl ? searchEl.value : '').toLowerCase().trim();
+  const catFilterEl = document.getElementById('expBankCat');
+  const catFilter = catFilterEl ? catFilterEl.value : '';
+  const onlyUncheckedEl = document.getElementById('expBankUnchecked');
+  const onlyUnchecked = onlyUncheckedEl ? onlyUncheckedEl.checked : false;
+
+  let items = INTERVIEW_BANK.map(q => ({ q, ...bankCompute(q, posts) }));
+  const catOrder = Object.keys(INTERVIEW_BANK_CATS);
+  items.sort((a, b) => b.count - a.count || catOrder.indexOf(a.q.cat) - catOrder.indexOf(b.q.cat) || a.q.id.localeCompare(b.q.id));
+  if (catFilter) items = items.filter(it => it.q.cat === catFilter);
+  if (searchTerm) items = items.filter(it => (it.q.q + it.snippets.join('')).toLowerCase().includes(searchTerm));
+  if (onlyUnchecked) items = items.filter(it => !prog[it.q.id]);
+
+  const total = INTERVIEW_BANK.length;
+  const done = INTERVIEW_BANK.filter(q => prog[q.id]).length;
+  const pct = total ? Math.round(done / total * 100) : 0;
+
+  if (headEl) {
+    headEl.innerHTML = `
+      <div class="bank-progress">
+        <div class="bank-progress-bar"><div class="bank-progress-fill" style="width:${pct}%"></div></div>
+        <span class="bank-progress-text">已整理 ${done} / ${total} 题（${pct}%）</span>
+      </div>
+      <div class="bank-tip">高频题已按「命中面经数」排序，命中越多越靠前 · 勾选「已整理」可跟踪你的备考进度（自动保存）</div>`;
+  }
+  if (!listEl) return;
+  if (items.length === 0) {
+    listEl.innerHTML = `<div class="exp-post-empty"><div>没有匹配的题库题目</div></div>`;
+    return;
+  }
+  listEl.innerHTML = items.map((it, idx) => {
+    const checked = !!prog[it.q.id];
+    const catName = INTERVIEW_BANK_CATS[it.q.cat] || it.q.cat;
+    const companies = [...new Set(it.posts.map(p => (p.company||'未分类') + ' / ' + (p.role||'')))].slice(0, 6);
+    const snipHtml = it.snippets.length ? `<div class="bank-snips">${it.snippets.map(s => `<div class="bank-snip">${escapeHtml(s)}</div>`).join('')}</div>` : '';
+    const companiesHtml = companies.length ? `<div class="bank-companies">${companies.map(c => `<span class="bank-co">${escapeHtml(c)}</span>`).join('')}${it.posts.length > 6 ? `<span class="bank-co">+${it.posts.length - 6}</span>` : ''}</div>` : '';
+    return `
+      <div class="bank-card ${checked ? 'bank-done' : ''}">
+        <div class="bank-rank">${idx + 1}</div>
+        <div class="bank-main">
+          <div class="bank-q">
+            <span class="bank-cat">${escapeHtml(catName)}</span>
+            <span class="bank-qtext">${escapeHtml(it.q.q)}</span>
+          </div>
+          ${snipHtml}
+          ${companiesHtml}
+        </div>
+        <div class="bank-side">
+          <div class="bank-freq" title="命中面经数">🔥 ${it.count}<span class="bank-freq-unit">篇</span></div>
+          <label class="bank-check ${checked ? 'on' : ''}">
+            <input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleBankDone('${it.q.id}', this.checked)">
+            <span>${checked ? '已整理' : '标记已整理'}</span>
+          </label>
+        </div>
+      </div>`;
+  }).join('');
+}
+function toggleBankDone(id, val){
+  const prog = getBankProgress();
+  if (val) prog[id] = true; else delete prog[id];
+  setBankProgress(prog);
+  renderExpBank();
 }
 
 function jobFieldValues(field) {
