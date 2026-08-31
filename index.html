@@ -388,6 +388,40 @@ a { color: var(--primary); text-decoration: none; }
 }
 .filter-select:focus, .filter-input:focus { border-color: var(--primary); }
 
+/* ========== 岗位投递·多选筛选器 ========== */
+.ms-filter { position: relative; }
+.ms-trigger {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 12px; min-height: 40px; max-width: 240px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  background: var(--bg-card); color: var(--text);
+  font-size: 14px; cursor: pointer; transition: border-color .2s, box-shadow .2s;
+}
+.ms-trigger:hover { border-color: var(--primary); }
+.ms-filter.active .ms-trigger { border-color: var(--primary); }
+.ms-filter.open .ms-trigger { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(124,58,237,.12); }
+.ms-placeholder { color: #9aa0a6; }
+.ms-value { color: var(--text); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ms-caret { margin-left: 2px; opacity: .55; flex: none; }
+.ms-panel {
+  position: absolute; z-index: 60; top: calc(100% + 6px); left: 0;
+  display: none;
+  min-width: 210px; max-height: 340px; overflow: auto;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); box-shadow: 0 8px 28px rgba(0,0,0,.14);
+  padding: 12px;
+}
+[data-theme="dark"] .ms-panel { box-shadow: 0 8px 28px rgba(0,0,0,.5); }
+.ms-options { display: flex; flex-wrap: wrap; gap: 8px; }
+.ms-opt {
+  padding: 6px 13px; border: 1px solid var(--border); border-radius: 999px;
+  background: var(--bg); color: var(--text); font-size: 13px; cursor: pointer;
+  transition: all .15s; white-space: nowrap; line-height: 1.4;
+}
+.ms-opt:hover { border-color: var(--primary); }
+.ms-opt.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+.ms-actions { margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--border); text-align: right; }
+
 /* ========== Cards ========== */
 .card {
   background: var(--bg-card);
@@ -822,6 +856,45 @@ a { color: var(--primary); text-decoration: none; }
 .daily-item-text { font-size: 13.5px; color: var(--text-2); white-space: pre-wrap; line-height: 1.7;
   background: #FBFAFF; border-radius: 8px; padding: 8px 10px; border: 1px solid var(--border-light); }
 .daily-item-result .daily-item-text { color: var(--success); background: #F0FDF9; border-color: #D1FAE5; }
+/* Markdown 表格（日报/产出里粘贴的 | a | b | 形式自动渲染） */
+.md-table-wrap { overflow-x: auto; margin: 6px 0 4px; border-radius: 8px; }
+.md-table { width: 100%; border-collapse: collapse; font-size: 13px; background: #fff; }
+.md-table th { padding: 8px 10px; border: 1px solid var(--border-light); background: var(--gradient-soft);
+  font-weight: 600; color: var(--text-2); font-size: 12px; white-space: nowrap; }
+.md-table td { padding: 8px 10px; border: 1px solid var(--border-light); vertical-align: top;
+  color: var(--text-2); line-height: 1.55; }
+.md-table tbody tr:nth-child(even) td { background: #FAFBFF; }
+.md-table code { background: #EEF1FF; color: #4F6BFF; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+
+/* 日报"展开完整详情"折叠区 + Markdown 排版 */
+.md-detail-toggle { display: flex; align-items: center; gap: 6px; margin: 8px 0 0; padding: 7px 12px;
+  background: var(--gradient-soft); border: 1px solid var(--border-light); border-radius: 8px;
+  color: var(--primary); font-size: 12.5px; font-weight: 600; cursor: pointer; transition: all .15s; width: fit-content; }
+.md-detail-toggle:hover { background: #EEF1FF; }
+.md-detail-toggle .md-detail-arrow { font-size: 11px; line-height: 1; }
+.md-detail { margin-top: 8px; padding: 14px 16px; background: #fff; border: 1px solid var(--border-light);
+  border-radius: 10px; max-height: 560px; overflow: auto; }
+.md-body { font-size: 13.5px; color: var(--text-2); line-height: 1.78; }
+.md-body .md-h { color: var(--text); font-weight: 700; line-height: 1.4; margin: 14px 0 6px; }
+.md-body .md-h:first-child { margin-top: 0; }
+.md-body .md-h1 { font-size: 17px; } .md-body .md-h2 { font-size: 15.5px; } .md-body .md-h3 { font-size: 14.5px; } .md-body .md-h4 { font-size: 13.5px; }
+.md-body .md-p { margin: 6px 0; }
+.md-body .md-ul, .md-body .md-ol { margin: 6px 0; padding-left: 22px; }
+.md-body .md-ul { list-style: disc; } .md-body .md-ol { list-style: decimal; }
+.md-body .md-ul li, .md-body .md-ol li { margin: 3px 0; }
+.md-body .md-task { list-style: none; margin-left: -16px; }
+.md-body .md-check { display: inline-block; width: 16px; color: var(--text-3); margin-right: 4px; }
+.md-body .md-check.on { color: var(--success); }
+.md-body .md-task-done { text-decoration: line-through; color: var(--text-3); }
+.md-body .md-quote { border-left: 3px solid var(--primary); background: var(--gradient-soft);
+  padding: 8px 12px; margin: 8px 0; border-radius: 0 8px 8px 0; color: var(--text-2); }
+.md-body .md-hr { border: none; border-top: 1px dashed var(--border-light); margin: 12px 0; }
+.md-body .md-pre { background: #F5F7FA; color: #1A2233; border: 1px solid var(--border-light);
+  padding: 12px 14px; border-radius: 10px; overflow-x: auto; margin: 8px 0; font-size: 12.5px; line-height: 1.6; }
+.md-body .md-pre code { background: none; color: inherit; padding: 0; font-size: inherit; }
+.md-body code { background: #EEF1FF; color: #4F6BFF; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+.md-body strong { color: var(--text); font-weight: 700; }
+.md-body .md-table-wrap { overflow-x: auto; margin: 8px 0; }
 .daily-empty { text-align: center; color: var(--text-3); padding: 40px 16px; }
 .daily-empty svg { width: 40px; height: 40px; opacity: .4; margin-bottom: 8px; }
 
@@ -1806,24 +1879,54 @@ a { color: var(--primary); text-decoration: none; }
     <div id="expJobsArea" style="display:none">
       <div id="jobDeadlineBoard" class="dl-board"></div>
       <div class="filters">
-        <select class="filter-select" id="jobFilterLocation" onchange="renderJobs()">
-          <option value="">全部城市</option>
-          <option value="广州">广州</option>
-          <option value="深圳">深圳</option>
-          <option value="上海">上海</option>
-        </select>
-        <select class="filter-select" id="jobFilterCategory" onchange="renderJobs()">
-          <option value="">全部岗位</option>
-          <option value="产品">产品</option>
-          <option value="运营">运营</option>
-          <option value="风控">风控</option>
-        </select>
-        <select class="filter-select" id="jobFilterType" onchange="renderJobs()">
-          <option value="">全部批次</option>
-          <option value="秋招">秋招</option>
-          <option value="实习">实习</option>
-          <option value="春招">春招</option>
-          <option value="提前批">提前批</option>
+        <!-- ① 位置 -->
+        <div class="ms-filter" id="ms-location">
+          <button type="button" class="ms-trigger" onclick="toggleMsPanel('ms-location')">
+            <span class="ms-placeholder">位置</span><span class="ms-value"></span>
+            <svg class="ms-caret" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="ms-panel" onclick="event.stopPropagation()">
+            <div class="ms-options" data-group="location"></div>
+            <div class="ms-actions"><button type="button" class="btn btn-sm btn-secondary" onclick="clearMs('ms-location')">清空</button></div>
+          </div>
+        </div>
+        <!-- ② 岗位 -->
+        <div class="ms-filter" id="ms-category">
+          <button type="button" class="ms-trigger" onclick="toggleMsPanel('ms-category')">
+            <span class="ms-placeholder">岗位</span><span class="ms-value"></span>
+            <svg class="ms-caret" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="ms-panel" onclick="event.stopPropagation()">
+            <div class="ms-options" data-group="category"></div>
+            <div class="ms-actions"><button type="button" class="btn btn-sm btn-secondary" onclick="clearMs('ms-category')">清空</button></div>
+          </div>
+        </div>
+        <!-- ③ 招聘类型 -->
+        <div class="ms-filter" id="ms-type">
+          <button type="button" class="ms-trigger" onclick="toggleMsPanel('ms-type')">
+            <span class="ms-placeholder">招聘类型</span><span class="ms-value"></span>
+            <svg class="ms-caret" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="ms-panel" onclick="event.stopPropagation()">
+            <div class="ms-options" data-group="type"></div>
+            <div class="ms-actions"><button type="button" class="btn btn-sm btn-secondary" onclick="clearMs('ms-type')">清空</button></div>
+          </div>
+        </div>
+        <!-- ④ 企业类型 -->
+        <div class="ms-filter" id="ms-coType">
+          <button type="button" class="ms-trigger" onclick="toggleMsPanel('ms-coType')">
+            <span class="ms-placeholder">企业类型</span><span class="ms-value"></span>
+            <svg class="ms-caret" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="ms-panel" onclick="event.stopPropagation()">
+            <div class="ms-options" data-group="coType"></div>
+            <div class="ms-actions"><button type="button" class="btn btn-sm btn-secondary" onclick="clearMs('ms-coType')">清空</button></div>
+          </div>
+        </div>
+        <select class="filter-select" id="jobSortSel" onchange="renderJobs()">
+          <option value="">默认排序</option>
+          <option value="fame_desc">知名程度（高→低）</option>
+          <option value="fame_asc">知名程度（低→高）</option>
         </select>
         <input type="text" class="filter-input" id="jobSearch" placeholder="搜索公司、岗位、备注..." oninput="renderJobs()" style="flex:1;min-width:150px">
         <button class="btn btn-sm" onclick="openModal('job')">
@@ -2217,6 +2320,172 @@ KPI 卡：4 列网格，大 tabular 数字 + 涨跌 chip（绿↑/红↓）+ 右
 <!-- ========== Toast ========== -->
 <div class="toast" id="toast"></div>
 
+<!-- ========== 预置日报的完整 Markdown 详情（mergeAutoDailySeed 通过 detailScriptId 读取 textContent） ========== -->
+<script type="text/markdown" id="auto-daily-md-20260822"># AI电商商品项目 · 日报（数据接入与治理篇）
+
+> **日期**：2026-08-22（项目 Day 1）｜ **阶段**：P1 数据接入与质量治理
+> **主题**：打通"HuggingFace 下载 → MySQL 入库 → DBeaver 查询 → 数据体检"全链路，完成品类选型与清洗口径两大决策
+> **用途**：面试故事线 + 个人知识库沉淀（可直接复述）
+
+---
+
+## 一、今日成果速览
+
+| # | 成果 | 关键数字 |
+|---|---|---|
+| 1 | 打通数据接入链路 | Cell_Phones meta 195MB / 184,070 商品 |
+| 2 | 原始层入库 MySQL `amazon_product.products` | 184,070 行（COUNT 校验通过） |
+| 3 | DBeaver 连接可视化查询 | localhost:3306，可跑 SQL |
+| 4 | 数据体检完成 | 价格缺失 69.2%，品牌可解析 96.2% |
+| 5 | 品类纯净度查证 | 12% "混入"= 标签漂移，非污染 |
+| 6 | 两大决策落地 | DP1 定品类 / DP3 定分层清洗口径 |
+| 7 | 附产对比资产 | 美妆评论 70 万条 + 元数据 11.2 万条（备用） |
+
+---
+
+## 二、数据接入链路（怎么下载快）
+
+### 2.1 链路全图
+
+```
+Amazon Reviews 2023（HuggingFace 公开数据集）
+  └─ McAuley-Lab/Amazon-Reviews-2023
+       ├─ meta 文件（商品元数据）：Cell_Phones_and_Accessories → parquet
+       │    └─ 结构：title/description/features/price/brand(details内)/categories/评分等
+       └─ review 文件（用户评论）：All_Beauty → jsonl
+            └─ 结构：rating/text/user_id/timestamp/verified 等
+
+下载方式：huggingface_hub（后台运行）→ 本地 parquet
+入库方式：pandas + SQLAlchemy + pymysql → MySQL（InnoDB / utf8mb4）
+查询方式：DBeaver 连接 MySQL → SQL 可视化浏览
+```
+
+### 2.2 怎么下载快（可复用的 4 条经验）
+
+1. **后台执行 + 断点续传**：用 `huggingface_hub` 的 `hf_hub_download`，自带缓存与断点续传——中断后重跑会从断点继续，不用重新下载
+2. **多连接并行加速**：`pip install hf_transfer` 并设 `HF_HUB_ENABLE_HF_TRANSFER=1`，分块多线程并行下载，绕过单连接限速（本项目下载 195MB 即用此思路）
+3. **国内可挂镜像**：设 `HF_ENDPOINT=https://hf-mirror.com` 走镜像站，解决部分网络环境连不上 HuggingFace 的问题
+4. **按需选文件 + 选对格式**：只下 meta 不下评论（全量太大）；parquet 比 jsonl 体积更小、加载更快——本项目的 parquet 是 1 个分片直接读入，jsonl 逐行读更慢
+
+> 面试可讲的工程细节：下载耗时、文件体积、断点续传 / 并行加速的调优过程，都属于"数据接入"的实战细节。
+
+---
+
+## 三、今天干了什么（清单）
+
+1. **DBeaver 崩溃诊断**：打开空白 → 排查到是手写 `data-sources.json` 结构不对导致解析崩溃 → 修复方案改为 GUI 向导建连接（结论：不手改配置，用向导）
+2. **MySQL 建库 + 数据入库**：新建 `amazon_product` 库、`products` 表（InnoDB / utf8mb4），18.4 万行入库，复杂字段（details/images/features/categories）转 JSON 字符串，`COUNT(*) = 184,070` 校验通过
+3. **DBeaver 连接 MySQL 查询**：localhost:3306 / root，密码存 `.env` 的 `MYSQL_PASSWORD`，验证了价格缺失 SQL、品牌 JSON_EXTRACT 等查询
+4. **数据对比分析**：下载美妆评论（All_Beauty.jsonl 70 万条）与美妆元数据（meta_All_Beauty.jsonl 11.2 万条），与手机数据对比缺失规律
+5. **品类纯净度分析**：`main_category` 与 `categories` 交叉校验，识别标签漂移
+6. **Schema 定义草案更新**：按 MAVE 多源商品表示思想分层定义
+7. **项目执行计划重写**：全文档升级为专业术语版，去除跨品类对比
+
+---
+
+## 四、关键判断与理由（面试主线）
+
+### 判断 1：原始层存储从 SQLite 转向 MySQL
+
+- **判断**：原始层数据放 MySQL（`amazon_product` 库），DBeaver 连接查询
+- **为什么**：原始层要可审计、可浏览、可现场 SQL 演示；MySQL 是电商后端主流选型，DBeaver 原生支持；加工层检索仍用 SQLite+FTS5（排序可控）
+- **证据**：184,070 行入库成功，`COUNT(*)` 校验通过
+- **教训**：DBeaver 手写配置文件结构错会整个崩溃（ClassCastException），**必须用 GUI 向导建连接**——这是踩过的坑，面试可讲"配置文件驱动的工具要尊重其自有序列化格式"
+
+### 判断 2：主品类选 Cell_Phones（DP1）
+
+- **判断**：主赛道选 Cell_Phones_and_Accessories，美妆数据仅作补充资产
+- **为什么**（4 点，倒序为证据链）：
+  1. **属性可量化可验证**：品牌/型号/存储/屏幕/电池都能用数字和结构验证，支撑"属性抽取 + span 证据 + 防幻觉评测"的完整叙事；美妆属性主观软性（"清爽""显白"）无法取证
+  2. **有价完整核心子集充足**：5.66 万 ≈ 评测目标 1 万的 5.7 倍，预算约束类评测有充分 ground truth
+  3. **用户层不是结构性优势**：手机评论同样存在于 HuggingFace，只是未下载
+  4. **该品类质量经 EComAgentBench 验证**
+- **影响**：决定了后面所有属性抽取、标签体系、评测集设计都围绕"可量化验证"展开
+
+### 判断 3：清洗口径用"分层治理"（DP3）
+
+- **判断**：原始层全量保留 + unknown 标记，加工层取有价完整核心子集，不删任何行
+- **为什么**：直接删除会让质量报告失真——缺失率本身就是要统计的质量维度；原始层全量保留供审计与复现
+- **数字**：原始层 184,070 → 加工层核心子集 56,738（门槛：价格可解析 + title 完整 + description/features 至少一个非空）
+- **影响**：面试被问"你删了什么"→ 可答"什么都没删，只做了格式清洗和门槛过滤"——这是诚实底线的体现
+
+### 判断 4：价格缺失 69.2% 判定为"爬取覆盖率问题"而非数据定义问题
+
+- **判断**：价格缺失不是脏数据，是爬虫没爬到价格
+- **证据链**：
+  1. 价格缺失是字符串 `"None"` 伪装成有值，`isna()` 查不出来，必须按文本 `trim(price) IN ('None','','nan')` 判定——**第一层伪装**
+  2. 缺失与热度强相关：0-10 评论 83% → 1000+ 评论 27%——越热门越有价，说明是"爬取时漏爬"而非"数据没定义"
+  3. 跨品类验证同规律（美妆 84.3%），排除品类特例
+- **影响**：面试能讲"你怎么区分脏数据 vs 覆盖不足"——这是数据认知的核心分水岭
+
+### 判断 5：12% 主分类"混入"判定为标签漂移，不删除
+
+- **判断**：21,831 个 `main_category` 不是 Cell Phones 的商品，全部保留，加 `cross_category=true` 标记
+- **为什么**：`categories`（完整货架路径）才是品类真相；实测 100% 的"混入"商品完整路径仍以 `Cell Phones & Accessories` 开头，标题也是真手机配件——是亚马逊改了货架顶上的分类牌，**商品实际还在手机配件货架**
+- **方法论**："标签矛盾先查证再清洗，不误删"——这是数据认知的加分点
+- **影响**：核心子集不按 main_category 一刀切，而按 `categories[0]==CP OR main_category==CP` 判定（覆盖率 99.995%）
+
+---
+
+## 五、踩坑记录（价值最高，面试弹药）
+
+| 坑 | 现象 | 根因 | 解法 |
+|---|---|---|---|
+| DBeaver 空白崩溃 | 打开一片空白然后进程退出 | 手写 `data-sources.json` 结构不对，DBeaver 26 解析崩溃（ClassCastException） | 删掉坏配置，**GUI 向导建连接** |
+| MySQL 账号密码 | root/root 拒绝访问 | root 密码不是默认的 | 拿到真实密码后写入 `.env` 的 `MYSQL_PASSWORD`，不硬编码进脚本 |
+| 导入报 1406 超长 | `store` 列 Data too long | 有些 store 值 >255 字符 | VARCHAR(255) 改 TEXT |
+| numpy 数组没转 JSON | features/description 入库失败 | 类型检测漏了 `np.ndarray` | 检测条件加 `isinstance(x, (dict, list, tuple, np.ndarray))` |
+| 中文输出乱码 | 控制台打印乱码 | iconv 处理 UTF-8 出问题 | 分析结果写 .txt 文件再读，不直接打控制台 |
+| `isna()` 查不出价格缺失 | 价格缺失被低估 | 缺失是字符串 `"None"` 不是 NaN | 按文本判定 `trim(price) IN ('None','','nan')` |
+
+---
+
+## 六、知识沉淀（知识卡片）
+
+### 卡片 1：Amazon Reviews 2023 数据结构速查
+
+- 每个品类两份文件：**meta**（商品元数据）+ **review**（用户评论），互相独立
+- meta 无顶层 brand 字段，品牌藏在 `details` 的 JSON 里，需解析（本项目实测可解析率 96.2%）
+- 复杂字段（details/features/categories）parquet 里是 dict/list/ndarray，入库前必须转 JSON 字符串
+
+### 卡片 2：价格缺失的"伪装识别法"
+
+- 缺失有三种形态：真 null / 空串 / 字符串 `"None"`，`isna()` 只能查出第一种
+- 判定口诀：`trim(price) IN ('None','','nan')`
+- 判定"缺失原因"看关联：缺失率 × 热度（评论数）强相关 = 爬取覆盖率问题；随机分布 = 数据定义问题
+
+### 卡片 3：标签漂移识别三步法
+
+1. **交叉对比**：`main_category`（货架顶上的分类牌）vs `categories`（完整货架路径）
+2. **看路径**：混入商品的 `categories[0]` 是否仍指向本类目
+3. **看标题**：抽样看标题是否是真本类目商品
+- 结论：牌变了、货没动 = 标签漂移 → **不删除**，加标记保留
+
+### 卡片 4：分层数据治理框架
+
+```
+原始层（ODS）：全量 + 缺失标 unknown + 可审计     ← 什么都不删
+加工层（Curated）：按门槛取"能用"的核心子集       ← 完整性/可用性门槛
+应用层：知识库（检索）+ 评测集（判分）             ← 各取所需
+```
+- 核心思想：缺失率本身就是质量维度，治理 = 分层门槛，不是删数据
+
+### 卡片 5：品类选择决策模型（可复用）
+
+选主品类看 3 件事：
+1. **属性可量化性**：能否用数字/结构验证（存储/屏幕/电池 > "清爽/显白"）
+2. **有价完整子集规模**：是否支撑评测 ground truth（≥ 评测目标 3 倍）
+3. **生态验证**：是否已有 benchmark 验证过该品类质量
+
+---
+
+## 七、明日计划（Day 2）
+
+- [ ] Schema 定义定稿 + 清洗管线落地（按 DP3 分层口径写清洗脚本）
+- [ ] 生成《数据质量体检报告》：清洗前后对比 + 缺失/重复/异常统计
+- [ ] 核心子集实际条数核对（预期 ≈ 56,738）
+</script>
+
 <script>
 /* ========== Data Layer ========== */
 const KEYS = {
@@ -2404,25 +2673,6 @@ window.AUTO_EXP_SEED = [
   {"id": "exp-auto-20260829-tencent-ai-trainee", "type": "interview", "title": "腾讯AI产品经理培训生项目解读：混元/元宝/WorkBuddy选拔机制", "company": "腾讯", "role": "AI产品经理（产培生）", "platform": "界面新闻/腾讯招聘", "category": "AI产品", "sourceUrl": "https://join.qq.com/", "summary": "腾讯AI产培生专项：开放混元/元宝/WorkBuddy等20+岗位，简历作品评估→AI实战作业→业务面→线下Demo Day，9月4日截止", "keyPoints": ["2026/2027届可投，不限专业、不限实习经历，但须上传个人AI作品或项目（Demo/体验报告/课题作业/视频）", "选拔流程：简历及作品评估→通用测评→AI能力评估（真实业务课题实战作业9.5-9.8）→线上面试（9.9-9.30）→线下Demo Day终面（10月）", "开放战场：混元、WorkBuddy、元宝、ima、Marvis等AI原生产品+游戏/社交/金融/云/内容等20+专属岗位", "投递入口join.qq.com，应聘项目选人才专项-AI产品经理培训生，简历及作品上传9月4日中午12:00截止", "期待画像：能把想法变成结果、理解用户也理解技术、对AI产品有自己的标准、保持前沿敏感度"], "content": "腾讯AI产品经理培训生项目（2026/2027届）解读。2026年8月13日腾讯宣布启动顶尖AI产品人才招聘专项AI产品经理培训生项目，面向毕业时间2026年1月1日至2027年12月31日的同学，不限专业，看重真实的AI实力、产品架构设计能力、对前沿AI技术敏感、具备产品审美与从0到1落地能力。开放业务战场：腾讯混元、WorkBuddy、元宝、ima、Marvis等AI原生产品，以及游戏、社交、金融、云、内容等多元成熟场景，共20+产培生专属岗位。选拔机制（多元、不单纯依赖实习经历与专业背景）：①简历及作品评估——须在简历投递页面的作品或个人主页模块上传个人AI作品或项目（产品Demo、用户体验报告、产品课题作业、个人介绍视频等形式）；②AI轻实战作业——通过初筛后围绕真实业务课题布置AI实战能力评估作业（9.5-9.8，务必尽快完成）；③线上面试（9.9-9.30）；④线下Demo Day终面（10月），从想法到交付。培养资源：双导师+跨团队成长导师、AI大咖对话机会、真实项目实战、发展快车道。关键时间：简历投递及作品上传截止2026年9月4日中午12:00，投递入口join.qq.com应聘项目选择人才专项-AI产品经理培训生。要点：投AI产培生别只准备简历，作品集与AI实战能力是核心筛选项，会做、能落地、有想法比学历背景更重要。", "tags": "招聘,AI产品经理,腾讯,培训生,作品集", "date": "2026-08-29"},
   {"id": "exp-auto-20260829-tencent-5round-structure", "type": "interview", "title": "腾讯PM五轮面试结构与文化：技术信任面试与17个为什么", "company": "腾讯", "role": "产品经理（通用）", "platform": "博客（Johnny Mai）", "category": "产品思维与方法论", "sourceUrl": "https://sirjohnnymai.com/zh/blog/zh-alibaba-pm-vs-tencent-pm-culture-fit", "summary": "腾讯PM面4-5轮常1-2天走完：组长开放题连环追问、交叉面考协作、技术负责人考技术同理心、总监考组织影响力", "keyPoints": ["腾讯PM面试4-5轮常集中在1-2天内完成，体现高效决策的组织文化", "一轮组长/资深PM：开放性产品定义题（如微信做老年版怎么设计），会连环追问为什么", "二轮交叉面：其他事业群PM验证方法论通用性，重点看与设计/研发协作方如何互动", "三轮技术负责人：技术信任面试——技术同学说需求实现不了怎么办，答技术同理心而非硬刚", "四轮总监/GM考组织影响力与长期价值，五轮HR终面确认薪酬与入职时间"], "content": "腾讯PM面试流程与文化契合度拆解（2026）。流程：腾讯PM面试通常4-5轮，且常集中在1-2天内完成，体现高效决策的组织文化。第一轮：组长或资深PM（约60分钟），考产品sense与逻辑思维，很少直接问业务数字，而是给开放性产品定义题（如微信如果要做老年版你会怎么设计），面试官会不断追问为什么直到逻辑链条穷尽——有候选人回忆连续被问了17个为什么，像在解一道没有标准答案的数学题。第二轮：产品经理交叉面（约60分钟），通常是其他事业群的PM，考腾讯产品方法论的通用性，重点在于你如何与设计、研发等协作方互动达成一致。第三轮：技术负责人面（约45分钟），腾讯特有的技术信任面试，不考技术而考你能否被技术同事认可，经典题是技术同学说你的需求实现不了怎么办——错误答案是让他必须做或换种方式要求他，正确路径是展示技术同理心、理解约束根源、共同探讨替代方案。第四轮：总监或GM（约60分钟），考组织影响力与长期价值，期待你理解各方立场、找到让关键决策者愿意支持的叙事来推动改变。第五轮：HR终面（约30分钟），相对流程化，确认薪酬预期与入职时间。要点：面腾讯PM要准备开放性产品定义题、跨团队协作案例与技术同理心话术，文化上重高效决策、长期价值与技术话语权。", "tags": "面经,产品经理,腾讯,面试流程,技术信任", "date": "2026-08-29"}
     // AUTO-EXPERIENCE-POSTS-END
-];
-
-/* ============================================================
-   AUTO TASK SEED (任务看板自动注入)
-   每日任务计划：从 2026-08-28 起，每天一个，按顺序完成（共 5 天）。
-   mergeAutoTaskSeed() 在每次页面加载时把下列任务合并进 localStorage（KEYS.tasks），
-   按 id 去重、仅新增不删除 —— 已导入或用户已删除的任务不会被重复添加或复活。
-   Item format: { "id", "title", "priority"(P0/P1/P2), "status"(待办/已完成),
-                  "dueDate"(YYYY-MM-DD), "tags" }
-   ⚠️ 如需追加新一批每日任务，在 // AUTO-TASKS-START 与 // AUTO-TASKS-END 之间追加条目即可。
-   ============================================================ */
-window.AUTO_TASK_SEED = [
-  // AUTO-TASKS-START
-  { "id": "task-auto-olist-01-gmv", "title": "① GMV 增长与品类结构：定指标 → 下钻 → 归因", "priority": "P1", "status": "待办", "dueDate": "2026-08-28", "tags": "Olist电商分析" },
-  { "id": "task-auto-olist-02-seller", "title": "② 卖家生态：分层（Top 卖家占盘 / 二八法则 / 新老卖家对比）", "priority": "P1", "status": "待办", "dueDate": "2026-08-29", "tags": "Olist电商分析" },
-  { "id": "task-auto-olist-03-delivery", "title": "③ 配送与评价：体验（按时送达率 / 差评 / 转化漏斗）", "priority": "P1", "status": "待办", "dueDate": "2026-08-30", "tags": "Olist电商分析" },
-  { "id": "task-auto-olist-04-repurchase", "title": "④ 复购：用户分层（RFM / 复购率 / 高价值客户画像）", "priority": "P1", "status": "待办", "dueDate": "2026-08-31", "tags": "Olist电商分析" },
-  { "id": "task-auto-olist-05-report", "title": "⑤ 汇总成完整报告：SQL + 结论 + 建议，串成一份能讲的作品", "priority": "P0", "status": "待办", "dueDate": "2026-09-01", "tags": "Olist电商分析" }
-  // AUTO-TASKS-END
 ];
 
 /* ============================================================
@@ -3712,6 +3962,15 @@ window.AUTO_JOB_SEED = [
 // AUTO-JOBS-END
 ];
 
+/* ============================================================
+   官网/小红书 校招·日常实习岗位种子（独立持久化通道）
+   - 这些岗位来自各公司官网校招页 + 小红书在招实习岗位，由用户手动搜集补充。
+   - 关键：飞书同步自动化每日会「整体替换 AUTO_JOB_SEED」，若把这些岗位放进
+     AUTO_JOB_SEED 会被覆盖。因此本数组走独立通道，经 mergeAutoOfficialJobSeed()
+     一次性导入为「手动岗位」（isAutoCollected:false，无 autoId），被
+     mergeAutoJobSeed 的手动岗位保留逻辑承接，不会被飞书同步抹除。
+   - 幂等：已导入的 id 记录在 settings.officialJobSeedImported，用户删除后不复活。
+   ============================================================ */
 // AUTO-OFFICIAL-JOBS-START
 window.AUTO_OFFICIAL_JOB_SEED = [
   {"id": "offjob-bytedance-ai-product-intern-aime", "company": "字节跳动", "title": "AI产品实习生-Aime（飞书AI智能伙伴方向）", "location": "北京/上海", "category": "产品", "type": "日常实习", "url": "https://jobs.bytedance.com/campus", "notes": "AI智能伙伴/LLM产品方向 | 招聘:2027届/日常实习", "date": "2026-08-28"},
@@ -3850,6 +4109,24 @@ window.AUTO_OFFICIAL_JOB_SEED = [
 ];
 // AUTO-OFFICIAL-JOBS-END
 
+/* ============================================================
+   AUTO_DAILY_SEED — 预置长篇日报（核心摘要 + 完整 Markdown 详情）
+   mergeAutoDailySeed() 按 date 幂等导入：已存在/已导入的日期跳过，
+   不覆盖用户数据、不复活已删除项。完整详情放在 <script type="text/markdown">
+   元素里（detailScriptId 引用其 id），避免引号/反引号转义问题。
+   ⚠️ 更新时只增不改不删；不要因更新文件就清掉已有条目。
+   ============================================================ */
+window.AUTO_DAILY_SEED = [
+  // AUTO-DAILY-REPORTS-START
+  {"date": "2026-08-22", "what": "AI电商商品项目 · 日报（数据接入与治理篇）", "summary": `打通"HuggingFace 下载 → MySQL 入库 → DBeaver 查询 → 数据体检"全链路，完成品类选型(DP1)与清洗口径(DP3)两大决策。
+
+关键数字：184,070 商品入库（COUNT 校验通过）/ 价格缺失 69.2%（爬取覆盖问题，非脏数据）/ 品牌可解析 96.2% / 核心子集 56,738 / 12% 主分类"混入"= 标签漂移非污染。
+
+两大决策：DP1 定品类为 Cell_Phones（属性可量化、有价完整子集充足）；DP3 定分层清洗口径（原始层全量保留 + 加工层门槛过滤，不删任何行）。
+
+点击下方"展开完整详情"查看完整链路图、判断理由、踩坑记录与知识卡片。`, "detailScriptId": "auto-daily-md-20260822"}
+  // AUTO-DAILY-REPORTS-END
+];
 
 const DIMENSIONS = [
   { id: 'data', name: '数据逻辑', icon: 'M9 19V6l-7 4M9 19l7-4V6M9 19l7 4' },
@@ -4559,160 +4836,7 @@ const INTERVIEW_QA_SEED = [
     "company": "字节跳动",
     "sourcePostId": "exp-auto-20260822-bytedance-ai-pm",
     "referenceAnswer": "难点：意图理解+商品匹配+可信推荐。路径：场景定义→数据/知识库→MVP→评估→迭代；考复杂问题拆解与经验迁移（二面重点）。【实例】抖音电商 AI 导购：难点意图理解（“显白连衣裙”→类目+属性）+商品匹配（库存/评价）+可信推荐（带评价）。路径：场景定义→商品知识库→MVP（对话推荐）→评估（转化/满意度）→迭代。"
-  },
-  {
-  "id": "iq-bd-aipm-offer-1",
-  "title": "你项目里为什么用 Agent 而不是一个 Prompt 或固定 Workflow？判断三者的标准是什么？",
-  "type": "需求分析",
-  "difficulty": "中级",
-  "company": "字节跳动",
-  "sourcePostId": "exp-auto-20260828-bytedance-ai-pm-offer",
-  "referenceAnswer": "三者的本质区别是「决策是否由模型动态完成」。Prompt（单次大模型调用）适合输入→输出映射清晰、无需外部动作的任务；固定 Workflow（DAG/规则编排）适合步骤固定、可穷举、确定性强的流程；Agent（模型自决规划+调工具+循环）适合任务路径开放、需据环境反馈动态决策、步骤写不死的场景。判断标准可归为四问：①任务步骤能否事前枚举（能→Workflow，不能→Agent）；②是否需调用外部工具并据返回决定下一步；③同一输入是否可能走不同路径；④对错容忍与可解释性要求（Workflow 更可控可审计）。【实例】做竞品监控周报：来源固定、步骤固定→用 Workflow 定时爬取+模板生成即可，不必上 Agent；做「帮我分析这个 Bug 并给修复方案」：需读代码、跑测试、据结果调整，路径开放→用 Agent。我曾把客服 FAQ 从 Agent 退回固定 Workflow，成本降 60% 且准确率更稳，因为 80% 问题命中固定话术树。"
-},
-  {
-  "id": "iq-bd-aipm-offer-2",
-  "title": "把你的 Agent 完整链路讲一下（意图理解→任务规划→工具调用→状态管理→最终输出），每一步产品侧分别要控制什么？",
-  "type": "功能设计",
-  "difficulty": "高级",
-  "company": "字节跳动",
-  "sourcePostId": "exp-auto-20260828-bytedance-ai-pm-offer",
-  "referenceAnswer": "①意图理解：控制「识别范围+澄清机制」——定义 Agent 能接/不能接的意图边界（拒识策略），对模糊意图用结构化追问而非盲目执行；②任务规划：控制「规划粒度与约束」——给模型目标与禁止项，限定最大子任务数、可调用工具白名单，避免无限拆解；③工具调用：控制「工具定义与护栏」——每个工具的入参校验、权限（只读/写）、超时报错与重试上限；④状态管理：控制「上下文与记忆」——短期上下文窗口裁剪、长期记忆写入权限、关键信息抽取标准；⑤最终输出：控制「格式与可信度」——输出模板、引用来源标注、置信度低时转人工。【实例】我做合同审查 Agent：意图理解层设拒识（非合同类转人工）；规划层限定最多 8 个子任务；工具层合同解析只读、OCR 超时 10s 重试 2 次；状态层只持久化「主体/金额/期限」等字段；输出层强制「结论+依据条款编号+风险等级」，低置信转人工复核。"
-},
-  {
-  "id": "iq-bd-aipm-offer-3",
-  "title": "如果 Agent 出现重复调用工具、执行十几步还没有结果，甚至陷入死循环，你会怎么定位？产品上怎么兜底？",
-  "type": "功能设计",
-  "difficulty": "高级",
-  "company": "字节跳动",
-  "sourcePostId": "exp-auto-20260828-bytedance-ai-pm-offer",
-  "referenceAnswer": "定位分三层：①日志层——埋点每轮「思考→调用→观察」，统计工具调用序列与步数分布，找重复调用同一工具、循环不收敛的 trace；②配置层——检查最大步数上限、工具返回是否含「已完成」标识、是否存在「调用结果无法被模型识别为完成」的接口缺陷；③模型层——是否因 prompt 缺「停止条件」或工具描述误导导致反复调用。产品兜底：硬性护栏（最大步数如 15 步强制终止并给部分结果）、工具幂等与去重（同参数短时间不重复调用）、循环检测（连续 N 步调同工具则熔断）、兜底话术（「我没能自动完成，已为你总结进度/转人工」）、超时与降级。【实例】曾出现 Agent 反复调搜索工具：根因是搜索返回未带「无更多结果」标志，模型以为没找到继续搜。兜底：加循环检测（连续 3 次同工具同 query 熔断）+ 工具返回显式加 has_more 字段，死循环率从 12% 降到 0.3%。"
-},
-  {
-  "id": "iq-bd-aipm-offer-4",
-  "title": "你项目里如果用了 RAG：为什么要用 RAG？切片、召回、Rerank、生成分别解决什么问题？",
-  "type": "产品拆解",
-  "difficulty": "高级",
-  "company": "字节跳动",
-  "sourcePostId": "exp-auto-20260828-bytedance-ai-pm-offer",
-  "referenceAnswer": "用 RAG 是为给模型注入「私有/最新/可溯源」的知识，缓解幻觉、解决训练数据滞后与领域知识缺失。四阶段各司其职：①切片（Chunking）解决「喂什么」——把长文档切成语义完整、大小适中的块，影响召回精度与上下文成本；②召回（Retrieval）解决「找得全」——向量/关键词混合检索拉回候选，决定天花板；③Rerank 解决「排得准」——对召回候选重排序，把最相关放最前，抑制噪声、提升 top-k 质量；④生成（Generation）解决「答得对且可溯源」——基于筛选后上下文组织答案并标注引用。【实例】企业制度问答：切片按「章节+条款」切（避免把不同制度混在一块）；召回用向量+关键词混合（「年假」类词命中率高）；Rerank 把最相关制度排前、过滤相似但过时的旧版；生成时引用具体条款号。上线后「答非所问」从 18% 降到 4%。"
-},
-  {
-  "id": "iq-bd-aipm-offer-5",
-  "title": "如果最终回答错了，你怎么判断是「没检索到」还是「模型生成错了」？",
-  "type": "需求分析",
-  "difficulty": "高级",
-  "company": "字节跳动",
-  "sourcePostId": "exp-auto-20260828-bytedance-ai-pm-offer",
-  "referenceAnswer": "用「可观测的归因链路」区分：①看召回——该问题对应知识是否在召回 top-k 内？若根本没召回（知识库缺失/切片丢失/query 改写失败）→是「没检索到」；②看 Rerank/上下文——召回到了但被排到后面没进生成窗口→「检索/排序问题」；③看生成——上下文里明明有正确答案，模型仍编错/漏引→「模型生成错」（含忽略、幻觉、推理跳步）。可加「引用校验」：要求生成时输出所引片段 id，自动比对生成结论与召回原文一致性，不一致即标记生成错；也可做消融：固定同一上下文让不同 prompt/模型生成，若都错→上下文问题，换强模型后正确→模型问题。【实例】用户问报销额度答错：查 trace 召回里其实有「差旅报销上限 5000」，但模型生成写「无上限」且没引用→属生成错，靠引用校验捕获；另一次问某新产品政策，召回 top10 全无→知识库未录入，属没检索到，补录后解决。"
-},
-  {
-  "id": "iq-bd-aipm-offer-6",
-  "title": "你提到项目效果提升了 XX%，这个数字具体怎么来的？实验组和对照组怎么设置？样本量多少？指标口径是什么？",
-  "type": "需求分析",
-  "difficulty": "中级",
-  "company": "字节跳动",
-  "sourcePostId": "exp-auto-20260828-bytedance-ai-pm-offer",
-  "referenceAnswer": "必须讲清因果链与口径，否则数字不可信：①实验设计——随机分流 A/B，实验组用新方案、对照组用旧（或基线 Prompt/Agent），保证除变量外同分布；②样本量与周期——按预期提升幅度与显著性（如 α=0.05、power=0.8）反推样本，覆盖足够行为周期（至少 1-2 周避免周效应）；③指标口径——明确主指标（任务完成率、首答准确率）与口径（按会话/按用户？人工评还是自动？评测人是谁）；④归因——排除同期运营/流量波动（同期对照或差分）。【实例】我说某 Agent 准确率从 82% 提到 89%：实验组新 Rerank、对照组旧检索，各 2000 条真实工单，双盲人工评（3 人标注取多数），跑 2 周；主指标「回答可接受率」，口径=人工判可接受/总样本；差异 +7pp、p<0.05；同时看成本没显著上升。被追问样本量时，我说明是按历史基线方差估算的最低 1800 条。"
-},
-  {
-  "id": "iq-bd-aipm-offer-7",
-  "title": "一个 Agent 产品做得好不好，你会看哪些指标？任务完成率、工具调用成功率、平均执行步数、延迟、成本、用户满意度之间怎么取舍？",
-  "type": "需求分析",
-  "difficulty": "中级",
-  "company": "字节跳动",
-  "sourcePostId": "exp-auto-20260828-bytedance-ai-pm-offer",
-  "referenceAnswer": "看三层：①效果类——任务完成率（最核心）、工具调用成功率、首答准确率；②体验/效率类——平均执行步数（越少越省）、端到端延迟（P50/P95）、成本（token/调用费）；③用户类——满意度（CSAT/NPS）、留存、复用率。取舍原则：以「任务完成率」为北极星，其余是约束。低延迟高成本时：对高频简单任务压成本（Workflow 化），对高价值复杂任务容忍延迟；步数过多说明规划差要降；满意度差但指标好→看「用户主观预期是否被管理」（如进度可见性）。不能单追 DAU，DAU 高但完成率低是「伪活跃」。【实例】客服 Agent：任务完成率 70%→目标 85%；上复杂推理后延迟 P95 从 6s 到 18s、成本 ×2.3。取舍：把 60% 高频问答拆回 Workflow（快且省），只 40% 疑难走 Agent，整体完成率 +9pp、成本仅 +0.4×、延迟 P95 回 9s。"
-},
-  {
-  "id": "iq-bd-aipm-offer-8",
-  "title": "如果离线评测集上准确率已经很高，但是上线以后用户满意度很差，你觉得可能是什么原因？",
-  "type": "需求分析",
-  "difficulty": "高级",
-  "company": "字节跳动",
-  "sourcePostId": "exp-auto-20260828-bytedance-ai-pm-offer",
-  "referenceAnswer": "四类错配：①分布错配——离线集是「干净题」，线上是真实长尾/口语/多轮/带噪声，评测集不具代表性；②任务定义错配——离线只评「答案对不对」，用户要的是「有没有真正帮我解决/省时间」，忽略可用性；③交互体验——离线无交互，线上卡顿、无进度、不可控、改起来麻烦，体验差压过低准确率红利；④预期/场景——上线后用户用在更难场景或更高预期下。本质是「准确率≠好用」。【实例】内部知识问答离线准确率 92%，上线满意度仅 3.1/5。复盘：离线题都是单轮标准问，线上 45% 是多轮追问；且答案给一大段无摘要，用户要翻。加「先给结论再展开+多轮上下文」后满意度到 4.0。说明评测要含多轮与可用性维度。"
-},
-  {
-  "id": "iq-bd-aipm-offer-9",
-  "title": "如果出现严重幻觉，你会优先改 Prompt、RAG、Workflow、模型还是产品交互？怎么判断问题究竟出在哪一层？",
-  "type": "功能设计",
-  "difficulty": "高级",
-  "company": "字节跳动",
-  "sourcePostId": "exp-auto-20260828-bytedance-ai-pm-offer",
-  "referenceAnswer": "不盲改，先分层定位：①先查 RAG/知识——答案里的「事实」是否在知识库有依据？无依据→补知识/RAG（最常见根因）；②再查 Prompt/约束——有依据但模型没遵循/编造→改 Prompt（加「只基于检索内容、禁止编造、不确定说不知道」）；③查 Workflow/流程——是否缺「校验/拒答」环节导致放行幻觉→加生成后事实校验节点；④查模型——强模型换上后幻觉明显减少→是模型能力；⑤产品交互——即便偶发，用「引用标注+用户纠错反馈+低置信转人工」兜底。优先级：多数幻觉根因在 RAG/知识缺失与 Prompt 约束，先这两层，再 Workflow 校验，最后才换模型（成本最高）。判断方法同「回答错了」的引用校验+消融。【实例】金融问答幻觉：查 trace 发现 70% 幻觉是知识库缺最新利率→先补 RAG；剩 30% 是模型超范围编→加 Prompt 拒答+生成后比对，幻觉率从 9% 到 1.2%，未换模型。"
-},
-  {
-  "id": "iq-bd-aipm-offer-10",
-  "title": "大模型输出具有不确定性，作为 PM，你怎么设计评测集和 Bad Case 分析体系？BadCase 怎么分类并反哺下一轮迭代？",
-  "type": "需求分析",
-  "difficulty": "高级",
-  "company": "字节跳动",
-  "sourcePostId": "exp-auto-20260828-bytedance-ai-pm-offer",
-  "referenceAnswer": "评测集设计：①覆盖性——按真实场景分层抽样（意图/难度/多轮/边界），含「应拒答」的负样本；②稳定性——同一题跑 N 次（如 5 次）取一致性，暴露不确定性；③可量化——明确评分 rubric（准确性/完整性/合规性/引用正确），人工+自动结合；④持续扩充——把线上 Bad Case 自动回流成新用例（回归集）。Bad Case 分类：按根因分——知识缺失、检索失败、Prompt 误、模型推理错、产品交互问题、边界/拒答失败。反哺：每月归因→对应改 RAG/Prompt/Workflow/模型；同类 Bad Case 进回归集防复发。【实例】建 500 条评测集（标准问 300+多轮 120+负样本 80），每版本跑全量+5 次重跑看方差；季度归因：检索失败 40%、Prompt 30%、模型 20%、交互 10%；据此排期——先上 Rerank、再补 Few-shot，下一版准确率 +6pp、方差降一半。"
-},
-  {
-  "id": "iq-bd-aipm-offer-11",
-  "title": "你项目中模型选型是怎么做的？为什么选择这个模型？如果更强的模型效果提高 5%，但是成本翻倍、延迟增加 50%，你怎么决定换不换？",
-  "type": "需求分析",
-  "difficulty": "高级",
-  "company": "字节跳动",
-  "sourcePostId": "exp-auto-20260828-bytedance-ai-pm-offer",
-  "referenceAnswer": "选型看「场景匹配+边际收益/成本」。步骤：①明确任务与当前瓶颈（效果不够还是成本/延迟？）；②在小样本评测集上对比候选模型的效果差与成本/延迟；③算边际 ROI：+5% 效果带来的用户价值（留存/转化/付费）是否覆盖成本 ×2+延迟 +50% 的体验损耗。决策：若任务高价值、用户对质量极敏感（如首屏生成、付费转化）、延迟在容忍内→可换；若已是高频低成本任务、用户无感差异→不换，把强模型留给关键路径。也可「分层」：关键路径用强模型，长尾用弱模型。【实例】摘要场景：强模型效果好 5% 但成本 ×2.1、延迟 +55%，用户调研显示「摘要是否完美」对留存影响极小、延迟敏感（>3s 流失高）。结论：不换，弱模型+更好 Prompt 兜底；把强模型预算用于「客服首响」这个直接影响转化的环节，ROI 更高。"
-},
-  {
-  "id": "iq-bd-aipm-offer-12",
-  "title": "一个 AI 产品回答质量已经不错，但是次日/7日留存一直上不去，你会怎么拆解？怎么判断是模型问题、产品问题还是用户需求本身低频？",
-  "type": "增长策略",
-  "difficulty": "中级",
-  "company": "字节跳动",
-  "sourcePostId": "exp-auto-20260828-bytedance-ai-pm-offer",
-  "referenceAnswer": "三步定位：①看「质量好」的口径——是客观准确率还是用户感知？可能准确但「用一次就够了」（任务低频/一次性）；②拆留存漏斗：激活率（首次是否完成目标）→次留（是否形成习惯/回访动机）→7留（是否嵌入工作流）。激活高次留低→缺回访钩子（无提醒/无沉淀/无社交）；次留尚可7留低→未成习惯；③区分低频 vs 产品问题：看「目标用户真实使用频次上限」（如年度报税助手天然低频，靠产品救不了）→属需求低频，应做「广度扩展」（覆盖更多场景）而非硬拉留存；若本可高频却低频→产品未嵌入场景（缺入口/触发/价值闭环）。【实例】AI 周报助手：质量评分 4.5，但 7 留仅 12%。拆解：周报天然周频，日活本不该高；但用户写完就走、无沉淀。改法：周报自动归档成「个人工作库」+周一主动推送+可对话追问历史，7 留升到 28%。说明先分清低频本质再决策。"
-},
-  {
-  "id": "iq-bd-aipm-offer-13",
-  "title": "如果一个需求，用 Workflow 能做到 90 分，用 Agent 能做到 95 分，但 Agent 的成本是 3 倍、延迟是 2 倍，你会选哪个？为什么？",
-  "type": "需求分析",
-  "difficulty": "中级",
-  "company": "字节跳动",
-  "sourcePostId": "exp-auto-20260828-bytedance-ai-pm-offer",
-  "referenceAnswer": "不唯上限，看「边际 5 分」值不值代价。决策框架：①用户感知阈值——90 分是否已「够好」？很多场景 90 分用户无感差异，95 分边际价值低；②成本结构——×3 成本在总体毛利里占比？若侵蚀利润→不值；③延迟影响——×2 延迟是否超体验红线（如实时对话 >数秒流失）；④可组合——能否「默认 Workflow、疑难升级 Agent」（分级），既保 90 分常态又拿到关键 95 分。结论：一般选 Workflow 为主+Agent 兜底，除非该任务失误代价极高（医疗/金融关键决策）值得为 5 分付溢价。【实例】智能客服：Workflow 解决 85% 标准问（90 分体验），Agent 处理 15% 疑难（95 分）。全量上 Agent 成本 ×3、首响 ×2，用户感知差异 <5%。采用「Workflow 主力+Agent 升级」分级，总成本仅 +20%、关键疑难仍拿 95 分，ROI 最优。"
-},
-  {
-  "id": "iq-bd-aipm-offer-14",
-  "title": "如果算法同学告诉你：「你这个需求现在模型能力实现不了」，你会怎么办？是砍需求、降级方案、换模型，还是调整产品交互？",
-  "type": "需求分析",
-  "difficulty": "高级",
-  "company": "字节跳动",
-  "sourcePostId": "exp-auto-20260828-bytedance-ai-pm-offer",
-  "referenceAnswer": "不立刻砍，先做「需求-能力-体验」三角拆解：①能否降级——把「一步到位」拆成「先 80% 可用」：如做不到端到端生成，先做「半自动+人工确认」；②能否换模型/方案——同一能力换更强模型或换技术路线（规则+模型混合）是否可达；③能否改产品交互——把「系统全自动」改成「用户协作/分步确认」，用交互消化能力缺口（如让用户在关键节点纠偏）；④实在不行再砍或排期。PM 价值在「翻译」：把算法限制转成用户可接受的产品形态，而非被动接受或硬压。【实例】要做「一句话生成完整 PPT」，模型做不到。没砍需求，而是降级为「生成大纲+逐页草图，用户点选细化」（半自动），并换更强模型提草稿质量；交互上允许中途编辑。上线后用户完成率 76%，远超「等完美方案」的 0。算法限制被产品化吸收。"
-},
-  {
-  "id": "iq-bd-aipm-offer-15",
-  "title": "如果一个 Agent 的任务成功率从 70% 提升到 85%，但平均响应时间从 5 秒变成 20 秒，你认为这个版本应该上线吗？你还需要什么信息才能判断？",
-  "type": "需求分析",
-  "difficulty": "高级",
-  "company": "字节跳动",
-  "sourcePostId": "exp-auto-20260828-bytedance-ai-pm-offer",
-  "referenceAnswer": "不能直接拍板，先看信息：①延迟构成——20s 是 P50 还是 P95？若 P95、P50 仅 8s，多数用户无感；②任务性质——该 Agent 是否高价值/低频/用户愿等待（如深度分析、报表生成，用户本就预期慢）？若实时对话则不可；③成功率提升的代价是否被延迟抵消——看「有效完成率」（成功且用户在超时内未流失）；④成本与容量——20s 是否撑得住并发；⑤有无折中——异步化（先返回进度、完成通知）、缓存、分级。结论：若是高价值异步任务、P50 可控→可上并做异步；若是实时高频→不急上，先优化延迟（流式/并行/缓存）。【实例】报表生成 Agent：成功率 70%→85%，但 P95 20s。补充信息后：该任务用户预期就是「几分钟出」，且 85% 成功率省下大量人工，P50 仅 9s。决策：上线+改异步（提交后 progress+完成提醒），未流失且满意度升。若当初是实时问答则另判。"
-},
-  {
-  "id": "iq-bd-aipm-offer-16",
-  "title": "AI 产品有一个很典型的问题：模型能力提升≠用户体验提升。你怎么理解？举一个具体产品场景说明。",
-  "type": "产品拆解",
-  "difficulty": "高级",
-  "company": "字节跳动",
-  "sourcePostId": "exp-auto-20260828-bytedance-ai-pm-offer",
-  "referenceAnswer": "体验=感知价值-摩擦成本。模型能力只是「能力上限」，体验还受交互、预期、场景、稳定性影响：①能力过剩但交互差——答案更准但更长更慢，用户反而烦；②未管理预期——能力涨了用户预期涨更快，相对满意度不升；③长尾/稳定性——平均提升但偶发错误更致命，信任下降；④新能力未被「产品化」成用户能感知的功能。所以 PM 要把模型能力翻译成「更省事/更可控/更可信」的体验，而非堆参数。【实例】某写作助手换更强模型后「文采」提升，但用户反馈「更啰嗦、更慢、不爱用」。根因：更强模型默认输出更长更华丽，没做「简洁模式+可控长度+实时流式」。我们加长度滑块+流式+一键精简，体验分反超。说明「能力提升」要通过产品交互才能变成「体验提升」。"
-},
-  {
-  "id": "iq-bd-aipm-offer-17",
-  "title": "如果让你从0到1做一个面向内容创作者的 Agent，你会怎么判断应该做「创作助手」还是「自动创作 Agent」？两者产品设计最大的区别是什么？",
-  "type": "产品拆解",
-  "difficulty": "高级",
-  "company": "字节跳动",
-  "sourcePostId": "exp-auto-20260828-bytedance-ai-pm-offer",
-  "referenceAnswer": "判断依据：①创作者控制权诉求——专业创作者对「表达主权」敏感，不愿被替写，更适合「助手」（建议/补全/改稿/灵感）；②任务容错——创作主观性强、难有唯一正确解，全自动风险高（风格漂移、事实错、品牌不一致）；③价值锚点——助手提效（省时）、自动创作提量（规模化），看目标用户要「更好」还是「更多」。最大区别在「人与系统的边界」：助手=人在回路（Human-in-Loop），系统补位、人决策；自动创作=系统主驾、人审校。建议从「助手」切入验证需求，再对标准化内容（带货文案、标题）逐步自动化。【实例】做短视频脚本 Agent：先上「创作助手」（给选题→出 3 版大纲→用户选→扩写→用户改），留存与付费好；对成熟垂类（本地生活探店文案）才开放「自动生成+人工一键发布」。二者产品差异：助手重「协作 UI/版本管理/可控」，自动创作重「质量护栏/品牌一致性/审核流」。"
-}
+  }
 ];
 // INTERVIEW_QA_SEED-END
 
@@ -4753,6 +4877,170 @@ function isThisWeek(dateStr) {
 function escapeHtml(str) {
   if (!str) return '';
   return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+/* 富文本渲染：把日报/产出里粘贴的标准 Markdown 表格转成 HTML 表格，
+   其余文本照常转义并保留换行（容器为 pre-wrap）。仅识别多行表格：
+   表头行 + 分隔行（|---|---|）+ 数据行，每行以 | 开头/结尾。*/
+function renderRich(text) {
+  if (!text) return '';
+  const lines = String(text).split(/\r?\n/);
+  const isRow = (l) => /^\s*\|.*\|\s*$/.test(l);
+  const isSep = (l) => /^\s*\|[\s:|-]*\|?\s*$/.test(l) && /-/.test(l) && /\|/.test(l);
+  const out = [];
+  let i = 0;
+  while (i < lines.length) {
+    if (isRow(lines[i])) {
+      const block = [];
+      while (i < lines.length && isRow(lines[i])) { block.push(lines[i]); i++; }
+      if (block.length >= 2 && isSep(block[1])) {
+        out.push(mdTableHtml(block));
+      } else {
+        out.push(block.map(escapeHtml).join('\n'));
+      }
+    } else {
+      out.push(escapeHtml(lines[i]));
+      i++;
+    }
+  }
+  return out.join('\n');
+}
+
+function mdTableHtml(block) {
+  const splitCells = (line) => {
+    let s = line.trim();
+    if (s.startsWith('|')) s = s.slice(1);
+    if (s.endsWith('|')) s = s.slice(0, -1);
+    return s.split('|');
+  };
+  const headers = splitCells(block[0]).map(c => mdInline(c.trim()));
+  const sepCells = splitCells(block[1]);
+  const aligns = sepCells.map(c => {
+    const t = c.trim();
+    const l = t.startsWith(':'), r = t.endsWith(':');
+    if (l && r) return 'center';
+    if (r) return 'right';
+    return 'left';
+  });
+  let html = '<div class="md-table-wrap"><table class="md-table"><thead><tr>';
+  headers.forEach((h, idx) => {
+    html += '<th style="text-align:' + (aligns[idx] || 'left') + '">' + h + '</th>';
+  });
+  html += '</tr></thead><tbody>';
+  for (let r = 2; r < block.length; r++) {
+    const cells = splitCells(block[r]).map(c => mdInline(c.trim()));
+    html += '<tr>';
+    headers.forEach((_, idx) => {
+      html += '<td style="text-align:' + (aligns[idx] || 'left') + '">' + (cells[idx] !== undefined ? cells[idx] : '') + '</td>';
+    });
+    html += '</tr>';
+  }
+  html += '</tbody></table></div>';
+  return html;
+}
+
+function mdInline(s) {
+  let t = escapeHtml(s);
+  t = t.replace(/`([^`]+)`/g, '<code>$1</code>');
+  t = t.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  t = t.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+  return t;
+}
+
+/* 完整 Markdown 渲染（用于日报"完整详情"）：支持 # 标题、``` 代码块、| 表格、
+   > 引用、- / 1. 列表、- [ ] 任务、--- 分隔线、**加粗**、`行内code`、[链接](url)。
+   非表格段落保留换行；所有文本先经 escapeHtml 再做行内格式化，安全且不乱码。*/
+function renderMarkdown(text) {
+  if (!text) return '';
+  const lines = String(text).replace(/\r\n?/g, '\n').split('\n');
+  const out = [];
+  let i = 0;
+  const isRow = (l) => /^\s*\|.*\|\s*$/.test(l);
+  const isSep = (l) => /^\s*\|[\s:|-]*\|?\s*$/.test(l) && /-/.test(l) && /\|/.test(l);
+  const isFence = (l) => /^\s*```/.test(l);
+  const isBlank = (l) => /^\s*$/.test(l);
+  const isHr = (l) => /^\s*(-{3,}|\*{3,}|_{3,})\s*$/.test(l);
+  const isHeading = (l) => /^\s*#{1,6}\s+/.test(l);
+  const isQuote = (l) => /^\s*>/.test(l);
+  const isUl = (l) => /^\s*([-*])\s+/.test(l);
+  const isOl = (l) => /^\s*\d+\.\s+/.test(l);
+  const isTask = (l) => /^\s*([-*])\s+\[[ xX]\]\s+/.test(l);
+
+  while (i < lines.length) {
+    const line = lines[i];
+    if (isBlank(line)) { i++; continue; }
+    // 代码块
+    if (isFence(line)) {
+      const buf = [];
+      i++;
+      while (i < lines.length && !isFence(lines[i])) { buf.push(lines[i]); i++; }
+      if (i < lines.length) i++; // 闭合 ```
+      out.push('<pre class="md-pre"><code>' + escapeHtml(buf.join('\n')) + '</code></pre>');
+      continue;
+    }
+    // 分隔线
+    if (isHr(line)) { out.push('<hr class="md-hr">'); i++; continue; }
+    // 标题
+    const hm = line.match(/^\s*(#{1,6})\s+(.*)$/);
+    if (hm) {
+      const lvl = hm[1].length;
+      out.push('<h' + lvl + ' class="md-h md-h' + lvl + '">' + mdInline(hm[2].trim()) + '</h' + lvl + '>');
+      i++; continue;
+    }
+    // 表格
+    if (isRow(line)) {
+      const block = [];
+      while (i < lines.length && isRow(lines[i])) { block.push(lines[i]); i++; }
+      if (block.length >= 2 && isSep(block[1])) {
+        out.push(mdTableHtml(block));
+      } else {
+        out.push('<p class="md-p">' + block.map(mdInline).join('<br>') + '</p>');
+      }
+      continue;
+    }
+    // 引用
+    if (isQuote(line)) {
+      const buf = [];
+      while (i < lines.length && isQuote(lines[i])) { buf.push(lines[i].replace(/^\s*>\s?/, '')); i++; }
+      out.push('<blockquote class="md-quote">' + buf.map(mdInline).join('<br>') + '</blockquote>');
+      continue;
+    }
+    // 任务列表 / 无序列表
+    if (isTask(line) || isUl(line)) {
+      const items = [];
+      while (i < lines.length && (isTask(lines[i]) || isUl(lines[i]))) {
+        const tm = lines[i].match(/^\s*([-*])\s+\[([ xX])\]\s+(.*)$/);
+        if (tm) {
+          const on = tm[2].toLowerCase() === 'x';
+          items.push('<li class="md-task"><span class="md-check' + (on ? ' on' : '') + '">' + (on ? '✓' : '○') + '</span><span class="' + (on ? 'md-task-done' : '') + '">' + mdInline(tm[3]) + '</span></li>');
+        } else {
+          const um = lines[i].match(/^\s*([-*])\s+(.*)$/);
+          items.push('<li>' + mdInline(um[2]) + '</li>');
+        }
+        i++;
+      }
+      out.push('<ul class="md-ul">' + items.join('') + '</ul>');
+      continue;
+    }
+    // 有序列表
+    if (isOl(line)) {
+      const items = [];
+      while (i < lines.length && isOl(lines[i])) {
+        const om = lines[i].match(/^\s*\d+\.\s+(.*)$/);
+        items.push('<li>' + mdInline(om[1]) + '</li>');
+        i++;
+      }
+      out.push('<ol class="md-ol">' + items.join('') + '</ol>');
+      continue;
+    }
+    // 普通段落（收集连续普通行）
+    const buf = [];
+    while (i < lines.length && !isBlank(lines[i]) && !isFence(lines[i]) && !isHr(lines[i]) && !isHeading(lines[i]) && !isRow(lines[i]) && !isQuote(lines[i]) && !isUl(lines[i]) && !isOl(lines[i])) {
+      buf.push(lines[i]); i++;
+    }
+    if (buf.length) out.push('<p class="md-p">' + buf.map(mdInline).join('<br>') + '</p>');
+  }
+  return out.join('\n');
 }
 function showToast(msg) {
   const t = document.getElementById('toast');
@@ -6170,7 +6458,7 @@ function openDailyModal(dateStr) {
   const existing = getDailyReport(dateStr);
   const items = existing ? existing.items : [];
   const rowsHtml = items.map((it, i) => dailyItemRowHtml(i, it)).join('')
-    || dailyItemRowHtml(0, { what: '', steps: '', result: '' });
+    || dailyItemRowHtml(0, { what: '', steps: '', result: '', summary: '', detail: '' });
 
   const content = document.getElementById('modalContent');
   content.innerHTML = `
@@ -6181,7 +6469,7 @@ function openDailyModal(dateStr) {
       </button>
     </div>
     <div style="background:var(--gradient-soft);border-radius:8px;padding:10px 12px;margin-bottom:14px;font-size:12.5px;color:var(--text-2);line-height:1.7">
-      <strong style="color:var(--primary)">填写说明：</strong>「事项」写今天做了什么；「判断步骤」写你做决策/判断时的思考过程（可多步）；「结果/产出」写最终结论或交付物。
+      <strong style="color:var(--primary)">填写说明：</strong>「事项」写今天做了什么；「判断步骤」写你做决策/判断时的思考过程（可多步）；「结果/产出」写最终结论或交付物。<strong>核心摘要</strong>默认在卡片展示；内容多时可把完整内容放进<strong>完整详情</strong>（支持 Markdown），默认折叠、点击展开。
     </div>
     <div id="dailyRows">${rowsHtml}</div>
     <button class="btn btn-sm btn-secondary" style="margin-bottom:14px" onclick="addDailyRow()">
@@ -6215,6 +6503,14 @@ function dailyItemRowHtml(i, it) {
         <label class="form-label">结果 / 产出</label>
         <textarea class="form-textarea" data-f="result" placeholder="例如：报告已发评审群，待周三评审会确认方向" style="min-height:60px">${escapeHtml(it.result || '')}</textarea>
       </div>
+      <div class="form-group">
+        <label class="form-label">核心摘要（默认展示，可选 · 支持 Markdown 表格）</label>
+        <textarea class="form-textarea" data-f="summary" placeholder="一句话核心任务 + 关键数字，卡片默认展示这部分" style="min-height:60px">${escapeHtml(it.summary || '')}</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">完整详情（点击展开，可选 · 支持 Markdown：# 标题 / | 表格 / 代码块 / > 引用 / 1. 列表 / - [ ] 任务）</label>
+        <textarea class="form-textarea" data-f="detail" placeholder="粘贴完整日报 Markdown，默认折叠，点击&quot;展开完整详情&quot;查看" style="min-height:120px">${escapeHtml(it.detail || '')}</textarea>
+      </div>
     </div>
   `;
 }
@@ -6223,7 +6519,7 @@ function addDailyRow() {
   const wrap = document.getElementById('dailyRows');
   const idx = wrap.querySelectorAll('.daily-row').length;
   const div = document.createElement('div');
-  div.innerHTML = dailyItemRowHtml(idx, { what: '', steps: '', result: '' });
+  div.innerHTML = dailyItemRowHtml(idx, { what: '', steps: '', result: '', summary: '', detail: '' });
   wrap.appendChild(div.firstElementChild);
 }
 function removeDailyRow(btn) {
@@ -6236,8 +6532,10 @@ function saveDailyReport(dateStr) {
   const items = rows.map(r => ({
     what: (r.querySelector('[data-f="what"]').value || '').trim(),
     steps: (r.querySelector('[data-f="steps"]').value || '').trim(),
-    result: (r.querySelector('[data-f="result"]').value || '').trim()
-  })).filter(it => it.what || it.steps || it.result);
+    result: (r.querySelector('[data-f="result"]').value || '').trim(),
+    summary: (r.querySelector('[data-f="summary"]') ? r.querySelector('[data-f="summary"]').value : '').trim(),
+    detail: (r.querySelector('[data-f="detail"]') ? r.querySelector('[data-f="detail"]').value : '').trim()
+  })).filter(it => it.what || it.steps || it.result || it.summary || it.detail);
   upsertDailyReport(dateStr, items);
   closeModal();
   renderDailyReports();
@@ -6250,6 +6548,16 @@ function deleteDailyReport(dateStr) {
   setData(KEYS.dailyReports, list);
   renderDailyReports();
   showToast('已删除');
+}
+
+// 折叠/展开日报完整详情
+function toggleDailyDetail(btn) {
+  const detail = btn.parentElement.querySelector('.md-detail');
+  if (!detail) return;
+  const open = detail.style.display !== 'none';
+  detail.style.display = open ? 'none' : '';
+  btn.querySelector('.md-detail-arrow').textContent = open ? '▾' : '▴';
+  btn.querySelector('.md-detail-label').textContent = open ? '展开完整详情' : '收起详情';
 }
 
 function renderDailyReports() {
@@ -6269,8 +6577,10 @@ function renderDailyReports() {
     const itemHtml = items.length ? items.map((it, i) => `
       <div class="daily-item">
         <div class="daily-item-what"><span class="idx">${i + 1}</span><span>${escapeHtml(it.what || '(未填写事项)')}</span></div>
-        ${it.steps ? `<div class="daily-item-label">判断步骤</div><div class="daily-item-text">${escapeHtml(it.steps)}</div>` : ''}
-        ${it.result ? `<div class="daily-item-label daily-item-result">结果 / 产出</div><div class="daily-item-text daily-item-result">${escapeHtml(it.result)}</div>` : ''}
+        ${it.summary ? `<div class="daily-item-label">核心任务</div><div class="daily-item-text">${renderRich(it.summary)}</div>` : ''}
+        ${it.detail ? `<button class="md-detail-toggle" onclick="toggleDailyDetail(this)"><span class="md-detail-arrow">▾</span><span class="md-detail-label">展开完整详情</span></button><div class="md-detail md-body" style="display:none">${renderMarkdown(it.detail)}</div>` : ''}
+        ${it.steps ? `<div class="daily-item-label">判断步骤</div><div class="daily-item-text">${renderRich(it.steps)}</div>` : ''}
+        ${it.result ? `<div class="daily-item-label daily-item-result">结果 / 产出</div><div class="daily-item-text daily-item-result">${renderRich(it.result)}</div>` : ''}
       </div>
     `).join('') : `<div class="daily-item" style="color:var(--text-3)">（当天无内容）</div>`;
     const isTodayR = r.date === today();
@@ -7032,7 +7342,7 @@ function saveTask(id) {
 // Two major types:
 //  - knowledge (知识经验贴): from 小红书/抖音/B站 links → topic classification (竞品分析、用户画像…)
 //  - interview (面试经验贴): 面经 → company + role classification
-const EXP_KNOWLEDGE_TOPICS = ['竞品分析','用户画像','需求分析','功能设计','数据分析','AI产品','产品方法论','职场成长','运营知识','其他'];
+const EXP_KNOWLEDGE_TOPICS = ['竞品分析','用户画像','需求分析','功能设计','数据分析','AI产品','产品方法论','职场成长','其他'];
 const EXP_CATEGORIES = ['产品思维与方法论','职场成长与晋升','AI技术与趋势','用户研究与设计','数据分析','团队管理与沟通','其他'];
 
 /* View state for exp panels (persisted in settings.expView) */
@@ -7107,63 +7417,14 @@ function mergeAutoExpSeed() {
   let settings = getData(KEYS.settings);
   if (!settings || typeof settings !== 'object' || Array.isArray(settings)) settings = {};
   const imported = settings.seedImported || {};
-  let list = getData(KEYS.expPosts);
-
-  // ① 同 id 去重：本地若出现重复 id（如曾用不同分类/内容多次写入），只保留第一条，其余丢弃
-  let dupRemoved = 0;
-  const seenIds = {};
-  const deduped = [];
-  list.forEach(p => {
-    const id = p.id || '';
-    if (seenIds[id]) { dupRemoved++; return; }
-    seenIds[id] = true;
-    deduped.push(p);
-  });
-
-  // ② 以源码种子为权威，规范化属于种子的条目（修复旧分类错位，例如曾误写入「AI产品」）
-  const seedById = {};
-  seed.forEach(item => { const id = item.id || ('exp-auto-' + (item.title || '') + (item.sourceUrl || '')); seedById[id] = item; });
-  let normalizeChanged = 0;
-  const normalized = deduped.map(p => {
-    const s = seedById[p.id];
-    if (!s) return p; // 非种子条目（用户自建/编辑），原样保留，绝不改动
-    const fixed = {
-      id: p.id,
-      title: s.title || p.title || '未命名经验贴',
-      type: s.type === 'knowledge' ? 'knowledge' : 'interview',
-      company: s.company || '',
-      role: s.role || '',
-      platform: s.platform || '其他',
-      category: s.category || '其他',
-      sourceUrl: s.sourceUrl || '',
-      keyPoints: Array.isArray(s.keyPoints) ? s.keyPoints : (Array.isArray(p.keyPoints) ? p.keyPoints : []),
-      content: s.content || '',
-      summary: s.summary || '',
-      tags: s.tags || '',
-      links: Array.isArray(s.links) ? s.links : [],
-      isAIGenerated: true,
-      isAutoCollected: true,
-      date: s.date || p.date || today()
-    };
-    // 仅当实际字段有变化时才计为已修改，避免无谓写回、保留用户本地正常条目
-    const same = (fixed.title === (p.title || '') && fixed.type === (p.type || '') &&
-      fixed.company === (p.company || '') && fixed.role === (p.role || '') &&
-      fixed.platform === (p.platform || '其他') && fixed.category === (p.category || '其他') &&
-      fixed.sourceUrl === (p.sourceUrl || '') && fixed.content === (p.content || '') &&
-      fixed.summary === (p.summary || '') && fixed.tags === (p.tags || '') &&
-      JSON.stringify(fixed.keyPoints) === JSON.stringify(p.keyPoints || []) &&
-      JSON.stringify(fixed.links) === JSON.stringify(p.links || []));
-    if (!same) normalizeChanged++;
-    return fixed;
-  });
-
-  // ③ 新增源码有、本地仍缺的种子条目
+  const list = getData(KEYS.expPosts);
   let added = 0;
   seed.forEach(item => {
     const id = item.id || ('exp-auto-' + (item.title || '') + (item.sourceUrl || ''));
-    if (normalized.some(p => p.id === id)) return;  // 本地已有则不重复；本地缺失（曾删除/丢失）则重新补齐，修复幂等标记导致永久丢失的 bug
+    if (imported[id]) return;
+    if (list.some(p => p.id === id)) return;
     imported[id] = true;
-    normalized.unshift({
+    list.unshift({
       id: id,
       title: item.title || '未命名经验贴',
       type: item.type === 'knowledge' ? 'knowledge' : 'interview',
@@ -7183,49 +7444,734 @@ function mergeAutoExpSeed() {
     });
     added++;
   });
-
-  // ④ 只要数据确有变化（去重 / 规范化 / 新增），就立即持久化写回；未变化则完全不触碰本地数据
-  if (dupRemoved > 0 || normalizeChanged > 0 || added > 0) {
+  if (added > 0) {
     settings.seedImported = imported;
     setData(KEYS.settings, settings);
-    setData(KEYS.expPosts, normalized);
+    setData(KEYS.expPosts, list);
   }
 }
 
-/* ========== Task Board Auto Seed (from window.AUTO_TASK_SEED) ==========
-   把「每日任务计划」合并进 localStorage（KEYS.tasks）。按 id 去重、仅新增不删除：
-   - 已导入（记录在 settings.seedTaskImported）的任务不再重复添加；
-   - 用户在看板里手动改/删的任务不会被复活或覆盖；
-   - 因此这份「每天一个、按顺序完成」的计划是一次性安全注入，可重复加载。 */
-function mergeAutoTaskSeed() {
-  const seed = (typeof window.AUTO_TASK_SEED !== 'undefined' && Array.isArray(window.AUTO_TASK_SEED)) ? window.AUTO_TASK_SEED : [];
-  if (!seed.length) return;
-  let settings = getData(KEYS.settings);
-  if (!settings || typeof settings !== 'object' || Array.isArray(settings)) settings = {};
-  const imported = settings.seedTaskImported || {};
-  let list = getData(KEYS.tasks);
-  let added = 0;
-  seed.forEach(item => {
-    const id = item.id || ('task-auto-' + (item.title || ''));
-    if (imported[id]) return;                                   // 已导入过，跳过（保留用户后续改动/删除）
-    if (list.some(t => t.id === id)) { imported[id] = true; return; } // 本地已有同 id，跳过
-    list.unshift({
-      id: id,
-      title: item.title || '未命名任务',
-      priority: item.priority || 'P1',
-      status: item.status || '待办',
-      dueDate: item.dueDate || '',
-      tags: item.tags || ''
-    });
-    imported[id] = true;
-    added++;
-  });
-  if (added > 0) {
-    settings.seedTaskImported = imported;
-    setData(KEYS.settings, settings);
-    setData(KEYS.tasks, list);
-  }
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ========== 公司分类元信息 (自动生成: 类型 + 知名程度, 供岗位投递筛选/排序) ==========
+   类型 t: 互联网 | 私企 | 外企 | 国企 ; 知名程度 f: 1-100
+   本块为附加数据, 不会被飞书同步(AUTO_JOB_SEED 整体替换)覆盖。 */
+window.COMPANY_META = {
+  "[EX.IO](http://EX.IO) 香港合规持牌数字资产交易平台": {"t":"外企","f":61},
+  "360集团": {"t":"互联网","f":59},
+  "4399游戏": {"t":"互联网","f":82},
+  "阿科玛": {"t":"外企","f":81},
+  "阿里巴巴": {"t":"互联网","f":99},
+  "阿里巴巴千问事业部": {"t":"互联网","f":60},
+  "阿里国际": {"t":"互联网","f":60},
+  "阿里云瓴羊": {"t":"互联网","f":60},
+  "埃森哲": {"t":"外企","f":85},
+  "爱凡哲量化": {"t":"私企","f":43},
+  "爱凡哲投资": {"t":"私企","f":43},
+  "爱可拓": {"t":"私企","f":43},
+  "安捷利美维": {"t":"私企","f":43},
+  "安捷利美维-扩招": {"t":"私企","f":43},
+  "安克创新": {"t":"私企","f":48},
+  "安泉数智": {"t":"私企","f":44},
+  "安踏集团": {"t":"私企","f":44},
+  "安踏FILA": {"t":"私企","f":43},
+  "安永": {"t":"外企","f":84},
+  "安永-补招": {"t":"外企","f":63},
+  "昂科技术": {"t":"私企","f":44},
+  "昂纳科技集团": {"t":"私企","f":43},
+  "奥比中光": {"t":"私企","f":44},
+  "奥托立夫": {"t":"外企","f":82},
+  "百奥游戏": {"t":"互联网","f":81},
+  "百度": {"t":"互联网","f":97},
+  "百度-管理培训生计划": {"t":"互联网","f":60},
+  "百度个人超级智能事业群组(PSIG)": {"t":"互联网","f":59},
+  "百图生科": {"t":"私企","f":43},
+  "柏楚电子": {"t":"私企","f":44},
+  "半亩花田": {"t":"私企","f":44},
+  "半鞅私募基金": {"t":"私企","f":43},
+  "邦戴数科": {"t":"私企","f":43},
+  "宝洁": {"t":"外企","f":87},
+  "保利发展上海公司": {"t":"国企","f":84},
+  "北大深研院深港河套科学创新中心": {"t":"国企","f":82},
+  "北京发那科": {"t":"私企","f":44},
+  "倍通": {"t":"私企","f":44},
+  "倍漾量化": {"t":"私企","f":44},
+  "必凡娱乐": {"t":"互联网","f":81},
+  "哔哩哔哩": {"t":"互联网","f":92},
+  "哔哩哔哩-BW项目": {"t":"互联网","f":59},
+  "哔哩哔哩BML": {"t":"互联网","f":59},
+  "冰川网络": {"t":"互联网","f":83},
+  "并行科技": {"t":"私企","f":45},
+  "波克": {"t":"互联网","f":82},
+  "博道基金": {"t":"私企","f":81},
+  "博时基金": {"t":"国企","f":83},
+  "步科股份": {"t":"私企","f":45},
+  "策马集团": {"t":"私企","f":43},
+  "超聚变": {"t":"私企","f":44},
+  "超星集团": {"t":"私企","f":43},
+  "潮宏基": {"t":"私企","f":44},
+  "川土微电子": {"t":"私企","f":44},
+  "传音控股-雏鹰计划": {"t":"私企","f":44},
+  "传音控股-TAIG-AI顶尖人才招聘计划": {"t":"私企","f":44},
+  "传音控股·青鸟计划": {"t":"私企","f":44},
+  "创桥投资": {"t":"私企","f":43},
+  "春风动力": {"t":"私企","f":43},
+  "春秋航空": {"t":"私企","f":44},
+  "此芯科技": {"t":"私企","f":43},
+  "达美乐": {"t":"外企","f":81},
+  "大参林医药集团": {"t":"私企","f":43},
+  "大泽农生物科技": {"t":"私企","f":43},
+  "丹纳赫": {"t":"外企","f":82},
+  "丹纳赫生命科学中国": {"t":"外企","f":62},
+  "道一云": {"t":"私企","f":43},
+  "道远咨询": {"t":"私企","f":43},
+  "得物": {"t":"互联网","f":87},
+  "德邦快递": {"t":"私企","f":43},
+  "德勤中国": {"t":"外企","f":84},
+  "德赛西威": {"t":"私企","f":46},
+  "德州仪器": {"t":"外企","f":84},
+  "滴滴": {"t":"互联网","f":93},
+  "迪卡侬": {"t":"外企","f":82},
+  "第一创业证券": {"t":"私企","f":81},
+  "点点互动": {"t":"私企","f":43},
+  "点宽科技": {"t":"私企","f":43},
+  "点众科技": {"t":"私企","f":43},
+  "叠纸游戏": {"t":"互联网","f":87},
+  "叠纸游戏-「NOVA」训练营": {"t":"互联网","f":59},
+  "叠纸游戏「NOVA」训练营-返场": {"t":"互联网","f":59},
+  "鼎阳科技": {"t":"私企","f":44},
+  "东方财富": {"t":"私企","f":84},
+  "东风汽车-猛士汽车": {"t":"国企","f":86},
+  "东海半导体": {"t":"私企","f":43},
+  "东海基金": {"t":"私企","f":81},
+  "懂车帝": {"t":"互联网","f":90},
+  "洞墟科技": {"t":"私企","f":45},
+  "抖音": {"t":"互联网","f":96},
+  "独小漾": {"t":"私企","f":43},
+  "度小满": {"t":"互联网","f":88},
+  "多益网络": {"t":"互联网","f":83},
+  "恩智浦": {"t":"外企","f":83},
+  "帆一尚行": {"t":"私企","f":43},
+  "凡岛": {"t":"私企","f":44},
+  "菲婷丝": {"t":"外企","f":80},
+  "蜂巢当代艺术中心": {"t":"私企","f":43},
+  "孚腾资本": {"t":"私企","f":43},
+  "富士医疗技术服务": {"t":"私企","f":43},
+  "富统上海信息技术有限公司": {"t":"私企","f":43},
+  "高途": {"t":"私企","f":82},
+  "歌尔": {"t":"私企","f":45},
+  "歌尔丹拿": {"t":"私企","f":44},
+  "歌尔微电子": {"t":"私企","f":46},
+  "格思航天": {"t":"私企","f":43},
+  "固胜科技": {"t":"私企","f":43},
+  "冠宇集团": {"t":"私企","f":43},
+  "光大证券": {"t":"国企","f":83},
+  "光轮智能": {"t":"私企","f":43},
+  "光亿旺达": {"t":"私企","f":44},
+  "广电运通集团": {"t":"私企","f":45},
+  "广东联合产权交易中心有限公司": {"t":"国企","f":81},
+  "广发基金": {"t":"私企","f":83},
+  "广发期货": {"t":"私企","f":43},
+  "广发证券": {"t":"私企","f":84},
+  "广立微": {"t":"私企","f":43},
+  "广联达": {"t":"私企","f":43},
+  "广之旅": {"t":"私企","f":43},
+  "广州光锥元信息科技有限公司": {"t":"私企","f":43},
+  "广州奖": {"t":"私企","f":44},
+  "广州碳排放权交易中心": {"t":"国企","f":56},
+  "广州新东方": {"t":"私企","f":45},
+  "硅芯科技": {"t":"私企","f":43},
+  "国金资管": {"t":"私企","f":81},
+  "国联民生证券": {"t":"国企","f":82},
+  "国贸股份": {"t":"私企","f":45},
+  "国泰海通资": {"t":"国企","f":84},
+  "国泰君安期货": {"t":"国企","f":84},
+  "国投证券": {"t":"国企","f":82},
+  "国轩高科-轩锐计划": {"t":"私企","f":43},
+  "国仪量子": {"t":"私企","f":45},
+  "哈啰": {"t":"互联网","f":84},
+  "海尔": {"t":"私企","f":88},
+  "海尔消金": {"t":"私企","f":43},
+  "海康威视": {"t":"私企","f":43},
+  "海目星": {"t":"私企","f":43},
+  "海能达": {"t":"私企","f":44},
+  "海鸥集": {"t":"私企","f":43},
+  "海信集团": {"t":"国企","f":63},
+  "杭州银行": {"t":"国企","f":83},
+  "航天八院上海空间电源研究所": {"t":"国企","f":83},
+  "好未来": {"t":"私企","f":86},
+  "好未来集团": {"t":"私企","f":43},
+  "灏米创新": {"t":"私企","f":43},
+  "禾丰股份": {"t":"私企","f":43},
+  "禾赛科技": {"t":"私企","f":43},
+  "合合信息": {"t":"私企","f":43},
+  "和而泰": {"t":"私企","f":43},
+  "盒马": {"t":"私企","f":43},
+  "恒利联创": {"t":"私企","f":43},
+  "红茶移动": {"t":"私企","f":44},
+  "红树林基金会": {"t":"私企","f":44},
+  "虹科": {"t":"私企","f":44},
+  "虹软科技": {"t":"私企","f":45},
+  "鸿擎科技": {"t":"私企","f":44},
+  "虎鲸文娱": {"t":"私企","f":43},
+  "虎扑": {"t":"互联网","f":59},
+  "虎牙": {"t":"互联网","f":85},
+  "华安证券": {"t":"国企","f":83},
+  "华测导航": {"t":"私企","f":43},
+  "华虹集团": {"t":"国企","f":86},
+  "华钧广汇": {"t":"私企","f":44},
+  "华诺星空": {"t":"私企","f":43},
+  "华勤技术": {"t":"私企","f":44},
+  "华润万象生活": {"t":"国企","f":84},
+  "华润银行": {"t":"国企","f":83},
+  "华润置地": {"t":"国企","f":85},
+  "华硕电脑": {"t":"私企","f":44},
+  "华泰证券": {"t":"国企","f":85},
+  "华为半导体业务部": {"t":"互联网","f":60},
+  "华为销售类": {"t":"互联网","f":60},
+  "华为制造部": {"t":"互联网","f":59},
+  "华为终端BG": {"t":"互联网","f":60},
+  "华为ICT BG": {"t":"互联网","f":60},
+  "华芯程": {"t":"私企","f":44},
+  "华芯巨数微电子": {"t":"私企","f":43},
+  "华沿机器人": {"t":"私企","f":44},
+  "华智人力": {"t":"私企","f":43},
+  "辉芒微电子": {"t":"私企","f":44},
+  "辉瑞-非销售实习生职位": {"t":"外企","f":82},
+  "汇川技术": {"t":"私企","f":44},
+  "会世资产": {"t":"私企","f":43},
+  "惠科股份": {"t":"私企","f":43},
+  "惠升基金": {"t":"私企","f":81},
+  "火山引擎": {"t":"互联网","f":93},
+  "货拉拉": {"t":"互联网","f":85},
+  "吉比特&雷霆游戏": {"t":"互联网","f":85},
+  "吉家宠物": {"t":"私企","f":43},
+  "极飞科技": {"t":"私企","f":43},
+  "佳期投资": {"t":"私企","f":43},
+  "佳兆业集团": {"t":"私企","f":45},
+  "嘉吉": {"t":"外企","f":81},
+  "嘉立创": {"t":"私企","f":43},
+  "嘉为科技": {"t":"私企","f":45},
+  "剪映CapCut": {"t":"私企","f":44},
+  "简文投资": {"t":"私企","f":43},
+  "建元信托": {"t":"国企","f":82},
+  "江波龙电子": {"t":"私企","f":44},
+  "阶梯科技": {"t":"私企","f":43},
+  "节卡机器人": {"t":"私企","f":44},
+  "杰创智能": {"t":"私企","f":44},
+  "杰理科技": {"t":"私企","f":43},
+  "杰瑞集团": {"t":"私企","f":44},
+  "今日海归": {"t":"私企","f":43},
+  "今日头条": {"t":"互联网","f":95},
+  "金发科技": {"t":"私企","f":44},
+  "金证科技": {"t":"私企","f":44},
+  "晋华集成电路": {"t":"国企","f":82},
+  "京东": {"t":"互联网","f":96},
+  "京东集团": {"t":"互联网","f":61},
+  "经纬开物": {"t":"私企","f":43},
+  "景顺长城基金": {"t":"私企","f":83},
+  "九号公司": {"t":"私企","f":45},
+  "九识智能": {"t":"私企","f":43},
+  "九天睿芯": {"t":"私企","f":43},
+  "九鞅投资": {"t":"私企","f":43},
+  "玖治科技": {"t":"私企","f":43},
+  "巨人网络": {"t":"互联网","f":85},
+  "巨一科技": {"t":"私企","f":43},
+  "聚宽投资": {"t":"私企","f":46},
+  "聚源通汇资本": {"t":"私企","f":43},
+  "均胜": {"t":"私企","f":43},
+  "卡尔动力": {"t":"私企","f":43},
+  "卡特彼勒": {"t":"外企","f":82},
+  "开立医疗": {"t":"私企","f":43},
+  "开沃集团": {"t":"私企","f":43},
+  "开源证券研究所": {"t":"私企","f":44},
+  "凯创御聘": {"t":"私企","f":43},
+  "凯读投资": {"t":"私企","f":43},
+  "康冠科技": {"t":"私企","f":43},
+  "科大讯飞": {"t":"私企","f":45},
+  "科华集团": {"t":"私企","f":43},
+  "科曼医疗-国际营销中心": {"t":"私企","f":43},
+  "库洛游戏": {"t":"互联网","f":85},
+  "库犸科技": {"t":"私企","f":43},
+  "快手": {"t":"互联网","f":93},
+  "快手-急招岗位": {"t":"互联网","f":61},
+  "拉普拉斯新能源": {"t":"私企","f":43},
+  "岚图汽车": {"t":"私企","f":45},
+  "朗坤科技": {"t":"私企","f":44},
+  "乐动机器人": {"t":"私企","f":43},
+  "乐读": {"t":"私企","f":45},
+  "乐读-广州分校": {"t":"私企","f":43},
+  "乐鑫科技": {"t":"私企","f":44},
+  "乐信": {"t":"私企","f":44},
+  "李森智能": {"t":"私企","f":43},
+  "里森画廊": {"t":"外企","f":80},
+  "理工雷科": {"t":"私企","f":43},
+  "理想汽车": {"t":"私企","f":46},
+  "力芯微电子": {"t":"私企","f":44},
+  "利得基金": {"t":"私企","f":81},
+  "利尔达科技集团": {"t":"私企","f":44},
+  "利欧集团": {"t":"私企","f":43},
+  "荔枝集团": {"t":"私企","f":43},
+  "砺星Leetx": {"t":"私企","f":43},
+  "莉莉丝游戏": {"t":"互联网","f":88},
+  "联合电子": {"t":"外企","f":82},
+  "联合国教科文组织高等教育创新中心": {"t":"外企","f":80},
+  "联特科技": {"t":"私企","f":43},
+  "联通数科": {"t":"国企","f":85},
+  "联想": {"t":"互联网","f":90},
+  "联想-AI专项": {"t":"互联网","f":60},
+  "链接者集团": {"t":"私企","f":43},
+  "良信电气": {"t":"私企","f":43},
+  "临界点": {"t":"私企","f":44},
+  "灵犀互娱": {"t":"互联网","f":60},
+  "零跑汽车": {"t":"私企","f":43},
+  "六联智能": {"t":"私企","f":44},
+  "龙岗数据公司": {"t":"国企","f":81},
+  "龙湖集团": {"t":"私企","f":43},
+  "龙湖智创生活": {"t":"私企","f":45},
+  "龙旗科技": {"t":"私企","f":44},
+  "路博润": {"t":"外企","f":81},
+  "马上消费": {"t":"私企","f":44},
+  "蚂蚁集团": {"t":"互联网","f":92},
+  "迈塔兰斯": {"t":"私企","f":43},
+  "麦捷科技": {"t":"私企","f":43},
+  "麦科田医疗": {"t":"私企","f":43},
+  "麦田能源": {"t":"私企","f":44},
+  "满帮集团": {"t":"私企","f":43},
+  "梅特勒托利多": {"t":"外企","f":62},
+  "美图": {"t":"互联网","f":83},
+  "美团": {"t":"互联网","f":97},
+  "美团Keeta": {"t":"互联网","f":59},
+  "美象信息": {"t":"私企","f":43},
+  "镁信健康": {"t":"私企","f":44},
+  "米哈游": {"t":"互联网","f":90},
+  "名创优品": {"t":"私企","f":43},
+  "摩尔线程": {"t":"私企","f":44},
+  "摩根大通": {"t":"外企","f":88},
+  "茉莉数科集团": {"t":"私企","f":44},
+  "默华医疗": {"t":"外企","f":81},
+  "沐瞳": {"t":"互联网","f":84},
+  "纳科诺尔": {"t":"私企","f":43},
+  "纳芯微电子": {"t":"私企","f":44},
+  "南方报业": {"t":"国企","f":82},
+  "南方电网产融控股集团": {"t":"国企","f":86},
+  "南方基金": {"t":"国企","f":83},
+  "南方基金-金融科技专场": {"t":"私企","f":44},
+  "南芯科技": {"t":"私企","f":44},
+  "能良科技": {"t":"私企","f":44},
+  "宁德新能源(ATL)": {"t":"私企","f":43},
+  "宁泉资产-市场运营部": {"t":"私企","f":43},
+  "牛津大学出版社": {"t":"外企","f":82},
+  "诺瓦星云": {"t":"私企","f":43},
+  "欧莱雅-补录": {"t":"外企","f":86},
+  "欧莱雅百库": {"t":"外企","f":86},
+  "欧漫达高": {"t":"外企","f":81},
+  "欧普照明": {"t":"私企","f":43},
+  "磐松资产": {"t":"私企","f":43},
+  "泡泡玛特": {"t":"私企","f":45},
+  "鹏华基金": {"t":"国企","f":83},
+  "鹏新旭": {"t":"私企","f":43},
+  "拼多多": {"t":"互联网","f":96},
+  "拼多多-岗位急招": {"t":"互联网","f":59},
+  "拼多多集团": {"t":"互联网","f":60},
+  "拼多多集团-PDD": {"t":"互联网","f":59},
+  "平安产险科技中心": {"t":"私企","f":43},
+  "平安科技": {"t":"私企","f":43},
+  "平安理财": {"t":"私企","f":43},
+  "平安人寿广东公司": {"t":"私企","f":43},
+  "平安银行": {"t":"私企","f":45},
+  "平安银行广州分行": {"t":"私企","f":43},
+  "平安银行上海分行": {"t":"私企","f":43},
+  "平安银行深圳分行": {"t":"私企","f":43},
+  "平方和投资": {"t":"私企","f":43},
+  "朴朴超市": {"t":"私企","f":44},
+  "浦发银行": {"t":"国企","f":85},
+  "浦银理财": {"t":"国企","f":82},
+  "普渡机器人": {"t":"私企","f":44},
+  "启元机器人": {"t":"私企","f":43},
+  "启源芯动力": {"t":"私企","f":44},
+  "启云方": {"t":"私企","f":44},
+  "千岛": {"t":"私企","f":43},
+  "千里科技": {"t":"私企","f":43},
+  "青木科技": {"t":"私企","f":44},
+  "青昫之光": {"t":"私企","f":43},
+  "轻舟智航": {"t":"私企","f":43},
+  "清微智能": {"t":"私企","f":44},
+  "穹彻智能": {"t":"私企","f":43},
+  "秋芝2046": {"t":"私企","f":43},
+  "去哪儿旅行": {"t":"互联网","f":83},
+  "全棉时代": {"t":"私企","f":43},
+  "全芯智造": {"t":"私企","f":45},
+  "全志科技": {"t":"私企","f":45},
+  "泉峰科技": {"t":"私企","f":43},
+  "群核科技": {"t":"私企","f":44},
+  "日慈公益基金会": {"t":"私企","f":43},
+  "日立能源": {"t":"外企","f":82},
+  "荣耀": {"t":"私企","f":44},
+  "荣耀HONOR-逐梦计划": {"t":"私企","f":44},
+  "软通动力": {"t":"私企","f":44},
+  "锐健集团": {"t":"私企","f":45},
+  "锐明技术": {"t":"私企","f":43},
+  "瑞达基金": {"t":"私企","f":81},
+  "瑞幸咖啡": {"t":"私企","f":43},
+  "睿联技术": {"t":"私企","f":43},
+  "睿兴投资": {"t":"私企","f":45},
+  "塞拉尼斯": {"t":"外企","f":81},
+  "三七互娱": {"t":"互联网","f":86},
+  "三一集团": {"t":"私企","f":44},
+  "三一重能-智能化类": {"t":"私企","f":43},
+  "散爆网络": {"t":"互联网","f":84},
+  "山东发展投资控股集团": {"t":"国企","f":82},
+  "山东临工": {"t":"私企","f":43},
+  "杉川集团": {"t":"私企","f":44},
+  "杉数科技": {"t":"私企","f":44},
+  "商道纵横": {"t":"私企","f":43},
+  "上海迪士尼度假区": {"t":"外企","f":86},
+  "上海电影博物馆事业管理部": {"t":"国企","f":80},
+  "上海东方娱乐传媒集团": {"t":"私企","f":43},
+  "上海光通信有限公司": {"t":"私企","f":43},
+  "上海国际集团": {"t":"国企","f":56},
+  "上海简文私募基金管理有限公司": {"t":"私企","f":43},
+  "上海精测半导体": {"t":"私企","f":44},
+  "上海空间推进研究所": {"t":"国企","f":83},
+  "上海立芯": {"t":"私企","f":44},
+  "上海人工智能实验室": {"t":"国企","f":85},
+  "上海世博展览馆": {"t":"国企","f":82},
+  "上海市机械工程学会": {"t":"国企","f":80},
+  "上海外滩艺术中心": {"t":"国企","f":82},
+  "上海银行": {"t":"国企","f":83},
+  "上汽大众": {"t":"国企","f":56},
+  "上汽集团": {"t":"国企","f":88},
+  "上汽通用&泛亚": {"t":"国企","f":56},
+  "上银基金": {"t":"国企","f":81},
+  "上证所信息网络有限公司": {"t":"私企","f":43},
+  "韶音科技": {"t":"私企","f":45},
+  "舍弗勒": {"t":"外企","f":82},
+  "申通快递": {"t":"私企","f":43},
+  "申万宏源集团及证券": {"t":"国企","f":84},
+  "申万宏源研究": {"t":"国企","f":83},
+  "申万菱信基金": {"t":"国企","f":82},
+  "深蓝互动": {"t":"私企","f":44},
+  "深南电路": {"t":"私企","f":44},
+  "深信服": {"t":"私企","f":45},
+  "深圳艾欧谱特数字科技有限公司": {"t":"私企","f":43},
+  "深圳女报杂志社": {"t":"国企","f":80},
+  "深圳燃气": {"t":"国企","f":82},
+  "深圳市家族办公室促进会": {"t":"私企","f":43},
+  "深圳裕锦私募": {"t":"私企","f":43},
+  "神州信息": {"t":"私企","f":45},
+  "昇维旭": {"t":"私企","f":43},
+  "圣邦微电子": {"t":"私企","f":44},
+  "盛趣游戏": {"t":"互联网","f":83},
+  "诗悦网络": {"t":"互联网","f":82},
+  "施耐德电气": {"t":"外企","f":84},
+  "是为科技": {"t":"私企","f":43},
+  "手亿科技": {"t":"私企","f":43},
+  "首形科技": {"t":"私企","f":43},
+  "数花智算": {"t":"私企","f":43},
+  "数坤科技": {"t":"私企","f":44},
+  "双环传动": {"t":"私企","f":44},
+  "水滴公司": {"t":"私企","f":43},
+  "顺丰科技": {"t":"互联网","f":88},
+  "舜宇集团": {"t":"私企","f":44},
+  "思瑞浦": {"t":"私企","f":44},
+  "思特奇": {"t":"私企","f":44},
+  "思特威": {"t":"私企","f":43},
+  "思勰投资": {"t":"私企","f":43},
+  "四方股份": {"t":"私企","f":43},
+  "搜狐": {"t":"互联网","f":84},
+  "苏州科达": {"t":"私企","f":44},
+  "燧原科技": {"t":"私企","f":44},
+  "她美赋": {"t":"私企","f":43},
+  "拓荆科技": {"t":"私企","f":45},
+  "拓竹科技": {"t":"私企","f":46},
+  "台积电": {"t":"外企","f":88},
+  "钛动科技": {"t":"私企","f":43},
+  "泰康资产": {"t":"私企","f":83},
+  "泰隆银行": {"t":"私企","f":43},
+  "贪玩游戏": {"t":"互联网","f":82},
+  "滔搏": {"t":"私企","f":43},
+  "特步集团": {"t":"私企","f":43},
+  "特斯拉T-STAR": {"t":"外企","f":92},
+  "腾讯": {"t":"互联网","f":100},
+  "腾讯-鹅媒派项目": {"t":"互联网","f":59},
+  "腾讯-技术提前批": {"t":"互联网","f":61},
+  "腾讯-剩余岗位": {"t":"互联网","f":61},
+  "腾讯北极光": {"t":"互联网","f":59},
+  "腾讯光子工作室群": {"t":"互联网","f":61},
+  "腾讯魔方": {"t":"互联网","f":60},
+  "腾讯天美J3工作室": {"t":"互联网","f":61},
+  "腾讯投资": {"t":"互联网","f":60},
+  "腾讯音乐": {"t":"互联网","f":60},
+  "腾讯音乐娱乐集团": {"t":"互联网","f":60},
+  "腾讯营销": {"t":"互联网","f":60},
+  "腾讯元宝": {"t":"互联网","f":61},
+  "腾讯职能线": {"t":"互联网","f":61},
+  "腾讯CDG": {"t":"互联网","f":60},
+  "腾讯CSIG": {"t":"互联网","f":61},
+  "腾讯IEG": {"t":"互联网","f":61},
+  "腾讯Tencent": {"t":"互联网","f":61},
+  "腾讯WXG": {"t":"互联网","f":61},
+  "腾娱互动": {"t":"私企","f":45},
+  "天风证券": {"t":"国企","f":82},
+  "天海集团": {"t":"私企","f":43},
+  "天弘基金": {"t":"私企","f":83},
+  "天加": {"t":"私企","f":44},
+  "通怡投资": {"t":"私企","f":43},
+  "同程旅行": {"t":"互联网","f":84},
+  "图达通": {"t":"私企","f":43},
+  "图拉斯": {"t":"私企","f":43},
+  "图为电气": {"t":"私企","f":44},
+  "途游游戏": {"t":"私企","f":45},
+  "瓦肆": {"t":"私企","f":43},
+  "完美世界": {"t":"互联网","f":85},
+  "万家基金": {"t":"私企","f":82},
+  "万物云": {"t":"私企","f":45},
+  "万兴科技": {"t":"私企","f":47},
+  "万兴科技-新星计划": {"t":"私企","f":43},
+  "网易互联网": {"t":"互联网","f":60},
+  "网易游戏（互娱）": {"t":"互联网","f":62},
+  "网易游戏互娱": {"t":"互联网","f":60},
+  "网易游戏雷火": {"t":"互联网","f":60},
+  "网易云音乐": {"t":"互联网","f":59},
+  "望尘科技": {"t":"互联网","f":82},
+  "望友科技": {"t":"私企","f":43},
+  "威迈斯": {"t":"私企","f":44},
+  "微步在线": {"t":"私企","f":45},
+  "微众银行": {"t":"私企","f":44},
+  "唯品会": {"t":"互联网","f":86},
+  "维宏股份": {"t":"私企","f":43},
+  "维信诺": {"t":"私企","f":43},
+  "卫龙美味": {"t":"私企","f":43},
+  "卫宁健康": {"t":"私企","f":43},
+  "蔚来": {"t":"私企","f":49},
+  "文璟基金": {"t":"私企","f":81},
+  "卧安机器人": {"t":"私企","f":44},
+  "无忧传媒": {"t":"私企","f":46},
+  "舞肌科技": {"t":"私企","f":43},
+  "曦诺未来": {"t":"私企","f":43},
+  "曦望": {"t":"私企","f":44},
+  "曦望Sunrise": {"t":"私企","f":44},
+  "喜岳投资": {"t":"私企","f":44},
+  "矽力杰": {"t":"私企","f":45},
+  "仙工智能": {"t":"私企","f":43},
+  "先导智能": {"t":"私企","f":43},
+  "祥承科技": {"t":"私企","f":43},
+  "小红书": {"t":"互联网","f":94},
+  "小红书-马当路练习生": {"t":"互联网","f":59},
+  "小红书「未来市集实习生」项目": {"t":"互联网","f":59},
+  "小红书社区工程": {"t":"互联网","f":59},
+  "小红书业务技术": {"t":"互联网","f":60},
+  "小米": {"t":"互联网","f":95},
+  "小米集团": {"t":"互联网","f":60},
+  "小鹏汽车": {"t":"私企","f":45},
+  "携程集团": {"t":"互联网","f":62},
+  "心动×TapTap": {"t":"互联网","f":84},
+  "芯合电子": {"t":"私企","f":43},
+  "芯联集成": {"t":"私企","f":43},
+  "芯行纪": {"t":"私企","f":44},
+  "辛米尔": {"t":"私企","f":43},
+  "欣锐科技": {"t":"私企","f":44},
+  "欣旺达": {"t":"私企","f":45},
+  "欣旺达-第二期": {"t":"私企","f":43},
+  "新产业生物": {"t":"私企","f":43},
+  "新东方大学事业部": {"t":"私企","f":43},
+  "新东方华南区": {"t":"私企","f":44},
+  "新华三集团": {"t":"私企","f":46},
+  "新石器": {"t":"私企","f":43},
+  "新石器无人车": {"t":"私企","f":46},
+  "新石器无人车-补录": {"t":"私企","f":43},
+  "新时达": {"t":"私企","f":43},
+  "新紫光集团下属产业公司": {"t":"私企","f":44},
+  "信堡投研": {"t":"私企","f":43},
+  "信步科技": {"t":"私企","f":44},
+  "信锐技术": {"t":"私企","f":44},
+  "星尘智能": {"t":"私企","f":43},
+  "星火教育": {"t":"私企","f":43},
+  "行芯科技": {"t":"私企","f":43},
+  "兴华基金": {"t":"私企","f":81},
+  "兴趣岛": {"t":"私企","f":43},
+  "兴云数科": {"t":"私企","f":45},
+  "雪人集团": {"t":"私企","f":43},
+  "迅雷": {"t":"私企","f":45},
+  "迅雷X-PEP产品星计划": {"t":"私企","f":43},
+  "雅培": {"t":"外企","f":83},
+  "亚信科技": {"t":"私企","f":44},
+  "研极微电": {"t":"私企","f":44},
+  "阳光电源": {"t":"私企","f":45},
+  "瑶芯微电子": {"t":"私企","f":43},
+  "医渡科技": {"t":"私企","f":44},
+  "移动九天": {"t":"国企","f":93},
+  "亿道集团": {"t":"私企","f":43},
+  "易点云": {"t":"私企","f":45},
+  "易动宇航": {"t":"私企","f":43},
+  "易方达基金": {"t":"私企","f":84},
+  "因赛集团": {"t":"私企","f":44},
+  "英威腾": {"t":"私企","f":43},
+  "英维克": {"t":"私企","f":43},
+  "鹰角网络": {"t":"互联网","f":86},
+  "影石insta360": {"t":"互联网","f":60},
+  "影石Insta360": {"t":"互联网","f":60},
+  "优必选科技": {"t":"私企","f":44},
+  "游卡": {"t":"私企","f":46},
+  "游酷盛世": {"t":"互联网","f":82},
+  "游族网络": {"t":"互联网","f":83},
+  "友邦人寿": {"t":"外企","f":84},
+  "酉术量子": {"t":"私企","f":43},
+  "语核科技": {"t":"私企","f":44},
+  "裕锦私募": {"t":"私企","f":43},
+  "豫园股份": {"t":"私企","f":43},
+  "元气森林": {"t":"私企","f":43},
+  "远峰科技": {"t":"私企","f":46},
+  "远景能源": {"t":"私企","f":44},
+  "远景智能": {"t":"私企","f":43},
+  "阅文集团": {"t":"互联网","f":62},
+  "云南信托": {"t":"私企","f":44},
+  "云深处科技": {"t":"私企","f":43},
+  "云圣智能": {"t":"私企","f":43},
+  "泽良律所": {"t":"私企","f":43},
+  "长城基金": {"t":"国企","f":82},
+  "长城证券": {"t":"国企","f":82},
+  "长光华芯": {"t":"私企","f":43},
+  "长石资本": {"t":"私企","f":43},
+  "长亭科技-AI顶尖人才": {"t":"私企","f":45},
+  "长园深瑞": {"t":"私企","f":43},
+  "招商基金": {"t":"国企","f":83},
+  "招商蛇口": {"t":"国企","f":84},
+  "招商银行第10季数字金融训练营": {"t":"国企","f":58},
+  "招商银行信用卡": {"t":"国企","f":89},
+  "招商证券-财富管理及机构业务总部": {"t":"国企","f":89},
+  "招银云创": {"t":"国企","f":82},
+  "浙商证券": {"t":"国企","f":82},
+  "真格基金": {"t":"私企","f":46},
+  "震坤行": {"t":"私企","f":43},
+  "正浩EcoFlow": {"t":"私企","f":45},
+  "正浩EcoFlow海外留学生校招": {"t":"私企","f":43},
+  "知乎": {"t":"互联网","f":86},
+  "知象光电": {"t":"私企","f":44},
+  "致欧家居": {"t":"私企","f":43},
+  "智识神工": {"t":"私企","f":43},
+  "智元机器人": {"t":"私企","f":44},
+  "中国大地保险": {"t":"国企","f":83},
+  "中国电信天翼云": {"t":"国企","f":88},
+  "中国平安": {"t":"私企","f":93},
+  "中国五矿": {"t":"国企","f":85},
+  "中国移动": {"t":"国企","f":94},
+  "中国移动九天人工智能科技公司": {"t":"国企","f":93},
+  "中国移动在线营销服务中心": {"t":"国企","f":92},
+  "中国银行": {"t":"国企","f":88},
+  "中海地产": {"t":"国企","f":84},
+  "中华地图学社": {"t":"国企","f":82},
+  "中化商务": {"t":"国企","f":83},
+  "中汇会计师事务所": {"t":"私企","f":48},
+  "中金财富": {"t":"国企","f":85},
+  "中粮集团": {"t":"国企","f":85},
+  "中欧基金": {"t":"私企","f":82},
+  "中通快递": {"t":"私企","f":44},
+  "中微公司": {"t":"私企","f":47},
+  "中微公司-登峰计划": {"t":"私企","f":44},
+  "中伟股份": {"t":"私企","f":43},
+  "中伟集团": {"t":"私企","f":43},
+  "中芯国际": {"t":"国企","f":90},
+  "中信建投证券": {"t":"国企","f":89},
+  "中信期货": {"t":"国企","f":88},
+  "中信证券总部": {"t":"国企","f":57},
+  "中兴通讯": {"t":"私企","f":44},
+  "中邮消费金融": {"t":"国企","f":83},
+  "中证信用": {"t":"私企","f":46},
+  "众安": {"t":"私企","f":43},
+  "众擎机器": {"t":"私企","f":43},
+  "洲明科技": {"t":"私企","f":43},
+  "朱雀体育": {"t":"私企","f":43},
+  "竹润投资": {"t":"私企","f":43},
+  "转转": {"t":"互联网","f":83},
+  "卓尔数科": {"t":"私企","f":43},
+  "紫光国芯": {"t":"私企","f":44},
+  "紫讯技术": {"t":"私企","f":43},
+  "字节跳动": {"t":"互联网","f":99},
+  "字节跳动 GMPT": {"t":"互联网","f":60},
+  "字节跳动-抖音AI产品人才": {"t":"互联网","f":59},
+  "字节跳动-番茄团队": {"t":"互联网","f":61},
+  "字节跳动-中国广告产品": {"t":"互联网","f":61},
+  "字节跳动-中国交易与广告": {"t":"互联网","f":60},
+  "字节跳动-AI产品经理早鸟通道": {"t":"互联网","f":60},
+  "字节跳动安全与风控": {"t":"互联网","f":60},
+  "自变量机器人": {"t":"私企","f":43},
+  "作业帮": {"t":"互联网","f":84},
+  "ABB机器人": {"t":"外企","f":83},
+  "ABB中国": {"t":"外企","f":83},
+  "Apple苹果": {"t":"外企","f":95},
+  "BIGO": {"t":"互联网","f":59},
+  "BottleDream": {"t":"私企","f":44},
+  "BrainCo强脑科技": {"t":"私企","f":43},
+  "BraneMatrix（布兰矩阵）": {"t":"私企","f":43},
+  "CARIAD人才荟": {"t":"私企","f":43},
+  "CubyFun蚯比科技": {"t":"私企","f":43},
+  "DapuStor大普微": {"t":"私企","f":43},
+  "DeepSeek": {"t":"私企","f":49},
+  "DJI大疆": {"t":"私企","f":44},
+  "FILA": {"t":"私企","f":45},
+  "FunPlus": {"t":"互联网","f":60},
+  "Garena": {"t":"外企","f":82},
+  "GE医疗": {"t":"外企","f":84},
+  "JZ Music": {"t":"私企","f":43},
+  "Klook": {"t":"外企","f":82},
+  "L'Oréal 欧莱雅": {"t":"外企","f":88},
+  "Manifold AI": {"t":"私企","f":44},
+  "Mars 玛氏": {"t":"外企","f":84},
+  "MiniMax": {"t":"私企","f":50},
+  "MKS集团": {"t":"外企","f":80},
+  "MKS中国": {"t":"外企","f":80},
+  "OBSBOT寻影": {"t":"私企","f":43},
+  "OPPO": {"t":"互联网","f":90},
+  "P&G 宝洁": {"t":"外企","f":87},
+  "Peet's皮爷咖啡": {"t":"外企","f":80},
+  "Qnity启诺迪": {"t":"外企","f":80},
+  "Ratingdog（YY评级）": {"t":"私企","f":44},
+  "RoboSense": {"t":"私企","f":45},
+  "Sea": {"t":"外企","f":82},
+  "SHEIN": {"t":"互联网","f":89},
+  "Shopee": {"t":"外企","f":83},
+  "Shopee领航实习计划": {"t":"外企","f":63},
+  "Shopee研发中心": {"t":"外企","f":62},
+  "Sipeed（矽速科技）": {"t":"私企","f":43},
+  "Smartesg司马致信息科技": {"t":"私企","f":43},
+  "SparkData数花智算": {"t":"私企","f":43},
+  "SSP新媒体部": {"t":"私企","f":43},
+  "TCL": {"t":"私企","f":45},
+  "TCL华星": {"t":"私企","f":44},
+  "TCL实业": {"t":"私企","f":45},
+  "TIMAR上海岱码集成电路有限公司": {"t":"私企","f":44},
+  "TP-LINK": {"t":"私企","f":43},
+  "TP-Link联洲": {"t":"私企","f":44},
+  "TTC": {"t":"私企","f":45},
+  "UL Solutions": {"t":"外企","f":82},
+  "Unilever 联合利华": {"t":"私企","f":43},
+  "VasCulture": {"t":"私企","f":43},
+  "VIVA": {"t":"私企","f":43},
+  "vivo": {"t":"互联网","f":90},
+  "vivo影像-转正实习": {"t":"互联网","f":60},
+  "Willand未岚大陆": {"t":"私企","f":43},
+  "wteam": {"t":"私企","f":43},
+  "xTool": {"t":"私企","f":43},
+  "ZIONEER吉翼具身智能": {"t":"私企","f":44},
+  "ZURU": {"t":"外企","f":80}
+};
+/* ========== 公司分类元信息 END ========== */
 
 /* ========== 岗位投递自动同步 (from window.AUTO_JOB_SEED) ==========
    Replaces ALL auto-collected jobs (isAutoCollected/autoId) with the latest
@@ -7235,7 +8181,6 @@ function mergeAutoTaskSeed() {
 function mergeAutoJobSeed() {
   const seed = (typeof window.AUTO_JOB_SEED !== 'undefined' && Array.isArray(window.AUTO_JOB_SEED)) ? window.AUTO_JOB_SEED : [];
   const list = getData(KEYS.jobs);
-  renderDeadlineBoard(list);
   let settings = getData(KEYS.settings);
   if (!settings || typeof settings !== 'object' || Array.isArray(settings)) settings = {};
   const removed = settings.jobRemoved || [];
@@ -7260,6 +8205,86 @@ function mergeAutoJobSeed() {
   setData(KEYS.jobs, kept);
 }
 
+/* ========== 官网/小红书岗位种子注入 (from window.AUTO_OFFICIAL_JOB_SEED) ==========
+   与 mergeAutoJobSeed 的区别：这里导入的是「手动岗位」（isAutoCollected:false，
+   没有 autoId），因此会被上面 mergeAutoJobSeed 的「仅保留手动岗位」逻辑承接，不会
+   被飞书同步（整体替换 AUTO_JOB_SEED）抹除。一次性幂等导入：已导入的 id 记录在
+   settings.officialJobSeedImported，用户删后不复活。 */
+function mergeAutoOfficialJobSeed() {
+  const seed = (typeof window.AUTO_OFFICIAL_JOB_SEED !== 'undefined' && Array.isArray(window.AUTO_OFFICIAL_JOB_SEED)) ? window.AUTO_OFFICIAL_JOB_SEED : [];
+  if (!seed.length) return;
+  let settings = getData(KEYS.settings);
+  if (!settings || typeof settings !== 'object' || Array.isArray(settings)) settings = {};
+  if (!settings.officialJobSeedImported || typeof settings.officialJobSeedImported !== 'object') settings.officialJobSeedImported = {};
+  const imported = settings.officialJobSeedImported;
+  const list = getData(KEYS.jobs);
+  let added = 0;
+  seed.forEach(item => {
+    const id = item.id || ('offjob-' + (item.company || '') + '-' + (item.title || ''));
+    if (imported[id]) return;
+    list.push({
+      id: id,
+      company: item.company || '',
+      title: item.title || '',
+      location: item.location || '',
+      category: item.category || '',
+      type: item.type || '',
+      url: item.url || '',
+      notes: item.notes || '',
+      isAutoCollected: false,
+      date: item.date || today()
+    });
+    imported[id] = true;
+    added++;
+  });
+  if (added > 0) {
+    settings.officialJobSeedImported = imported;
+    setData(KEYS.settings, settings);
+    setData(KEYS.jobs, list);
+  }
+}
+
+/* ========== 日报种子注入 (from window.AUTO_DAILY_SEED) ==========
+   Imports pre-written long-form daily reports (core summary + full Markdown detail)
+   exactly once per date. Idempotent: dates already imported (tracked in
+   settings.dailySeedImported) or already present are skipped — user edits are
+   never overwritten, and a user-deleted seeded report is never resurrected.
+   The full Markdown detail lives in a <script type="text/markdown"> element
+   (referenced by detailScriptId) to avoid quote/backtick escaping issues. */
+function mergeAutoDailySeed() {
+  const seed = (typeof window.AUTO_DAILY_SEED !== 'undefined' && Array.isArray(window.AUTO_DAILY_SEED)) ? window.AUTO_DAILY_SEED : [];
+  if (!seed.length) return;
+  let settings = getData(KEYS.settings);
+  if (!settings || typeof settings !== 'object' || Array.isArray(settings)) settings = {};
+  if (!settings.dailySeedImported || typeof settings.dailySeedImported !== 'object') settings.dailySeedImported = {};
+  const list = getData(KEYS.dailyReports);
+  let added = 0, marked = false;
+  seed.forEach(item => {
+    if (settings.dailySeedImported[item.date]) return;
+    if (list.some(r => r.date === item.date)) { settings.dailySeedImported[item.date] = true; marked = true; return; }
+    let detail = '';
+    if (item.detailScriptId) {
+      const el = document.getElementById(item.detailScriptId);
+      if (el) detail = el.textContent.replace(/^\s+|\s+$/g, '');
+    } else if (item.detail) {
+      detail = item.detail;
+    }
+    list.push({
+      id: 'dr-' + item.date,
+      date: item.date,
+      items: [{ what: item.what || '', summary: item.summary || '', detail: detail, steps: '', result: '' }],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      isAutoCollected: true
+    });
+    settings.dailySeedImported[item.date] = true;
+    marked = true;
+    added++;
+  });
+  if (added > 0) { setData(KEYS.settings, settings); setData(KEYS.dailyReports, list); }
+  else if (marked) { setData(KEYS.settings, settings); }
+}
+
 function expPostSearchMatch(p, term) {
   const haystack = (p.title + ' ' + (p.summary || '') + ' ' + (p.content || '') + ' ' + (p.tags || '') + ' ' + (p.company || '') + ' ' + (p.role || '') + ' ' + (p.keyPoints || []).join(' ')).toLowerCase();
   return haystack.includes(term);
@@ -7267,10 +8292,9 @@ function expPostSearchMatch(p, term) {
 
 /* Shared card template for both panels */
 function expCardHtml(p) {
-  const tagsVal = Array.isArray(p.tags) ? p.tags.join(',') : (p.tags || '');
-  const tagsHtml = tagsVal ? `
+  const tagsHtml = p.tags ? `
     <div class="exp-post-tags">
-      ${tagsVal.split(/[,，]/).filter(t => t.trim()).map(t => `<span class="exp-tag">${escapeHtml(t.trim())}</span>`).join('')}
+      ${p.tags.split(/[,，]/).filter(t => t.trim()).map(t => `<span class="exp-tag">${escapeHtml(t.trim())}</span>`).join('')}
     </div>
   ` : '';
 
@@ -7449,6 +8473,10 @@ function fillJobFilter(selectId, field, extraOptions) {
   sel.value = current;
 }
 
+/* ========== 岗位截止预警看板 ==========
+   从 jobs 备注中解析截止日期，按 (公司+岗位) 去重合并城市，
+   分 3 天 / 7 天 / 14 天三级预警 + 招满为止滚动区。
+   基于打开页面的当天实时计算，每次进入岗位投递页自动刷新。 */
 const DL_ROLL_RE = /招满(?:为|即)?(?:止|停)|招满即止|滚动招聘|长期有效|额满|报满|先到先得|额满即止/;
 const DL_DATE_RE = /截止[:：]\s*((?:\d{4}\s*[/.年\-]\s*)?\d{1,2}\s*[/.月\-]\s*\d{1,2}\s*日?)/;
 
@@ -7625,25 +8653,131 @@ function renderDeadlineBoard(list) {
   box.innerHTML = html;
 }
 
+function companyMeta(name) {
+  const m = (window.COMPANY_META && window.COMPANY_META[name]) || null;
+  if (m) return { type: m.t, fame: m.f };
+  return { type: '私企', fame: 40 };
+}
+const CO_TYPE_COLORS = { '互联网': '#2563EB', '私企': '#6B7280', '外企': '#9333EA', '国企': '#D97706' };
+function coTypeBadge(name) {
+  const mt = companyMeta(name);
+  const c = CO_TYPE_COLORS[mt.type] || '#6B7280';
+  return '<span class="co-type-badge" style="display:inline-block;margin-top:3px;padding:1px 7px;border-radius:10px;font-size:11px;line-height:1.6;color:#fff;background:' + c + '">' + escapeHtml(mt.type) + '</span>';
+}
+
+/* ========== 岗位投递·多选筛选器逻辑 ========== */
+const jobMs = { location: new Set(), category: new Set(), type: new Set(), coType: new Set() };
+const MS_META = {
+  location: { field: 'location', extras: ['广州', '深圳', '上海'], placeholder: '位置' },
+  category: { field: 'category', extras: ['产品', '运营', '市场', '风控'], placeholder: '岗位' },
+  type:     { field: 'type',     extras: ['秋招', '实习', '春招', '提前批'], placeholder: '招聘类型' },
+  coType:   { field: null,       extras: ['互联网', '私企', '外企', '国企'], placeholder: '企业类型',
+              labels: { '互联网': '互联网企业', '私企': '私企', '外企': '外企', '国企': '国企' } }
+};
+
+function fillMsOptions(msId, groupKey) {
+  const meta = MS_META[groupKey];
+  const wrap = document.querySelector('#' + msId + ' .ms-options');
+  if (!wrap) return;
+  let values;
+  if (meta.field) {
+    const seen = new Set();
+    values = [...(meta.extras || []), ...jobFieldValues(meta.field)].filter(v => { if (!v || seen.has(v)) return false; seen.add(v); return true; });
+  } else {
+    values = meta.extras || [];
+  }
+  wrap.innerHTML = values.map(v => {
+    const label = (meta.labels && meta.labels[v]) || v;
+    const active = jobMs[groupKey].has(v) ? ' active' : '';
+    return '<button type="button" class="ms-opt' + active + '" data-val="' + escapeHtml(v) + '" onclick="toggleMsOpt(\'' + groupKey + '\',\'' + escapeHtml(v) + '\')">' + escapeHtml(label) + '</button>';
+  }).join('');
+  updateMsTrigger(msId, groupKey);
+}
+
+function toggleMsOpt(groupKey, value) {
+  const set = jobMs[groupKey];
+  if (set.has(value)) set.delete(value); else set.add(value);
+  const msId = 'ms-' + groupKey;
+  const wrap = document.querySelector('#' + msId + ' .ms-options');
+  if (wrap) {
+    const btn = wrap.querySelector('[data-val="' + (window.CSS && CSS.escape ? CSS.escape(value) : value) + '"]');
+    if (btn) btn.classList.toggle('active', set.has(value));
+  }
+  updateMsTrigger(msId, groupKey);
+  renderJobs();
+}
+
+function updateMsTrigger(msId, groupKey) {
+  const root = document.getElementById(msId);
+  if (!root) return;
+  const set = jobMs[groupKey];
+  const valEl = root.querySelector('.ms-value');
+  const phEl = root.querySelector('.ms-placeholder');
+  if (set.size === 0) {
+    if (valEl) valEl.textContent = '';
+    if (phEl) phEl.style.display = '';
+    root.classList.remove('active');
+  } else {
+    const meta = MS_META[groupKey];
+    const txt = [...set].map(v => (meta.labels && meta.labels[v]) || v).join('、');
+    if (valEl) valEl.textContent = txt;
+    if (phEl) phEl.style.display = 'none';
+    root.classList.add('active');
+  }
+}
+
+function toggleMsPanel(msId) {
+  const root = document.getElementById(msId);
+  if (!root) return;
+  const panel = root.querySelector('.ms-panel');
+  const willOpen = !panel || panel.style.display !== 'block';
+  closeAllMsPanels();
+  if (willOpen) {
+    const groupKey = msId.replace('ms-', '');
+    fillMsOptions(msId, groupKey);
+    if (panel) panel.style.display = 'block';
+    root.classList.add('open');
+  }
+}
+
+function closeAllMsPanels() {
+  document.querySelectorAll('.ms-filter .ms-panel').forEach(p => { p.style.display = 'none'; });
+  document.querySelectorAll('.ms-filter.open').forEach(r => r.classList.remove('open'));
+}
+
+function clearMs(msId) {
+  const groupKey = msId.replace('ms-', '');
+  jobMs[groupKey].clear();
+  fillMsOptions(msId, groupKey);
+  renderJobs();
+}
+
+document.addEventListener('click', function (e) {
+  if (!e.target.closest || !e.target.closest('.ms-filter')) closeAllMsPanels();
+});
+
 function renderJobs() {
   const list = getData(KEYS.jobs);
-  fillJobFilter('jobFilterLocation', 'location', ['广州', '深圳', '上海']);
-  fillJobFilter('jobFilterCategory', 'category', ['产品', '运营', '市场', '风控']);
-  fillJobFilter('jobFilterType', 'type', ['秋招', '实习', '春招', '提前批']);
-  const filterLoc = document.getElementById('jobFilterLocation') ? document.getElementById('jobFilterLocation').value : '';
-  const filterCat = document.getElementById('jobFilterCategory') ? document.getElementById('jobFilterCategory').value : '';
-  const filterType = document.getElementById('jobFilterType') ? document.getElementById('jobFilterType').value : '';
+  renderDeadlineBoard(list);
+  const selLoc = [...jobMs.location];
+  const selCat = [...jobMs.category];
+  const selType = [...jobMs.type];
+  const selCo = [...jobMs.coType];
+  const sortSel = document.getElementById('jobSortSel') ? document.getElementById('jobSortSel').value : '';
   const searchTerm = document.getElementById('jobSearch') ? document.getElementById('jobSearch').value.toLowerCase().trim() : '';
   const tbody = document.getElementById('jobsTableBody');
   if (!tbody) return;
 
   let filtered = list;
-  if (filterLoc) filtered = filtered.filter(j => (j.location || '') === filterLoc);
-  if (filterCat) filtered = filtered.filter(j => (j.category || '') === filterCat);
-  if (filterType) filtered = filtered.filter(j => (j.type || '') === filterType);
+  if (selLoc.length) filtered = filtered.filter(j => selLoc.includes((j.location || '').trim()));
+  if (selCat.length) filtered = filtered.filter(j => selCat.includes((j.category || '').trim()));
+  if (selType.length) filtered = filtered.filter(j => selType.includes((j.type || '').trim()));
+  if (selCo.length) filtered = filtered.filter(j => selCo.includes(companyMeta(j.company).type));
   if (searchTerm) {
     filtered = filtered.filter(j => (j.company + ' ' + j.title + ' ' + j.location + ' ' + j.category + ' ' + j.type + ' ' + (j.notes || '')).toLowerCase().includes(searchTerm));
   }
+  if (sortSel === 'fame_desc') filtered = filtered.slice().sort((a, b) => companyMeta(b.company).fame - companyMeta(a.company).fame || (a.company || '').localeCompare(b.company || '', 'zh'));
+  else if (sortSel === 'fame_asc') filtered = filtered.slice().sort((a, b) => companyMeta(a.company).fame - companyMeta(b.company).fame || (a.company || '').localeCompare(b.company || '', 'zh'));
 
   if (filtered.length === 0) {
     tbody.innerHTML = `<tr><td colspan="6"><div class="jobs-empty">
@@ -7655,7 +8789,7 @@ function renderJobs() {
 
   tbody.innerHTML = filtered.map(j => `
     <tr>
-      <td><span class="job-company">${escapeHtml(j.company || '—')}</span>${j.isAutoCollected ? '<div class="job-sub-tag">自动同步</div>' : ''}</td>
+      <td><span class="job-company">${escapeHtml(j.company || '—')}</span>${j.isAutoCollected ? '<div class="job-sub-tag">自动同步</div>' : ''}${coTypeBadge(j.company)}</td>
       <td><span class="job-title">${escapeHtml(j.title || '—')}</span></td>
       <td>${escapeHtml(j.location || '—')}</td>
       <td>
@@ -8258,45 +9392,6 @@ function populateCompanyFilter() {
   sel.value = cur;
 }
 
-/* ========== 官网/小红书岗位种子注入 (from window.AUTO_OFFICIAL_JOB_SEED) ==========
-   与 mergeAutoJobSeed 的区别：这里导入的是「手动岗位」（isAutoCollected:false，
-   没有 autoId），因此会被上面 mergeAutoJobSeed 的「仅保留手动岗位」逻辑承接，不会
-   被飞书同步（整体替换 AUTO_JOB_SEED）抹除。一次性幂等导入：已导入的 id 记录在
-   settings.officialJobSeedImported，用户删后不复活。 */
-function mergeAutoOfficialJobSeed() {
-  const seed = (typeof window.AUTO_OFFICIAL_JOB_SEED !== 'undefined' && Array.isArray(window.AUTO_OFFICIAL_JOB_SEED)) ? window.AUTO_OFFICIAL_JOB_SEED : [];
-  if (!seed.length) return;
-  let settings = getData(KEYS.settings);
-  if (!settings || typeof settings !== 'object' || Array.isArray(settings)) settings = {};
-  if (!settings.officialJobSeedImported || typeof settings.officialJobSeedImported !== 'object') settings.officialJobSeedImported = {};
-  const imported = settings.officialJobSeedImported;
-  const list = getData(KEYS.jobs);
-  let added = 0;
-  seed.forEach(item => {
-    const id = item.id || ('offjob-' + (item.company || '') + '-' + (item.title || ''));
-    if (imported[id]) return;
-    list.push({
-      id: id,
-      company: item.company || '',
-      title: item.title || '',
-      location: item.location || '',
-      category: item.category || '',
-      type: item.type || '',
-      url: item.url || '',
-      notes: item.notes || '',
-      isAutoCollected: false,
-      date: item.date || today()
-    });
-    imported[id] = true;
-    added++;
-  });
-  if (added > 0) {
-    settings.officialJobSeedImported = imported;
-    setData(KEYS.settings, settings);
-    setData(KEYS.jobs, list);
-  }
-}
-
 document.addEventListener('DOMContentLoaded', () => {
   const VERSION = 'v6_exp_two_types';
   const storedVersion = localStorage.getItem('wb_pm_version');
@@ -8314,11 +9409,11 @@ document.addEventListener('DOMContentLoaded', () => {
   initSampleData();
   seedFetchedNews();    // Auto-inject fetched AI news from 9 sources
   mergeAutoExpSeed();   // Auto-collected experience posts (牛客/小红书 etc.)
-  mergeAutoTaskSeed();  // 每日任务计划自动注入任务看板
   mergeInterviewQA();   // Pilot: 字节/美团/小红书 面试 Q&A 注入训练题库
   populateCompanyFilter(); // 按企业筛选下拉
   mergeAutoJobSeed();   // Auto-synced job postings (Feishu table snapshot)
   mergeAutoOfficialJobSeed(); // 官网/小红书校招·实习岗位（独立通道，永久手动岗位）
+  mergeAutoDailySeed(); // Pre-written long-form daily reports (core summary + detail)
   initTextEditing();
   renderAll();
   checkStorageHealth();   // Show storage status banner (normal / ephemeral / blocked)
