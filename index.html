@@ -2076,7 +2076,6 @@ a { color: var(--primary); text-decoration: none; }
         <option value="all">全部任务</option>
         <option value="today">今日</option>
         <option value="week">本周</option>
-        <option value="overdue">已超期</option>
         <option value="done">已完成</option>
       </select>
       <select class="filter-select" id="taskFilterPriority" onchange="renderTasks()">
@@ -5628,7 +5627,7 @@ function renderToday() {
   // Overdue tasks
   tasks.filter(t => t.status !== '已完成' && isOverdue(t.dueDate)).forEach(t => {
     items.push({
-      label: '超期任务',
+      label: '任务',
       overdue: true,
       content: t.title + ' (截止: ' + t.dueDate + ')',
       action: '处理',
@@ -5662,7 +5661,7 @@ function renderToday() {
   // Overdue training (older than today, no answer)
   training.filter(q => isOverdue(q.date) && !q.myAnswer).forEach(q => {
     items.push({
-      label: '超期训练题',
+      label: '训练题',
       overdue: true,
       content: q.title,
       action: '去答',
@@ -5691,7 +5690,7 @@ function renderToday() {
   grid.innerHTML = items.map((item, i) => `
     <div class="today-card ${item.overdue ? 'overdue' : ''}">
       <div class="today-card-label">
-        ${item.overdue ? '<span class="overdue-tag">超期</span>' : ''}
+        ${''}
         ${item.label}
       </div>
       <div class="today-card-content">${escapeHtml(item.content)}</div>
@@ -5743,7 +5742,7 @@ function renderTraining() {
               ${q.company ? '<span class="badge badge-gray">'+escapeHtml(q.company)+'</span>' : ''}
               <span class="badge badge-gray">${q.date}</span>
               ${isHidden ? '<span class="badge badge-warning">已隐藏</span>' : ''}
-              ${overdue ? '<span class="badge badge-danger">超期未答</span>' : ''}
+              ${overdue ? '<span class="badge badge-danger">未答</span>' : ''}
               ${q.myAnswer ? (q.isAIGenerated ? '<span class="badge badge-info">AI生成</span>' : '<span class="badge badge-success">已回答</span>') : ''}
               ${q.aiCritique ? '<span class="badge badge-info">已点评</span>' : ''}
               ${q.starred ? '<span class="badge badge-accent">已收藏</span>' : ''}
@@ -6097,7 +6096,7 @@ function renderNews() {
                       <span class="badge badge-gray">${n.date}</span>
                       ${n.sourceName ? `<span class="badge" style="background:#F3E8FF;color:var(--primary)">${escapeHtml(n.sourceName)}</span>` : ''}
                       ${n.read ? '<span class="badge badge-success">已读</span>' : '<span class="badge badge-accent">未读</span>'}
-                      ${overdue ? '<span class="badge badge-danger">超期未读</span>' : ''}
+                      ${overdue ? '<span class="badge badge-danger">未读</span>' : ''}
                     </div>
                   </div>
                   <div class="card-actions">
@@ -6390,7 +6389,7 @@ function renderTasks() {
     all: '暂无任务，点右上角「添加任务」开始记录',
     today: '今日没有截止的任务',
     week: '本周没有截止的任务（已完成的不计入本周视图）',
-    overdue: '没有超期任务，棒！',
+    overdue: '没有任务，棒！',
     done: '还没有已完成的任务'
   }[view] || '暂无任务';
 
@@ -6412,7 +6411,7 @@ function renderTasks() {
                 <span class="badge ${done ? 'badge-success' : overdue ? 'badge-danger' : 'badge-gray'}">${t.status}</span>
                 <span class="badge badge-gray">${t.dueDate || '无截止日'}</span>
                 ${t.tags ? `<span class="badge badge-info">${escapeHtml(t.tags)}</span>` : ''}
-                ${overdue ? '<span class="overdue-tag">超期</span>' : ''}
+                ${''}
               </div>
             </div>
             <div class="card-actions">
@@ -6487,7 +6486,7 @@ function renderDashboard() {
       ])}
     </div>
     <div class="dashboard-card">
-      <div class="dashboard-card-title">超期任务</div>
+      <div class="dashboard-card-title">任务</div>
       <div style="font-size:36px;font-weight:700;color:${overdueCount > 0 ? 'var(--danger)' : 'var(--success)'}">${overdueCount}</div>
       <div class="text-sm text-muted">${overdueCount > 0 ? '需要处理' : '全部按时'}</div>
     </div>
