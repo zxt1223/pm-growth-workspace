@@ -994,6 +994,35 @@ a { color: var(--primary); text-decoration: none; }
   margin: 10px 0;
   border: 1px solid #F0F0F0;
 }
+/* 业务知识库正文（长文可展开/收起） */
+.exp-biz-content {
+  font-size: 13.5px;
+  color: var(--text);
+  line-height: 1.8;
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: linear-gradient(135deg, #F0FDF4, #F8FAFC);
+  border: 1px solid #D1FAE5;
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin: 10px 0 0;
+  max-height: 210px;
+  overflow: hidden;
+  position: relative;
+}
+.exp-biz-content.expanded { max-height: none; }
+.exp-biz-content::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 28px;
+  background: linear-gradient(transparent, #F0FDF4);
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.2s;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+}
+.exp-biz-content.expanded::after { opacity: 0; }
 .exp-post-summary {
   display: flex;
   align-items: flex-start;
@@ -1883,6 +1912,7 @@ a { color: var(--primary); text-decoration: none; }
     </div>
     <div class="sub-tabs">
       <button class="sub-tab active" id="subTabPosts" onclick="switchExpSub('posts')">求职经验贴</button>
+      <button class="sub-tab" id="subTabBiz" onclick="switchExpSub('biz')">业务知识库</button>
       <button class="sub-tab" id="subTabJobs" onclick="switchExpSub('jobs')">岗位投递</button>
       <button class="sub-tab" id="subTabBank" onclick="switchExpSub('bank')">面试题库</button>
     </div>
@@ -2010,6 +2040,35 @@ a { color: var(--primary); text-decoration: none; }
         </div>
       </div>
       <div id="expBankList" class="bank-list"></div>
+    </div>
+
+    <!-- ===== 业务知识库（公司 + 岗位 → 岗位所需业务知识，独立增删改查） ===== -->
+    <div id="expBizArea" style="display:none">
+      <div class="exp-layout">
+        <div class="exp-sidebar" id="expSidebarB">
+          <div class="exp-side-head">
+            <span>公司</span>
+            <span class="text-muted text-sm" style="cursor:pointer" onclick="toggleExpSidebar('B')" title="收起/展开侧栏">◀</span>
+          </div>
+          <div class="exp-side-sub" id="expSideFiltersB"></div>
+        </div>
+        <div class="exp-main">
+          <div class="filters">
+            <button class="btn btn-sm btn-secondary" onclick="toggleExpSidebar('B')" title="展开/收起左侧分类栏">☰ 分类栏</button>
+            <select class="filter-select" id="expBizRoleB" onchange="setExpBizRole(this.value)">
+              <option value="">全部岗位</option>
+            </select>
+            <input type="text" class="filter-input" id="expBizSearchB" placeholder="搜索公司、岗位、业务知识..." oninput="renderExpBizKB()" style="flex:1;min-width:150px">
+            <button class="btn btn-sm" onclick="addExpBizKB()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+              添加知识
+            </button>
+            <button class="btn btn-sm btn-danger" onclick="confirmClearModule('bizKB')">清空数据</button>
+          </div>
+          <div id="expBizMeta" class="exp-meta-bar"></div>
+          <div id="expBizListB"></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -2550,6 +2609,7 @@ const KEYS = {
   sources: 'wb_pm_sources',
   tasks: 'wb_pm_tasks',
   expPosts: 'wb_pm_exp_posts',
+  bizKB: 'wb_pm_biz_kb',  // 求职贴-业务知识库（公司+岗位+业务知识），独立存储，不与其他模块混用
   jobs: 'wb_pm_jobs',
   dailyReports: 'wb_pm_daily_reports',  // 日报/周报数据（每天做的事 + 判断步骤；周报由日报聚合）
   textOverrides: 'wb_pm_text_overrides',  // ⚠️ NEVER clear this key — user's custom text edits must persist forever
@@ -2744,6 +2804,22 @@ window.AUTO_EXP_SEED = [
   {"id": "exp-auto-20260831-ant-product-ops", "type": "interview", "title": "蚂蚁国际产品运营实习生岗位解读：营销活动与用户生命周期", "company": "支付宝（蚂蚁集团）", "role": "产品运营（实习）", "platform": "网易/蚂蚁招聘", "category": "产品思维与方法论", "sourceUrl": "https://www.163.com/dy/article/L04CP7CK0516DVCH.html", "summary": "蚂蚁国际产品运营实习生岗位：营销活动策划、用户生命周期触达、指标报表、竞品分析，要求数据分析与英语能力", "keyPoints": ["核心职责：营销活动策划、联动产品优化营销功能", "用户生命周期触达：线上线下渠道转化、提升用户活跃度", "协同数据团队设计关键指标监控报表，识别业务目标达成问题", "产出用户研究和竞品分析报告，保持业务场景洞察", "任职要求：本科以上、用户洞察力、数据分析能力、英语读写"], "content": "蚂蚁集团国际产品运营实习生岗位解读（网易/蚂蚁招聘信息）。岗位方向：蚂蚁国际-产品运营实习生。核心职责：①负责业务日常营销活动及年度促销活动策划，联动产品优化营销功能；②结合用户生命周期，根据不同产品功能及服务，利用线上线下渠道对用户做触达并转化，提升用户活跃度；③围绕重点业务场景或关键产品推广策略，协同市场团队宣传推广，为区域提供销售工具包，建立与区域的例会机制，共同为结果负责；④协同数据团队设计关键指标监控报表和日常洞察分析，识别业务目标达成中的关键问题，推动策略落地；⑤官网及门户更新维护，产出并沉淀对内外的用户培育内容；⑥定期产出用户研究和竞品分析报告。任职要求：本科及以上、有实习经验优先、优秀的用户洞察力和数据分析能力、擅于从数据中挖掘机会、良好的团队合作意识和学习能力、执行力和owner意识、熟练的英语听说读写能力。要点：蚂蚁国际产品运营岗重用户洞察、数据分析、跨区域协同和结果负责意识，面这类国际化运营岗建议准备一段可量化的用户增长或活动案例，并体现对海外市场的理解。", "tags": "面经,产品运营,支付宝,蚂蚁集团,国际业务", "date": "2026-08-31"},
   {"id": "exp-auto-20260831-shopee-apprentice", "type": "interview", "title": "Shopee暑期实习Apprentice Program面经解析：四关流程与题型", "company": "Shopee", "role": "电商运营/产品（暑期实习）", "platform": "Mocky.pro", "category": "产品思维与方法论", "sourceUrl": "https://mocky.pro/interview/shopee_apprentice_program/analysis", "summary": "Shopee暑期实习四关全线上：在线测验、HR面、部门内部面、最终面，题型含数理逻辑、行为、情境分析，运营岗重SQL/Excel", "keyPoints": ["流程四关：在线测验、HR面、部门内部面、最终面，全程线上", "题型：数理逻辑、行为、情境分析与技术问题", "8大部门含商业营运、行销、数据、产品管理、店到店物流等", "运营岗核心考察：数据分析（SQL/Excel）、逻辑推理、中英文沟通", "需要具备电商理解能力，Case题从指标分析到运营建议要快"], "content": "Shopee虾皮购物2026暑期实习Apprentice Program面经解析（Mocky.pro，基于面试趣2951笔反馈整理）。流程：线上测验、HR面试、部门内部面试、最终面试共四关，全程线上进行，平均月薪约43.3K。8大部门：商业营运（数据驱动为买家提供优质选择）、行销（数据分析策划营销活动）、数据分析（Python/ML/财务分析）、营运（从搜索到收货全流程，欢迎Python/NLP能力）、产品管理（产品策略与AI潜力）、虾皮店到店（物流最后一公里）、直营（供应链整合）、人力资源。申请资格：大三以上学生，9周全职实习，中英文简历皆可。面试题型：数理逻辑、行为面试（过往经历深挖、为什么离职）、情境分析（如给你一笔预算投广告营销，你觉得应该投哪些渠道并给出rationale）、技术问题。考察重点：数据分析能力、逻辑推理、中英文沟通、电商理解。非技术岗面试官会问提升ROI的具体方法、供应链断货如何处理等场景题，看重解决突发问题的能力。要点：面Shopee重快速执行和数据驱动，运营岗需要能写基础SQL查询，Case题要从指标分析快速落到运营建议，避免过度设计解决方案。", "tags": "面经,Shopee,暑期实习,电商运营,Apprentice Program", "date": "2026-08-31"},
   {"id": "exp-auto-20260831-bytedance-ops", "type": "interview", "title": "字节跳动2026届运营岗校招面经：10题与数据驱动方法论", "company": "字节跳动", "role": "运营（校招）", "platform": "超级简历WonderCV", "category": "产品思维与方法论", "sourceUrl": "https://www.wondercv.com/mianjing/bytedance-operations-2026-263", "summary": "字节运营岗校招10题：自我介绍三段式、抖音产品改进、次日留存提升、内容vs用户运营、0到1增长AARRR、数据异常排查", "keyPoints": ["自我介绍1.5-2分钟三段式，字节面试官不喜欢听废话", "产品改进题要具体可量化，从运营角度分析对DAU/时长/互动的影响", "次日留存题：数据拆解定位洼地-找根因-分策略-实验验证", "内容运营vs用户运营：内容重生产组织分发，用户重获取激活留存变现", "数据异常排查：确认真实性-多维度拆解-定位根因-制定应对-建预警"], "content": "字节跳动2026届运营岗校招面经（超级简历WonderCV）。字节运营岗方向宽泛：用户运营、内容运营、活动运营、产品运营、数据运营、社群运营，2026届数据运营和AI相关运营方向明显增多。10个高频题：①自我介绍——1.5-2分钟三段式（我是谁+做过什么+为什么适合），直奔主题；②抖音/今日头条有什么可改进——给具体可量化建议，分析对DAU/停留时长/互动率的影响；③提升某产品次日留存率——拆新老用户/渠道/设备找留存洼地，定位根因，分策略干预，A/B验证；④描述一次活动策划并评估效果——STAR，突出策划过程和核心指标（参与人数/分享率/新增/ROI）；⑤内容运营和用户运营的区别——内容重生产组织分发，用户重获取激活留存变现，两者相互支撑；⑥全新产品从0到1做用户增长——AARRR框架（获客/激活/留存/变现/传播）；⑦数据指标异常下降怎么办——确认真实性-多维度拆解-定位根因-制定应对-改进监控；⑧如何看待加班——能扛住+有方法；⑨做运营最大优势和不足——优势用具体经历支撑，不足真实但不致命；⑩最近关注什么产品或趋势——具体到某个产品或趋势并说出思考，结合字节业务更佳。要点：字节运营面重数据驱动+快速迭代，简历每个数字都可能被追问，准备时多做横向比较题（如抖音vs快手运营策略）。", "tags": "面经,运营,字节跳动,校招,数据驱动", "date": "2026-08-31"}
+    ,
+    {"id":"exp-auto-20260901-bytedance-workflow-agent","type":"interview","title":"字节跳动AI产品经理面经：Agent与Workflow选型三维框架","company":"字节跳动","role":"AI产品经理","platform":"CSDN","category":"AI产品","sourceUrl":"https://blog.csdn.net/datian1234/article/details/163727104","summary":"字节AI产品一面高频题：Agent与Workflow选型三维框架，能用Workflow就别上Agent。","keyPoints":["任务确定性：流程固定选Workflow，路径临场发挥才上Agent","可控性：金融合规错不起默认Workflow，Agent必须带兜底","成本延迟：Agent多轮调用贵且慢，Workflow成本可预测","字节打法：Coze即Workflow为主+Agent补开放能力"],"content":"字节AI产品一面高频题：Agent和Workflow怎么选？两者本质区别是「谁来决策」——Workflow步骤提前定义，Agent步骤由模型临场决定。典型错误是只答「看情况」没框架。正确答题用三维判断：①任务确定性——流程固定的场景用Workflow写死节点；路径临场发挥的场景才上Agent。②可控性——金融、合规、医疗等错不起的场景默认Workflow；Agent决策路径不透明、难追责，必须带兜底。③成本与延迟——Agent多轮ReAct循环Token消耗大、延迟秒级到分钟级；Workflow多数节点是确定性逻辑，成本可预测。举例：电商客服80%是查物流、退换货等标准问题用Workflow，20%复杂问题交Agent，单次成本降75%。字节Coze打法即Workflow为主+Agent补位。核心结论：能用Workflow解决的别上Agent，克制是AI产品的工程能力。","tags":"面经,AI产品,字节跳动,Agent,Workflow","date":"2026-08-26"},
+    {"id":"exp-auto-20260901-bytedance-doubao-ai-pm","type":"interview","title":"字节豆包产品经理面经：AI聊天产品评测体系与优化方向","company":"字节跳动","role":"AI产品经理","platform":"爱企查","category":"AI产品","sourceUrl":"https://aiqicha.baidu.com/details/rankList?query=42a1121359103a4b78a846ff6bf9c38a&type=20","summary":"豆包产品岗常考题：评估AI聊天产品好坏、对话体验指标、竞品调研、大模型评测体系搭建与优化建议。","keyPoints":["评估AI聊天产品：通识指标+体验指标分层","评测体系：多场景评测集+Bad Case回归","竞品对比：功能矩阵/模型能力/交互范式/商业化","豆包优化建议需结合字节推荐算法基因"],"content":"百度爱企查豆包面试题库整理的字节豆包产品经理岗高频题：①如何评估一款AI聊天产品好坏——区分通识指标（回答准确性、BLEU/ROUGE）与体验指标（首响延迟、回复时长、用户打断率、二次提问率、留存），建立分层评估体系；②衡量AI对话体验的核心指标——任务完成率、容错兜底表现、多轮记忆一致性、情感与语气；③竞品调研方法论——从功能矩阵、模型能力、交互范式、商业化四维度对比豆包与Kimi、文心一言、通义；④大模型评测体系搭建——评测集覆盖多场景多风格，设Bad Case回归机制，评测结果与线上真实用户指标联动验证；⑤豆包优化建议——结合字节基因（推荐算法优势、流量场景）给出可落地改进点，如降幻觉、优化多轮记忆、端侧体验。备考：准备一份AI产品深度体验报告作作品集，逐条量化豆包与竞品差异；技术概念（RoPE、KV Cache、RLHF）了解原理即可，产品岗更看重业务落地判断与数据思维。","tags":"面经,AI产品,字节跳动,豆包,评测","date":"2026-08-20"},
+    {"id":"exp-auto-20260901-meituan-27-campus-pm","type":"interview","title":"美团2027届秋招产品经理三轮面经：项目深挖与取水智力题","company":"美团","role":"产品经理（校招）","platform":"今日头条","category":"产品思维与方法论","sourceUrl":"https://www.toutiao.com/article/7675916397695730203","summary":"美团27届校招产品三轮面：业务初面深挖实习项目、复试考量化收益与取水智力题、HR面聚焦落地与AI项目。","keyPoints":["初面：逐段实习深挖+需求必要性/天花板/竞品","复试：项目量化收益+组织架构+取水智力题","HR面：推动落地、与mentor分工、AI相关项目","准备：简历每个数字都可能被追问，先想清不做什么"],"content":"美团27届秋招产品经理真实面经，三轮递进：业务初面——自我介绍后逐段实习深挖：离职原因、部门负责工作、讲一个深度参与项目的背景/具体动作/认知迭代；追问需求必要性、需求天花板与预估收益、竞品是否有类似模式；最后问校招求职方向倾向。业务复试——挑一个项目讲目标与动作、量化收益、链路上什么最关键；问另一段实习部门的组织架构；智力题「取水问题」考察逻辑拆解。HR面——实习带来的能力提升、产品功能迭代细节（背景、如何推动落地、与mentor的分工）、两个需求哪个更难及原因、跨部门协作问题与解决方式、过往AI相关项目、实习是否考虑留用。准备要点：简历每个数字都可能被追问，项目要讲清「为什么做、怎么量化、关键卡点」；提前想好方向倾向（C端/B端/增长/数据）；AI相关经历是加分项，哪怕只是用AI工具解决过实际问题也要讲透。美团面试官看重负优化思维——先想清楚不做什么。","tags":"面经,产品经理,美团,校招,秋招","date":"2026-08-26"},
+    {"id":"exp-auto-20260901-tencent-llm-cost-pm","type":"interview","title":"腾讯AI产品经理一面：长上下文规划与算力成本十连问","company":"腾讯","role":"AI产品经理","platform":"牛客网","category":"AI产品","sourceUrl":"https://www.nowcoder.com/feed/main/detail/f5b345bd939b4061aecfaecd4d3b7d1e","summary":"腾讯AI产品一面十连问：长上下文落地规划、主流模型方案对比、32B算力评估、GPU资源与显存暴涨兜底。","keyPoints":["长上下文功能如何分阶段设计与验证","DeepSeek/Llama长文本方案产品定位对比","32B模型上线算力与硬件投入评估","显存暴涨时产品层干预与体验兜底"],"content":"腾讯AI产品一面真实面经，全程围绕大模型长上下文与资源成本，十道题层层递进：①「长上下文支持」如何规划落地、背后的产品考量；②规划支持超长文本（如100万字）的AI功能，如何分阶段设计方案与验证节点；③对比DeepSeek、Llama等主流模型的长文本方案，各自产品定位与优劣势；④模型训练效率与效果差异如何转化为产品策略选择依据；⑤上下文扩展至1000K量级的落地路径，核心资源瓶颈有哪些；⑥以32B参数级别模型服务为例，如何评估上线初期算力与硬件投入；⑦如何规划显卡资源分布与任务并行策略支撑大规模并发；⑧训练时长与现有算力不匹配时如何推动优化；⑨长上下文场景显存暴涨时，从哪些环节做产品层干预与体验兜底；⑩资源受限时如何设计机制保障核心功能稳定。考察重点：AI产品经理也要有成本意识与资源边界感，方案要落到算力、显存、并发、SLA等可量化层面，先分阶段、再给兜底，体现产品视角的工程思考。","tags":"面经,AI产品,腾讯,长上下文,算力","date":"2026-03-30"},
+    {"id":"exp-auto-20260901-ali-pm-core","type":"interview","title":"阿里巴巴产品经理高频面试题：懂用户、懂商业、强落地","company":"阿里巴巴","role":"产品经理","platform":"原创力文档","category":"产品思维与方法论","sourceUrl":"https://max.book118.com/html/2026/0819/5102334221013310.shtm","summary":"阿里产品经理高频题：为什么来阿里、核心能力（懂用户/懂商业/强落地）、优势短板与需求判断的答题框架。","keyPoints":["来阿里：十亿级用户规模+务实产品逻辑","核心能力：懂用户、懂商业、强落地","需求判断：数据验证+RICE/Kano优先级","DAU下降排查：拆维度+假设验证闭环"],"content":"阿里巴巴产品经理高频面试题整理：①为什么做产品经理、为什么来阿里——体现「解决真实用户问题、落地业务价值」的闭环感，结合阿里十亿级用户规模、务实的产品逻辑、熟悉电商/本地生活/支付赛道回答；②阿里PM核心能力——「懂用户、懂商业、强落地」：捕捉普通用户与商家的真实痛点不臆想需求；功能迭代考虑GMV、转化、留存、成本不做自嗨型产品；能协调研发、运营、市场扛住项目压力保证落地；③优势与短板——优势用业务敏感度、深度拆解阿里全系产品佐证，短板说真实但不致命的点并带改进方法；④需求判断高频题——数据验证+业务目标对齐+RICE/Kano优先级排序；⑤数据分析题——某功能DAU下降10%如何排查：拆维度（时间、渠道、用户分层）+假设验证闭环；⑥商业思维——免费转付费路径、CAC/LTV、双边网络效应。答题原则：分点作答、用数据支撑、方案贴合阿里资源与业务逻辑，避免「我觉得用户会喜欢」式空话。","tags":"面经,产品经理,阿里巴巴,校招,高频题","date":"2026-08-19"},
+    {"id":"exp-auto-20260901-ali-qianwen-coding","type":"interview","title":"阿里千问事业群27届校招情报：AI Coding笔试与AI原生岗位","company":"阿里巴巴","role":"AI产品经理","platform":"超级简历","category":"AI产品","sourceUrl":"https://www.wondercv.com/xiaozhao/alibaba-2027-campus-recruitment-global-12209-bd6fd8","summary":"阿里27届校招情报：千问事业群AI原生定位、笔试新增AI Coding题型、阿里星专项与多集团投递规则。","keyPoints":["千问事业群：千问APP/夸克/AI硬件/UC，AI时代超级APP","笔试新增AI Coding：拆解需求+识别缺陷+迭代优化","阿里星专项：基础模型/大模型应用/AI Infra/芯片","投递：多集团可投，每集团一次机会最多2志愿"],"content":"阿里巴巴2027届校招关键情报（产品方向必看）：①千问事业群是阿里聚焦AI原生时代的核心业务单元，整合千问APP、夸克、AI硬件、UC浏览器、书旗小说等业务，定位「AI时代超级APP」，招聘覆盖产品、运营、算法、AI应用研发、Agent Infra等岗位；②笔试新增AI Coding题型——在限定环境调用AI工具完成项目开发，考察重点不是最终代码，而是如何拆解真实需求、识别逻辑与工程缺陷、迭代优化解决方案；③两条通道：普通校招批次面向全体应届生，阿里星与C-Star顶尖人才专项聚焦基础模型、大模型应用、AI Infra、芯片与计算四大前沿方向；④投递规则：可同时投递多个业务集团，每个集团仅一次投递机会、最多选2个意向岗位，按意向顺序流转；⑤节奏：8月5日网申启动、8月中旬起笔试面试、9月下旬起发Offer。备考：关注千问APP与夸克产品动态，备好AI项目作品集。","tags":"面经,AI产品,阿里巴巴,千问,校招","date":"2026-08-05"},
+    {"id":"exp-auto-20260901-xhs-ai-pm-recommend","type":"interview","title":"小红书AI产品经理面经：推荐算法评估与社区文化五环节","company":"小红书","role":"AI产品经理","platform":"CSDN","category":"AI产品","sourceUrl":"https://blog.csdn.net/weixin_30755393/article/details/97904284","summary":"小红书AI产品经理五环节：推荐算法更新评估、AI绘画增长策略、算法偏见案例、社区文化匹配与薪资谈判。","keyPoints":["算法更新评估：核心指标+次级指标+负面指标","AI绘画增长：风格迁移降门槛+创作挑战传播","算法偏见案例：数据多样性+三重保障机制","文化匹配：社区氛围「温柔有力量」价值观"],"content":"小红书AI产品经理面试五环节：①技术深度访谈——典型题「如何评估一个推荐算法更新是否成功」，回答框架：先定义核心指标，再拆分次级指标（点击率、多样性等），最后说明需监控的负面指标（如投诉率）；②产品设计挑战——「为新上线的AI绘画功能设计增长策略」，聚焦创作者社区冷启动：用风格迁移技术降低创作门槛，设置创作挑战活动形成传播效应；③案例分析——讨论真实AI产品失败案例（某社交平台算法偏见事件），根源在于训练数据缺乏多样性，提出人工审核+用户反馈通道+定期模型审计的三重保障；④文化匹配评估——小红书特别关注候选人是否理解「社区氛围」，讨论内容审核时强调「温柔有力量」的价值观如何通过算法实现；⑤薪资谈判——AI产品岗薪资结构常含算法效果挂钩奖金，需准备同行业薪资数据，强调模型商业化经验价值。备考建议：准备作品集（AI产品技术架构逆向解析、概念验证项目、伦理审查报告）。","tags":"面经,AI产品,小红书,推荐算法,社区","date":"2026-08-18"},
+    {"id":"exp-auto-20260902-bytedance-ai-pm-2nd","type":"interview","title":"字节AI产品经理面经：一面拷打项目与唠嗑式二面","company":"字节跳动","role":"AI产品经理","platform":"牛客网","category":"AI产品","sourceUrl":"https://www.nowcoder.com/feed/main/detail/6d63a7164a0641aabf3fc4e724b9a43a","summary":"一面深挖实习项目并追问直播业务问题；二面leader唠嗑式提问看重回答框架，英语环节拉胯也被放过。","keyPoints":["一面拷打实习与项目，追问直播业务场景","二面如coffee chat，面试官看重回答框架而非内容","STAR讲述不如多抛认知观点更能引起共鸣","英语口语环节可主动承认短板，别硬撑"],"content":"字节AI产品经理面经：一面是项目深挖型，实习与项目经历被追问得非常细，之后抛来直播相关业务问题，没做过直播的候选人容易当场露怯，建议提前准备岗位所在业务线的基础认知。二面风格完全不同，leader更像唠嗑（coffee chat）：自我介绍后先聊大学生活科研与实习的异同，随后让完整讲一个抖音实习项目，听得很认真但几乎不打断拷打；面试官自己讲话很有框架性，更在意候选人回答的结构与认知层次，用STAR法则讲不如多抛出个人观点。二面还有英语环节，口语不好半天憋不出来，面试官直接说跳过，说明该岗位英语考察非硬性门槛。启示：大厂不同轮次风格差异极大，一面拼项目真实度，二面拼思维框架，准备时不要只背STAR模板。","tags":"面经,AI产品,字节跳动,实习","date":"2026-09-02"},
+    {"id":"exp-auto-20260902-meituan-ai-closedloop","type":"interview","title":"美团27届AI产品经理面经：AI自动闭环场景题","company":"美团","role":"AI产品经理","platform":"今日头条","category":"AI产品","sourceUrl":"https://www.toutiao.com/article/7675206068951106091/","summary":"校招必考AI Native思维：外卖商家促销策略5人2周→AI 2天自动完成，考AI能自动闭环多少流程。","keyPoints":["核心场景题：品类运营Agent把流程从5人2周压到2天","AI自动完成+关键节点人工确认的体验路径","围绕认知/效率/场景/考核四重错配给解法","量化业务ROI：改造哪条流程、省多少人天、多少增量"],"content":"美团2027届校招超80%岗位要求AI能力，AI产品经理面试不会只聊功能与DAU，而是直接给场景题：外卖商家运营团队每周需5人花2周制定不同品类促销策略，请设计AI方案把流程缩短到2天内自动完成。美团内部已将医药健康品类运营策略制定从5人2周压缩到AI处理2天，品类运营Agent完成数据采集到策略迭代的自动闭环，最后由人工做关键节点决策。答题要点：①大模型场景落地方法论——基于「业务设计、组织变革、技术应用」三位一体框架，从高价值规则化场景切入，梳理运营、销售、增长、治理全量工作流，识别可让Agent自动闭环的场景；②人机交互设计——说清AI闭环边界与必须人工兜底的节点，设计「AI自动完成+关键节点人工确认」路径；③量化ROI——项目不能停留在对话界面层，要说出改造了哪条业务流程、省了多少人天、带来多少业务增量。","tags":"面经,AI产品,美团,校招","date":"2026-09-02"},
+    {"id":"exp-auto-20260902-meituan-llm-tech-biz","type":"interview","title":"美团大模型产品岗面经：RLHF与估算题技术考察","company":"美团","role":"大模型产品经理","platform":"荣润铭拓网","category":"AI产品","sourceUrl":"http://www.rrmt.cn/news/72848","summary":"一面考RLHF、prompt设计与幻觉应对；二面考估算美团每日文本量、竞品分析与A/B测试指标组合。","keyPoints":["一面技术面：RLHF过程、对话评估、美食推荐prompt设计","二面业务面：估算每日文本量、饿了么AI竞品分析","幻觉三层应对：业务设边界+技术用RAG+流程人工复核","A/B测试指标组合：任务完成率+对话轮次+转化率"],"content":"美团大模型产品岗面试技术考察与业务场景并重。一面技术面：解释RLHF训练过程、如何评估对话系统效果、现场设计一个美食推荐场景的prompt，答题框架是「先商业逻辑后技术细节」，切忌一上来讲20分钟模型结构却说不出目标用户是谁。二面业务面：估算美团每日产生的文本数据量、分析饿了么等竞品的AI应用、突发需求优先级排序的决策逻辑。高频题应对：①幻觉问题——业务层设置明确使用边界，技术层采用RAG架构增强事实性，流程层设计人工复核机制；②如何说服业务方接受大模型高成本——讲算力成本下降曲线、人力替代ROI计算、先导项目快速价值验证；③外卖对话系统设计——分层：基础层订单状态查询（高准确率）、中间层个性化推荐、创新层健康建议等增值服务；④A/B测试核心指标组合：任务完成率、平均对话轮次、转化率。面试前研究美团近半年大模型相关专利论文可加分。","tags":"面经,AI产品,美团,大模型","date":"2026-09-02"},
+    {"id":"exp-auto-20260902-tencent-ai-agent-arch","type":"interview","title":"腾讯AI Agent产品经理面经：技术架构图与RAG优化","company":"腾讯","role":"AI Agent产品经理","platform":"智能范式网","category":"AI产品","sourceUrl":"https://intelliparadigm.com/article/weixin_32285357/2213710","summary":"技术理解占七成权重：必画Agent技术架构图，RAG准确率从75%到90%的优化三层次。","keyPoints":["必问AI Agent技术架构图：LLM选型/记忆模块/Function Calling","数据流：输入→意图识别→知识检索→响应生成全链路","RAG优化三层：预处理/动态分块/向量化与评估","用任务分解验证法把需求拆到最小可验证单元"],"content":"腾讯AI Agent产品经理面试考察点已质变：传统PRD能力与用户调研只占30%权重，技术理解与工程落地占70%，面试官原话是「需要能和技术团队用同一套语言对话的产品负责人」。必问题「描述你设计的AI Agent技术架构图」会刷掉六成候选人，合格回答需包含：核心组件（LLM选型依据、记忆模块的向量数据库选型、Function Calling工具调用机制）、全链路数据流（用户输入→意图识别→知识检索→响应生成→输出审核）、异常处理（限流、fallback、敏感词过滤）。RAG优化是必考实战题，最高频是「如何把知识检索准确率从75%提升到90%」，分三层：数据层（PDF表格预处理、按文本类型设置动态分块窗口）、向量化层（embedding选型与重排）、评估层（构建评测集迭代）。产品设计建议用「任务分解验证法」，把每个功能需求拆解到最小可验证单元，确保每环节有明确成功标准。","tags":"面经,AI产品,腾讯,Agent","date":"2026-09-02"},
+    {"id":"exp-auto-20260902-ali-qianwen-office","type":"interview","title":"阿里千问办公产品经理实习岗解读：AI Coding与Agent工具深度使用","company":"阿里巴巴","role":"产品经理（千问办公）","platform":"面试马","category":"AI产品","sourceUrl":"https://www.mianshima.com/job/3/199908720008","summary":"千问办公产品实习JD：高频使用Claude Code/Cursor等Agent产品、能讲清体感与改进思路、有可展示作品。","keyPoints":["要求AI工具深度使用者：Claude Code/Cursor/QoderWork等","能清晰表达使用体感与改进思路","需有可展示作品：实习项目/个人产品/开源贡献","千问事业群聚焦AI原生时代，笔试新增AI Coding题型"],"content":"阿里千问办公产品经理日常实习岗考察点非常「AI原生」：①AI工具深度使用——JD明确要求日常高频使用Claude Code、Cursor、QoderWork、Codex等AI Agent类产品，能清晰表达使用体感与改进思路，面试官会追问你常用哪个Agent、最大不足是什么、从产品角度怎么优化，切忌只说「ChatGPT很好用」；②要有可展示的作品——实习项目、个人产品、上线App或开源贡献均可，证明动手做过而非停留在使用层面；③计算机、人工智能、设计、统计学等专业优先。千问事业群是阿里聚焦AI原生时代的核心业务单元，覆盖千问APP、夸克、UC、AI硬件、智能营销等。2027届校招笔试新增AI Coding题型：在限定环境调用AI工具完成开发任务，考察拆解真实需求、识别逻辑与工程缺陷、迭代优化方案。备考：准备Agent产品深度体验报告与个人AI作品集。","tags":"面经,AI产品,阿里巴巴,千问","date":"2026-09-02"},
+    {"id":"exp-auto-20260902-ali-social-recruit-flow","type":"interview","title":"阿里社招面试流程解析：P5-P8轮次差异与交叉面","company":"阿里巴巴","role":"产品经理（社招）","platform":"爱企查","category":"产品思维与方法论","sourceUrl":"https://aiqicha.baidu.com/details/ugknowledge?id=fc0ab7f370b2d3b92b6c4d75ac2d6386","summary":"阿里社招P5两轮业务面+HR，P6以上加交叉面，终面面试官层级须高于岗位两级。","keyPoints":["P5流程简化为两轮业务面+HR面","P6以上含交叉面，P7/P8多轮并需招聘委员会定级","面试官构成遵循「1 OVER 1 + HR」原则","业务岗侧重业务理解/解决方案/数据与用户洞察"],"content":"阿里巴巴社招面试流程：简历筛选→多轮技术/业务面试→交叉面试→HR面试→背景调查→Offer。职级差异明显：P5（初级）流程简化，通常两轮业务面试加HR面；P6（资深）一般3-4轮业务面、1轮交叉面和HR面；P7/P8（专家/高级专家）业务面更多（4-6轮），交叉面可能多轮，且需通过招聘委员会进行定级审核。面试官构成常遵循「1 OVER 1 + HR」原则，即用人方直接主管、其上级主管（OVER 1）与HR共同参与，且终面面试官层级需高于招聘岗位至少两级，避免单一部门偏见。业务岗（产品、运营）侧重考察业务理解、解决方案能力、数据分析与用户洞察，面试官常从简历项目出发深入追问实现细节、挑战与解决方案；主管面考察项目复盘能力与全局思考；HR面核心是价值观与文化匹配（是否认同「客户第一」）、职业规划、抗压能力与薪资期望。建议：深入复盘个人项目、量化成果，并准备价值观契合表述。","tags":"面经,阿里巴巴,社招,产品经理","date":"2026-09-02"},
+    {"id":"exp-auto-20260902-xhs-ai-agent-design","type":"interview","title":"小红书产品经理面经：内容审核AI Agent设计与评估指标","company":"小红书","role":"AI产品经理","platform":"简历鸭（转载牛客面经）","category":"AI产品","sourceUrl":"","summary":"一面深挖Agent设计：用Dify规划内容审核Agent的Node链路，考Agent准确率下降排查与评估指标体系。","keyPoints":["内容审核Agent Node规划：解析→规则初筛→LLM语义风险→人工审核","Agent效果排查流程：确认问题→定位变化→验证原因→恢复","Agent评估指标：任务完成率/幻觉率/Token成本/人工介入率","Vibe Coding对产品边界定义的影响"],"content":"小红书产品经理面试一面深挖AI Agent能力：①用Dify/n8n给小红书内容审核环节设计AI Agent，规划Node链路——内容进入→图片/视频/文本解析→规则引擎初筛（广告、违禁词）→LLM语义风险判断→风险评分→低风险自动通过、高风险进人工审核→审核结果回流优化Prompt与规则，重点是讲清每个Node解决什么问题、为什么这样设计；②Agent回复准确率突然下降如何排查——按「确认问题→定位变化→验证原因→制定恢复方案」流程回答，考察定位能力而非直接给优化方案；③评价Agent好坏的指标：效果类（任务完成率、Recall、幻觉率）、体验类（满意度、响应时间、对话轮数）、成本类（Token Cost、人工介入率）、商业类（转化率、ROI、人效提升）；④Vibe Coding开发模式对产品边界定义的影响；⑤最常用的AI Agent是哪个、从产品视角提优化建议，关键体现产品洞察。","tags":"面经,AI产品,小红书,Agent","date":"2026-09-02"},
+    {"id":"exp-auto-20260902-xhs-pm-intern-15q","type":"interview","title":"小红书产品经理实习一面面经：15题全记录与B站对比","company":"小红书","role":"产品经理（实习）","platform":"简历鸭（转载牛客面经）","category":"产品思维与方法论","sourceUrl":"","summary":"实习一面15题：项目深挖、岗位理解、小红书首页改进、B站与小红书场景对比、职业规划。","keyPoints":["项目深挖：数据指标与跨部门协作对象","高频题：小红书首页有什么可改进","B站与小红书使用场景区别及优劣势","投递动机与职业规划是必问题"],"content":"小红书产品经理实习一面共15题，结构清晰：①自我介绍；②深挖实习项目——你主要负责什么、项目数据指标有哪些、作为实习生主要与哪些人员协作；③产品基础——是否接触过产品经理内容、谈谈对岗位的理解；④产品体验——平时用小红书吗、会在小红书购物吗、主要看什么内容、觉得小红书首页有什么需要改进的地方；⑤产品对比——平时用得最多的三个软件是什么、B站和小红书的使用场景有什么不同、各自优劣势是什么（B站偏长视频深度内容与学习场景，小红书偏种草决策与生活方式搜索，回答要落到用户诉求差异）；⑥动机与规划——为什么投小红书、作为产品经理最大的优势和劣势、最想从这段实习学到什么、职业规划；⑦基本情况——实习时长、到岗时间、学习能力（学会一个新软件要多久）。准备建议：熟悉小红书内容生态与购物链路，提前拆解首页信息流、搜索、电商等模块，用「用户-场景-需求」框架组织产品观点。","tags":"面经,小红书,产品经理,实习","date":"2026-09-02"}
     // AUTO-EXPERIENCE-POSTS-END
 ];
 
@@ -5677,7 +5753,7 @@ function switchTab(tab) {
   if (tab === 'tasks') { renderTasks(); renderDailyReports(); }
   // 知识库 / 求职贴 同样初始隐藏，切 tab 时主动重渲以正常展示列表
   if (tab === 'expKnowledge') renderExpKnowledge();
-  if (tab === 'expInterview') renderExpInterview();
+  if (tab === 'expInterview') renderExpPosts();
 }
 
 /* ========== Design Reference Panel ========== */
@@ -7267,6 +7343,38 @@ function openModal(type, editItem) {
       </div>
     `;
     toggleExpFormFields();
+  } else if (type === 'bizKB') {
+    content.innerHTML = `
+      <div class="modal-header">
+        <div class="modal-title">${isEdit ? '编辑业务知识' : '添加业务知识'}</div>
+        <button class="modal-close" onclick="closeModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div style="background:var(--gradient-soft);border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:12.5px;color:var(--text-2);line-height:1.7">
+        按 <strong style="color:var(--primary)">公司 + 岗位</strong> 沉淀该岗位所需的业务知识（行业认知 / 业务模式 / 术语概念 / 常见业务问题…），不限字数。可随时编辑。
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">公司 *</label>
+          <input type="text" class="form-input" id="f_bizCompany" list="dl_bizCompany" placeholder="如：字节跳动、美团..." value="${editItem ? escapeHtml(editItem.company || '') : ''}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">岗位 *</label>
+          <input type="text" class="form-input" id="f_bizRole" list="dl_bizRole" placeholder="如：AI产品经理、策略运营..." value="${editItem ? escapeHtml(editItem.role || '') : ''}">
+        </div>
+      </div>
+      <datalist id="dl_bizCompany">${bizKBDatalist('company')}</datalist>
+      <datalist id="dl_bizRole">${bizKBDatalist('role')}</datalist>
+      <div class="form-group">
+        <label class="form-label">业务知识（不限字数）</label>
+        <textarea class="form-textarea" id="f_bizContent" placeholder="该岗位需要掌握的业务知识：业务链路、关键术语、商业模式、常见问题与应对..." style="min-height:220px">${editItem ? escapeHtml(editItem.content || '') : ''}</textarea>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-secondary" onclick="closeModal()">取消</button>
+        <button class="btn" onclick="saveExpBizKB('${editItem ? editItem.id : ''}')">${isEdit ? '保存' : '添加'}</button>
+      </div>
+    `;
   } else if (type === 'expPostKpAI') {
     // 结果预览：AI 已生成完成，可编辑后确认写入
     content.innerHTML = `
@@ -7585,7 +7693,7 @@ const EXP_KNOWLEDGE_TOPICS = ['竞品分析','用户画像','需求分析','功�
 const EXP_CATEGORIES = ['产品思维与方法论','职场成长与晋升','AI技术与趋势','用户研究与设计','数据分析','团队管理与沟通','其他'];
 
 /* View state for exp panels (persisted in settings.expView) */
-let expView = { sidebarK: false, sidebarI: false, knowledgeTopic: '', interviewCompany: '', interviewRole: '' };
+let expView = { sidebarK: false, sidebarI: false, sidebarB: false, knowledgeTopic: '', interviewCompany: '', interviewRole: '', bizCompany: '', bizRole: '' };
 
 function loadExpView() {
   try {
@@ -8666,10 +8774,135 @@ function renderExpInterview() {
   container.innerHTML = filtered.map(expCardHtml).join('');
 }
 
+/* ========== 业务知识库 (bizKB: 公司 + 岗位 → 岗位所需业务知识) ==========
+   独立于经验贴/知识库存储（KEYS.bizKB），每条记录只含：公司、岗位、业务知识。
+   支持按公司（左侧栏）+ 岗位（下拉）+ 关键词 筛选，可增删改查。 */
+function bizKBList() { return getData(KEYS.bizKB) || []; }
+function bizKBDistinct(field) {
+  return [...new Set(bizKBList().map(b => (b[field] || '').trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'zh'));
+}
+function bizKBDatalist(field) {
+  return bizKBDistinct(field).map(v => `<option value="${escapeHtml(v)}"></option>`).join('');
+}
+function bizKBSidebarHtml() {
+  const counts = {};
+  bizKBList().forEach(b => {
+    const c = b.company || '未分类';
+    counts[c] = (counts[c] || 0) + 1;
+  });
+  const companies = Object.keys(counts).sort((a, b) => a.localeCompare(b, 'zh'));
+  const total = Object.values(counts).reduce((a, b) => a + b, 0);
+  const item = c => `<div class="exp-side-sub-item ${expView.bizCompany === c ? 'active' : ''}" onclick="setExpBizCompany('${encodeURIComponent(c || '')}')"><span>${c || '全部公司'}</span><span class="cnt">${c ? counts[c] : total}</span></div>`;
+  return `<div class="exp-side-sub-label">公司</div>` + ['', ...companies].map(item).join('');
+}
+
+/* 业务知识库 view state（并入 expView，统一持久化） */
+function setExpBizCompany(companyEnc) { expView.bizCompany = companyEnc ? decodeURIComponent(companyEnc) : ''; saveExpView(); renderExpBizKB(); }
+function setExpBizRole(role) { expView.bizRole = role || ''; saveExpView(); renderExpBizKB(); }
+
+function expBizCardHtml(b) {
+  const hasLong = (b.content || '').length > 160;
+  const moreBtn = hasLong ? `
+    <button type="button" class="btn btn-sm btn-secondary" id="exp-biz-more-${b.id}" onclick="toggleExpBizKB('${b.id}')" style="margin:8px 0 2px;font-size:12px">展开全文</button>
+  ` : '';
+  return `
+    <div class="exp-post-card" id="exp-biz-card-${b.id}">
+      <div class="card-header">
+        <div class="card-title">${escapeHtml(b.company || '未填公司')} · ${escapeHtml(b.role || '未填岗位')}</div>
+        <div style="display:flex;gap:4px;flex-shrink:0">
+          <button class="btn btn-sm btn-secondary" onclick="editExpBizKB('${b.id}')">编辑</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteItem('bizKB', '${b.id}')">删除</button>
+        </div>
+      </div>
+      <div class="exp-post-meta">
+        ${b.company ? `<span class="badge badge-company">${escapeHtml(b.company)}</span>` : ''}
+        ${b.role ? `<span class="badge badge-role">${escapeHtml(b.role)}</span>` : ''}
+        <span class="text-muted text-sm">${escapeHtml(b.date || '')}</span>
+      </div>
+      <div class="exp-biz-content" id="exp-biz-content-${b.id}">${b.content ? escapeHtml(b.content) : '<span class="text-muted">（暂无内容）</span>'}</div>
+      ${moreBtn}
+    </div>
+  `;
+}
+
+function toggleExpBizKB(id) {
+  const el = document.getElementById('exp-biz-content-' + id);
+  if (!el) return;
+  const isOpen = el.classList.toggle('expanded');
+  const btn = document.getElementById('exp-biz-more-' + id);
+  if (btn) btn.textContent = isOpen ? '收起' : '展开全文';
+}
+
+function renderExpBizKB() {
+  loadExpView();
+  const container = document.getElementById('expBizListB');
+  if (!container) return;
+  const sidebar = document.getElementById('expSidebarB');
+  if (sidebar) sidebar.classList.toggle('collapsed', !!expView.sidebarB);
+  const sideFilters = document.getElementById('expSideFiltersB');
+  if (sideFilters) sideFilters.innerHTML = bizKBSidebarHtml();
+  const roleSel = document.getElementById('expBizRoleB');
+  if (roleSel) {
+    const roles = bizKBDistinct('role');
+    const opts = `<option value="">全部岗位</option>` + roles.map(v => `<option value="${escapeHtml(v)}" ${v === expView.bizRole ? 'selected' : ''}>${escapeHtml(v)}</option>`).join('');
+    if (roleSel.innerHTML !== opts) roleSel.innerHTML = opts;
+    roleSel.value = expView.bizRole || '';
+  }
+  const searchEl = document.getElementById('expBizSearchB');
+  const term = searchEl ? searchEl.value.toLowerCase().trim() : '';
+  let filtered = bizKBList().slice();
+  if (expView.bizCompany) filtered = filtered.filter(b => (b.company || '未分类') === expView.bizCompany);
+  if (expView.bizRole) filtered = filtered.filter(b => (b.role || '') === expView.bizRole);
+  if (term) filtered = filtered.filter(b => ((b.company || '') + ' ' + (b.role || '') + ' ' + (b.content || '')).toLowerCase().includes(term));
+  const metaEl = document.getElementById('expBizMeta');
+  if (metaEl) {
+    const labels = [];
+    if (expView.bizCompany) labels.push(`公司「${expView.bizCompany}」`);
+    if (expView.bizRole) labels.push(`岗位「${expView.bizRole}」`);
+    if (term) labels.push(`搜索「${term}」`);
+    metaEl.innerHTML = `<span class="exp-meta-pill">业务知识 <b>${filtered.length}</b> 条${labels.length ? ' · ' + labels.join(' / ') : ''}</span>`;
+  }
+  if (filtered.length === 0) {
+    const empty = bizKBList().length === 0;
+    container.innerHTML = `
+      <div class="exp-post-empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        <div>${empty ? '还没有业务知识，点击"添加知识"，按 公司 + 岗位 沉淀岗位所需业务知识' : '没有匹配的业务知识（可点击左侧「全部公司」或清空筛选）'}</div>
+      </div>
+    `;
+    return;
+  }
+  container.innerHTML = filtered.map(expBizCardHtml).join('');
+}
+
+function addExpBizKB() { openModal('bizKB'); }
+function editExpBizKB(id) {
+  const item = bizKBList().find(b => b.id === id);
+  if (item) openModal('bizKB', item);
+}
+function saveExpBizKB(id) {
+  const company = document.getElementById('f_bizCompany').value.trim();
+  const role = document.getElementById('f_bizRole').value.trim();
+  const content = document.getElementById('f_bizContent').value.trim();
+  if (!company || !role) { showToast('请填写公司与岗位'); return; }
+  const list = bizKBList();
+  if (id) {
+    const item = list.find(b => b.id === id);
+    if (item) { item.company = company; item.role = role; item.content = content; }
+  } else {
+    list.unshift({ id: uid(), company, role, content, date: today() });
+  }
+  setData(KEYS.bizKB, list);
+  closeModal();
+  renderExpBizKB();
+  showToast(id ? '已更新' : '已添加');
+}
+
 /* Compatibility wrapper — renders both panels */
 function renderExpPosts() {
   renderExpKnowledge();
   renderExpInterview();
+  renderExpBizKB();
 }
 
 function toggleExpPost(id) {
@@ -8683,17 +8916,22 @@ let jobView = { sub: 'posts' };
 function switchExpSub(sub) {
   jobView.sub = sub;
   const postsArea = document.getElementById('expPostsArea');
+  const bizArea = document.getElementById('expBizArea');
   const jobsArea = document.getElementById('expJobsArea');
   const bankArea = document.getElementById('expBankArea');
   const tPosts = document.getElementById('subTabPosts');
+  const tBiz = document.getElementById('subTabBiz');
   const tJobs = document.getElementById('subTabJobs');
   const tBank = document.getElementById('subTabBank');
   if (postsArea) postsArea.style.display = sub === 'posts' ? '' : 'none';
+  if (bizArea) bizArea.style.display = sub === 'biz' ? '' : 'none';
   if (jobsArea) jobsArea.style.display = sub === 'jobs' ? '' : 'none';
   if (bankArea) bankArea.style.display = sub === 'bank' ? '' : 'none';
   if (tPosts) tPosts.classList.toggle('active', sub === 'posts');
+  if (tBiz) tBiz.classList.toggle('active', sub === 'biz');
   if (tJobs) tJobs.classList.toggle('active', sub === 'jobs');
   if (tBank) tBank.classList.toggle('active', sub === 'bank');
+  if (sub === 'biz') renderExpBizKB();
   if (sub === 'jobs') renderJobs();
   if (sub === 'bank') renderExpBank();
 }
@@ -9323,9 +9561,12 @@ function setExpCompany(companyEnc) { expView.interviewCompany = companyEnc ? dec
 function setExpRole(role) { expView.interviewRole = role || ''; saveExpView(); renderExpInterview(); }
 function toggleExpSidebar(which) {
   if (which === 'K') expView.sidebarK = !expView.sidebarK;
+  else if (which === 'B') expView.sidebarB = !expView.sidebarB;
   else expView.sidebarI = !expView.sidebarI;
   saveExpView();
-  if (which === 'K') renderExpKnowledge(); else renderExpInterview();
+  if (which === 'K') renderExpKnowledge();
+  else if (which === 'B') renderExpBizKB();
+  else renderExpInterview();
 }
 function addExpPostKnowledge() { expFormPresetType = 'knowledge'; openModal('expPosts'); }
 function addExpPostInterview() { expFormPresetType = 'interview'; openModal('expPosts'); }
@@ -9596,6 +9837,7 @@ function deleteItem(module, id) {
     case 'defense': key = KEYS.defense; name = '模拟记录'; break;
     case 'news': key = KEYS.news; name = '资讯'; break;
     case 'expPosts': key = KEYS.expPosts; name = '经验贴'; break;
+    case 'bizKB': key = KEYS.bizKB; name = '业务知识'; break;
     case 'jobs': key = KEYS.jobs; name = '岗位'; break;
     case 'tasks': key = KEYS.tasks; name = '任务'; break;
   }
@@ -9616,6 +9858,7 @@ function deleteItem(module, id) {
     if (module === 'defense') { renderDimensions(); renderDefense(); }
     if (module === 'news') { renderNews(); }
     if (module === 'expPosts') { renderExpPosts(); }
+    if (module === 'bizKB') { renderExpBizKB(); }
     if (module === 'jobs') { renderJobs(); }
     if (module === 'tasks') { renderTasks(); }
     renderToday();
@@ -9649,6 +9892,7 @@ function confirmClearModule(module) {
     case 'news': key = KEYS.news; name = 'AI资讯'; break;
     case 'sources': key = KEYS.sources; name = '信息源'; break;
     case 'expPosts': key = KEYS.expPosts; name = '经验贴'; break;
+    case 'bizKB': key = KEYS.bizKB; name = '业务知识'; break;
     case 'jobs': key = KEYS.jobs; name = '岗位'; break;
     case 'tasks': key = KEYS.tasks; name = '任务'; break;
   }
@@ -9665,6 +9909,7 @@ function confirmClearModule(module) {
     if (module === 'news') renderNews();
     if (module === 'sources') renderSources();
     if (module === 'expPosts') renderExpPosts();
+    if (module === 'bizKB') renderExpBizKB();
     if (module === 'jobs') renderJobs();
     if (module === 'tasks') renderTasks();
     renderToday();
@@ -9695,6 +9940,7 @@ function exportData() {
     sources: getData(KEYS.sources),
     tasks: getData(KEYS.tasks),
     expPosts: getData(KEYS.expPosts),
+    bizKB: getData(KEYS.bizKB),
     jobs: getData(KEYS.jobs),
     textOverrides: getData(KEYS.textOverrides) || {}
   };
@@ -9722,6 +9968,7 @@ function importData(event) {
         if (data.sources) setData(KEYS.sources, data.sources);
         if (data.tasks) setData(KEYS.tasks, data.tasks);
         if (data.expPosts) setData(KEYS.expPosts, data.expPosts);
+        if (data.bizKB) setData(KEYS.bizKB, data.bizKB);
         if (data.jobs) setData(KEYS.jobs, data.jobs);
         if (data.textOverrides) setData(KEYS.textOverrides, data.textOverrides);
         setData(KEYS.settings, { initialized: true });
@@ -9750,7 +9997,7 @@ function renderAll() {
 
   // Check data count for backup reminder
   const total = getData(KEYS.training).length + getData(KEYS.defense).length +
-    getData(KEYS.news).length + getData(KEYS.tasks).length + getData(KEYS.expPosts).length + getData(KEYS.jobs).length;
+    getData(KEYS.news).length + getData(KEYS.tasks).length + getData(KEYS.expPosts).length + getData(KEYS.bizKB).length + getData(KEYS.jobs).length;
   if (total > 30) {
     document.getElementById('backupReminder').classList.remove('hidden');
   }
