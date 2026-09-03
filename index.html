@@ -1035,7 +1035,10 @@ a { color: var(--primary); text-decoration: none; }
 .st-first { background: #FEF3C7; color: #92400E; }
 .st-final { background: #D1FAE5; color: #065F46; }
 .st-out { background: #F3F4F6; color: #6B7280; }
-/* 求职进度：卡片上的当前进度徽章（常规只显示一个） */
+/* 求职进度：招聘类别色（秋招=玫红 / 校招=靛蓝），与五档进度色区分开 */
+.ct-autumn { background: #FFE4E6; color: #BE123C; }
+.ct-campus { background: #E0E7FF; color: #4338CA; }
+/* 求职进度：卡片上的徽章（类别 + 当前进度，常规各只显示一个） */
 .st-app {
   display: inline-flex; align-items: center;
   padding: 3px 12px; border-radius: 999px;
@@ -1073,6 +1076,69 @@ a { color: var(--primary); text-decoration: none; }
 .stage-radio.first input:checked + span { background: #FEF3C7; color: #92400E; }
 .stage-radio.final input:checked + span { background: #D1FAE5; color: #065F46; }
 .stage-radio.out input:checked + span { background: #F3F4F6; color: #6B7280; border-color: #9CA3AF; }
+.stage-radio.autumn input:checked + span { background: #FFE4E6; color: #BE123C; }
+.stage-radio.campus input:checked + span { background: #E0E7FF; color: #4338CA; }
+/* 求职进度：看板（5 列按进度分列，方格卡片可视化全局投递状态） */
+.app-kanban {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 4px;
+}
+.kanban-col {
+  background: linear-gradient(180deg, #FAFBFC, #FFFFFF);
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  padding: 10px 8px 8px;
+  min-height: 220px;
+  display: flex; flex-direction: column;
+}
+.kanban-col-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 2px 4px 8px;
+  border-bottom: 1px dashed var(--border-light);
+  margin-bottom: 8px;
+}
+.kanban-col-header .col-title { font-size: 13px; font-weight: 600; }
+.kanban-col-header .col-cnt {
+  padding: 1px 8px; border-radius: 999px;
+  font-size: 11.5px; font-weight: 600;
+}
+.kanban-col[data-stage="简历初筛"] .col-title { color: #1E40AF; }
+.kanban-col[data-stage="简历初筛"] .col-cnt { background: #DBEAFE; color: #1E40AF; }
+.kanban-col[data-stage="测评"] .col-title { color: #0F766E; }
+.kanban-col[data-stage="测评"] .col-cnt { background: #CCFBF1; color: #0F766E; }
+.kanban-col[data-stage="初试"] .col-title { color: #92400E; }
+.kanban-col[data-stage="初试"] .col-cnt { background: #FEF3C7; color: #92400E; }
+.kanban-col[data-stage="复试"] .col-title { color: #065F46; }
+.kanban-col[data-stage="复试"] .col-cnt { background: #D1FAE5; color: #065F46; }
+.kanban-col[data-stage="不合适"] .col-title { color: #6B7280; }
+.kanban-col[data-stage="不合适"] .col-cnt { background: #F3F4F6; color: #6B7280; }
+.kanban-list { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.kanban-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 9px 10px 8px;
+  cursor: pointer;
+  transition: box-shadow .15s, transform .15s, border-color .15s;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+.kanban-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); border-color: var(--primary); }
+.kanban-card-title {
+  font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.45;
+  margin-bottom: 6px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden; word-break: break-all;
+}
+.kanban-card-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.kanban-card-meta .st-app { padding: 2px 9px; font-size: 11.5px; line-height: 1.55; }
+.kanban-empty {
+  color: var(--text-3); font-size: 12px;
+  text-align: center; padding: 14px 4px;
+  border: 1px dashed var(--border-light); border-radius: 8px;
+  background: rgba(243, 244, 246, 0.4);
+}
 .exp-post-summary {
   display: flex;
   align-items: flex-start;
@@ -7452,6 +7518,10 @@ function openModal(type, editItem) {
     `;
   } else if (type === 'jobApp') {
     const curStage = editItem && editItem.stage ? editItem.stage : '简历初筛';
+    const curCat = editItem && editItem.cat ? editItem.cat : '秋招';
+    const catRadios = JOB_APP_CATS.map(c =>
+      `<label class="stage-radio ${jobAppCatCls(c)}"><input type="radio" name="f_appCat" value="${c}" ${curCat === c ? 'checked' : ''}><span>${c}</span></label>`
+    ).join('');
     const stageRadios = JOB_APP_STAGES.map(s =>
       `<label class="stage-radio ${jobAppStageCls(s)}"><input type="radio" name="f_appStage" value="${s}" ${curStage === s ? 'checked' : ''}><span>${s}</span></label>`
     ).join('');
@@ -7463,7 +7533,7 @@ function openModal(type, editItem) {
         </button>
       </div>
       <div style="background:var(--gradient-soft);border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:12.5px;color:var(--text-2);line-height:1.7">
-        按 <strong style="color:var(--primary)">公司 + 岗位</strong> 记录求职进度：进度为<strong style="color:var(--primary)">单选五档</strong>（简历初筛 → 测评 → 初试 → 复试；不合适 = 流程终止并自动沉底）。面试复盘不限字数、支持 <strong style="color:var(--primary)">Markdown</strong>。
+        按 <strong style="color:var(--primary)">公司 + 岗位</strong> 记录求职进度，并标记属于哪个<strong style="color:var(--primary)">招聘类别</strong>（秋招 / 校招）：进度为<strong style="color:var(--primary)">单选五档</strong>（简历初筛 → 测评 → 初试 → 复试；不合适 = 流程终止并自动沉底）。面试复盘不限字数、支持 <strong style="color:var(--primary)">Markdown</strong>。
       </div>
       <div class="form-row">
         <div class="form-group">
@@ -7477,6 +7547,10 @@ function openModal(type, editItem) {
       </div>
       <datalist id="dl_appCompany">${jobAppDatalist('company')}</datalist>
       <datalist id="dl_appRole">${jobAppDatalist('role')}</datalist>
+      <div class="form-group">
+        <label class="form-label">招聘类别（单选）</label>
+        <div class="stage-pills">${catRadios}</div>
+      </div>
       <div class="form-group">
         <label class="form-label">当前进度（单选）</label>
         <div class="stage-pills">${stageRadios}</div>
@@ -7492,6 +7566,29 @@ function openModal(type, editItem) {
       <div class="form-actions">
         <button class="btn btn-secondary" onclick="closeModal()">取消</button>
         <button class="btn" onclick="saveJobApp('${editItem ? editItem.id : ''}')">${isEdit ? '保存' : '添加'}</button>
+      </div>
+    `;
+  } else if (type === 'jobAppDetail') {
+    const stLabel = editItem.stage || '简历初筛';
+    const catLabel = editItem.cat || '秋招';
+    content.innerHTML = `
+      <div class="modal-header">
+        <div class="modal-title">${escapeHtml(editItem.company || '未填公司')} · ${escapeHtml(editItem.role || '未填岗位')}</div>
+        <button class="modal-close" onclick="closeModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center;margin-bottom:10px;flex-wrap:wrap">
+        <span class="st-app ct-${jobAppCatCls(catLabel)}">${escapeHtml(catLabel)}</span>
+        <span class="st-app st-${jobAppStageCls(stLabel)}">${escapeHtml(stLabel)}</span>
+        <span class="text-muted text-sm">${escapeHtml(editItem.updated || editItem.date || '')}</span>
+      </div>
+      <div style="font-size:12px;color:var(--text-2);margin:6px 0 4px;font-weight:500">面试复盘</div>
+      <div class="md-body" style="max-height:50vh;overflow-y:auto;background:linear-gradient(135deg,#F0FDF4,#F8FAFC);border:1px solid #D1FAE5;border-radius:8px;padding:12px 14px;color:var(--text-2);line-height:1.78">${editItem.review ? renderMarkdown(editItem.review) : '<span class="text-muted">（暂无复盘，面试后记得补充）</span>'}</div>
+      <div class="form-actions">
+        <button class="btn btn-secondary" onclick="closeModal()">关闭</button>
+        <button class="btn btn-danger" onclick="closeModal();deleteItem('jobApp','${editItem.id}')">删除</button>
+        <button class="btn" onclick="closeModal();editJobApp('${editItem.id}')">编辑</button>
       </div>
     `;
   } else if (type === 'expPostKpAI') {
@@ -9055,13 +9152,17 @@ function saveExpBizKB(id) {
   showToast(id ? '已更新' : '已添加');
 }
 
-/* ========== 求职进度 (jobApps: 公司+岗位 → 五档进度 + 面试复盘) ==========
-   记录「投了哪家 → 走到哪一步 → 复盘如何」。与岗位投递(jobs)分工：jobs 是同步进来的
+/* ========== 求职进度 (jobApps: 公司+岗位+招聘类别 → 五档进度 + 面试复盘) ==========
+   记录「投了哪家（哪个招聘批次）→ 走到哪一步 → 复盘如何」。与岗位投递(jobs)分工：jobs 是同步进来的
    岗位机会池，jobApps 是个人投递跟进台账。独立存储 KEYS.jobApps，互不混用。
+   招聘类别：秋招=玫红 / 校招=靛蓝（可扩展，未来加「春招」等只需在数组增项）。
    五档进度 = 五种颜色：简历初筛蓝 / 测评青 / 初试琥珀 / 复试绿 / 不合适灰。 */
 const JOB_APP_STAGES = ['简历初筛', '测评', '初试', '复试', '不合适'];
 const JOB_APP_STAGE_CLS = { '简历初筛': 'screening', '测评': 'assess', '初试': 'first', '复试': 'final', '不合适': 'out' };
 function jobAppStageCls(stage) { return JOB_APP_STAGE_CLS[stage] || 'screening'; }
+const JOB_APP_CATS = ['秋招', '校招'];
+const JOB_APP_CAT_CLS = { '秋招': 'autumn', '校招': 'campus' };
+function jobAppCatCls(cat) { return JOB_APP_CAT_CLS[cat] || 'autumn'; }
 function jobAppList() { return getData(KEYS.jobApps) || []; }
 function jobAppDistinct(field) {
   return [...new Set(jobAppList().map(a => (a[field] || '').trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'zh'));
@@ -9077,28 +9178,22 @@ function jobAppSort(a, b) {
   return String(b.updated || b.date || '').localeCompare(String(a.updated || a.date || ''));
 }
 function jobAppCardHtml(a) {
-  const stLabel = a.stage || '简历初筛';
-  const moreBtn = `
-    <button type="button" class="btn btn-sm btn-secondary" id="exp-biz-more-${a.id}" onclick="toggleExpBizKB('${a.id}')" style="display:none;margin:8px 0 2px;font-size:12px">展开全文</button>
-  `;
+  const catLabel = a.cat || '秋招';
+  const date = a.updated || a.date || '';
   return `
-    <div class="exp-post-card" id="exp-app-card-${a.id}">
-      <div class="card-header">
-        <div class="card-title">${escapeHtml(a.company || '未填公司')} · ${escapeHtml(a.role || '未填岗位')}</div>
-        <div style="display:flex;gap:4px;flex-shrink:0">
-          <button class="btn btn-sm btn-secondary" onclick="editJobApp('${a.id}')">编辑</button>
-          <button class="btn btn-sm btn-danger" onclick="deleteItem('jobApp', '${a.id}')">删除</button>
-        </div>
+    <div class="kanban-card" onclick="viewJobApp('${a.id}')" title="点击查看复盘详情">
+      <div class="kanban-card-title">${escapeHtml(a.company || '未填公司')} · ${escapeHtml(a.role || '未填岗位')}</div>
+      <div class="kanban-card-meta">
+        <span class="st-app ct-${jobAppCatCls(catLabel)}">${escapeHtml(catLabel)}</span>
+        <span class="text-muted text-sm">${escapeHtml(date)}</span>
       </div>
-      <div class="exp-post-meta">
-        <span class="st-app st-${jobAppStageCls(stLabel)}">${escapeHtml(stLabel)}</span>
-        <span class="text-muted text-sm">${escapeHtml(a.updated || a.date || '')}</span>
-      </div>
-      <div style="font-size:12px;color:var(--text-2);margin:10px 0 4px;font-weight:500">面试复盘</div>
-      <div class="exp-biz-content md-body" id="exp-biz-content-${a.id}">${a.review ? renderMarkdown(a.review) : '<span class="text-muted">（暂无复盘，面试后记得补充）</span>'}</div>
-      ${moreBtn}
     </div>
   `;
+}
+/* 看板卡片点击 → 打开复盘详情弹窗（只读视图，含 Markdown 渲染 + 编辑/删除入口） */
+function viewJobApp(id) {
+  const item = jobAppList().find(a => a.id === id);
+  if (item) openModal('jobAppDetail', item);
 }
 /* 顶部计数筛选胶囊：「全部」+ 五档同色胶囊（各带数量），点击只看该进度；常规每档只亮当前状态 */
 function jobAppChipsHtml(list) {
@@ -9125,20 +9220,40 @@ function renderJobApps() {
   const all = jobAppList();
   const chipsBar = document.getElementById('appChipsBar');
   if (chipsBar) chipsBar.innerHTML = all.length ? jobAppChipsHtml(all) : '';
-  let filtered = all.slice().sort(jobAppSort);
-  if (expView.appFilter) filtered = filtered.filter(a => (a.stage || '简历初筛') === expView.appFilter);
-  if (filtered.length === 0) {
-    const empty = all.length === 0;
+  if (all.length === 0) {
     container.innerHTML = `
       <div class="exp-post-empty">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-        <div>${empty ? '还没有求职记录，点击「添加记录」，按 公司 + 岗位 跟进投递与面试进度' : '当前进度下暂无记录（可点击「全部」查看）'}</div>
+        <div>还没有求职记录，点击「添加记录」，按 公司 + 岗位 跟进投递与面试进度</div>
       </div>
     `;
     return;
   }
-  container.innerHTML = filtered.map(jobAppCardHtml).join('');
-  jobAppCheckOverflow();
+  // 按档位分组（不合适仍按 jobAppSort 沉底在「不合适」列内）
+  const grouped = {};
+  JOB_APP_STAGES.forEach(s => { grouped[s] = []; });
+  all.slice().sort(jobAppSort).forEach(a => {
+    const s = a.stage || '简历初筛';
+    (grouped[s] || (grouped[s] = [])).push(a);
+  });
+  const showStage = expView.appFilter || null; // null = 全部列展示；string = 单列筛选
+  const cols = JOB_APP_STAGES.map(stage => {
+    const isActive = !showStage || showStage === stage;
+    const items = isActive ? grouped[stage] : [];
+    const cards = items.length
+      ? items.map(jobAppCardHtml).join('')
+      : `<div class="kanban-empty">${showStage && !isActive ? '该档已被筛选隐藏' : '该档暂无记录'}</div>`;
+    return `
+      <div class="kanban-col" data-stage="${stage}">
+        <div class="kanban-col-header">
+          <span class="col-title">${stage}</span>
+          <span class="col-cnt">${grouped[stage].length}</span>
+        </div>
+        <div class="kanban-list">${cards}</div>
+      </div>
+    `;
+  }).join('');
+  container.innerHTML = `<div class="app-kanban">${cols}</div>`;
 }
 /* 渲染后按实际高度判定「展开全文」；容器不可见(display:none)时跳过，切回时重新渲染检测 */
 function jobAppCheckOverflow() {
@@ -9178,6 +9293,8 @@ function toggleJobAppPv() {
 function saveJobApp(id) {
   const company = document.getElementById('f_appCompany').value.trim();
   const role = document.getElementById('f_appRole').value.trim();
+  const catEl = document.querySelector('input[name="f_appCat"]:checked');
+  const cat = catEl ? catEl.value : '秋招';
   const stageEl = document.querySelector('input[name="f_appStage"]:checked');
   const stage = stageEl ? stageEl.value : '简历初筛';
   const review = document.getElementById('f_appReview').value.trim();
@@ -9185,9 +9302,9 @@ function saveJobApp(id) {
   const list = jobAppList();
   if (id) {
     const item = list.find(a => a.id === id);
-    if (item) { item.company = company; item.role = role; item.stage = stage; item.review = review; item.updated = today(); }
+    if (item) { item.company = company; item.role = role; item.cat = cat; item.stage = stage; item.review = review; item.updated = today(); }
   } else {
-    list.unshift({ id: uid(), company, role, stage, review, date: today() });
+    list.unshift({ id: uid(), company, role, cat, stage, review, date: today() });
   }
   setData(KEYS.jobApps, list);
   closeModal();
