@@ -1035,7 +1035,7 @@ a { color: var(--primary); text-decoration: none; }
 .st-first { background: #FEF3C7; color: #92400E; }
 .st-final { background: #D1FAE5; color: #065F46; }
 .st-out { background: #F3F4F6; color: #6B7280; }
-/* 求职进度：招聘类别色（秋招=玫红 / 校招=靛蓝），与五档进度色区分开 */
+/* 求职进度：招聘类别色（实习=玫红 / 校招=靛蓝），与五档进度色区分开 */
 .ct-autumn { background: #FFE4E6; color: #BE123C; }
 .ct-campus { background: #E0E7FF; color: #4338CA; }
 /* 求职进度：卡片上的徽章（类别 + 当前进度，常规各只显示一个） */
@@ -7530,7 +7530,7 @@ function openModal(type, editItem) {
     `;
   } else if (type === 'jobApp') {
     const curStage = editItem && editItem.stage ? editItem.stage : '简历初筛';
-    const curCat = editItem && editItem.cat ? editItem.cat : '秋招';
+    const curCat = editItem && editItem.cat ? editItem.cat : '实习';
     const catRadios = JOB_APP_CATS.map(c =>
       `<label class="stage-radio ${jobAppCatCls(c)}"><input type="radio" name="f_appCat" value="${c}" ${curCat === c ? 'checked' : ''}><span>${c}</span></label>`
     ).join('');
@@ -7545,7 +7545,7 @@ function openModal(type, editItem) {
         </button>
       </div>
       <div style="background:var(--gradient-soft);border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:12.5px;color:var(--text-2);line-height:1.7">
-        按 <strong style="color:var(--primary)">公司 + 岗位</strong> 记录求职进度，并标记属于哪个<strong style="color:var(--primary)">招聘类别</strong>（秋招 / 校招）：进度为<strong style="color:var(--primary)">单选五档</strong>（简历初筛 → 测评 → 初试 → 复试；不合适 = 流程终止并自动沉底）。面试复盘不限字数、支持 <strong style="color:var(--primary)">Markdown</strong>。
+        按 <strong style="color:var(--primary)">公司 + 岗位</strong> 记录求职进度，并标记属于哪个<strong style="color:var(--primary)">招聘类别</strong>（实习 / 校招）：进度为<strong style="color:var(--primary)">单选五档</strong>（简历初筛 → 测评 → 初试 → 复试；不合适 = 流程终止并自动沉底）。面试复盘不限字数、支持 <strong style="color:var(--primary)">Markdown</strong>。
       </div>
       <div class="form-row">
         <div class="form-group">
@@ -7586,7 +7586,7 @@ function openModal(type, editItem) {
     `;
   } else if (type === 'jobAppDetail') {
     const stLabel = editItem.stage || '简历初筛';
-    const catLabel = editItem.cat || '秋招';
+    const catLabel = editItem.cat || '实习';
     const link = isSafeUrl(editItem.link) ? editItem.link.trim() : '';
     content.innerHTML = `
       <div class="modal-header">
@@ -9178,8 +9178,8 @@ function saveExpBizKB(id) {
 const JOB_APP_STAGES = ['简历初筛', '测评', '初试', '复试', '不合适'];
 const JOB_APP_STAGE_CLS = { '简历初筛': 'screening', '测评': 'assess', '初试': 'first', '复试': 'final', '不合适': 'out' };
 function jobAppStageCls(stage) { return JOB_APP_STAGE_CLS[stage] || 'screening'; }
-const JOB_APP_CATS = ['秋招', '校招'];
-const JOB_APP_CAT_CLS = { '秋招': 'autumn', '校招': 'campus' };
+const JOB_APP_CATS = ['实习', '校招'];
+const JOB_APP_CAT_CLS = { '实习': 'autumn', '校招': 'campus' };
 function jobAppCatCls(cat) { return JOB_APP_CAT_CLS[cat] || 'autumn'; }
 function jobAppList() { return getData(KEYS.jobApps) || []; }
 function jobAppDistinct(field) {
@@ -9198,7 +9198,7 @@ function jobAppSort(a, b) {
 /* URL 协议白名单：仅 http/https 才渲染外链（防 javascript:/data: 注入，与 mdInline 同策略） */
 function isSafeUrl(u) { return /^https?:\/\/[^\s"'<>]+$/i.test(String(u || '').trim()); }
 function jobAppCardHtml(a) {
-  const catLabel = a.cat || '秋招';
+  const catLabel = a.cat || '实习';
   const date = a.updated || a.date || '';
   const link = isSafeUrl(a.link) ? a.link.trim() : '';
   return `
@@ -9320,7 +9320,7 @@ function saveJobApp(id) {
   const linkEl = document.getElementById('f_appLink');
   const link = (linkEl ? linkEl.value.trim() : '') || '';
   const catEl = document.querySelector('input[name="f_appCat"]:checked');
-  const cat = catEl ? catEl.value : '秋招';
+  const cat = catEl ? catEl.value : '实习';
   const stageEl = document.querySelector('input[name="f_appStage"]:checked');
   const stage = stageEl ? stageEl.value : '简历初筛';
   const review = document.getElementById('f_appReview').value.trim();
