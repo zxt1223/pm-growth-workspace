@@ -994,12 +994,12 @@ a { color: var(--primary); text-decoration: none; }
   margin: 10px 0;
   border: 1px solid #F0F0F0;
 }
-/* 业务知识库正文（长文可展开/收起） */
+/* 业务知识库正文（支持 Markdown 渲染，长文可展开/收起） */
 .exp-biz-content {
   font-size: 13.5px;
   color: var(--text);
   line-height: 1.8;
-  white-space: pre-wrap;
+  white-space: normal; /* Markdown 渲染后自带 <p>/<br>，源码换行不再按 pre-wrap 叠加显示 */
   word-break: break-word;
   background: linear-gradient(135deg, #F0FDF4, #F8FAFC);
   border: 1px solid #D1FAE5;
@@ -1022,7 +1022,13 @@ a { color: var(--primary); text-decoration: none; }
   transition: opacity 0.2s;
   border-radius: 0 0 var(--radius-sm) var(--radius-sm);
 }
-.exp-biz-content.expanded::after { opacity: 0; }
+.exp-biz-content.expanded::after,
+.exp-biz-content.no-mask::after { opacity: 0; }
+/* 卡片内 Markdown 排版与浅绿底融合的微调（md-* 基础样式见 .md-body 通用规则） */
+.exp-biz-content.md-body { color: var(--text); }
+.exp-biz-content.md-body > :first-child { margin-top: 0; }
+.exp-biz-content.md-body > :last-child { margin-bottom: 0; }
+.exp-biz-content.md-body .md-p { color: var(--text); }
 .exp-post-summary {
   display: flex;
   align-items: flex-start;
@@ -5258,7 +5264,12 @@ function mdInline(s) {
   let t = escapeHtml(s);
   t = t.replace(/`([^`]+)`/g, '<code>$1</code>');
   t = t.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-  t = t.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+  /* 链接协议白名单：javascript:/vbscript:/data:/file: 等危险协议不生成 <a>，保留原文防注入 */
+  t = t.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (m, txt, url) => {
+    const u = url.trim();
+    if (/^(javascript|vbscript|data|file):/i.test(u)) return m;
+    return '<a href="' + u + '" target="_blank" rel="noopener">' + txt + '</a>';
+  });
   return t;
 }
 
@@ -7352,7 +7363,7 @@ function openModal(type, editItem) {
         </button>
       </div>
       <div style="background:var(--gradient-soft);border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:12.5px;color:var(--text-2);line-height:1.7">
-        按 <strong style="color:var(--primary)">公司 + 岗位</strong> 沉淀该岗位所需的业务知识（行业认知 / 业务模式 / 术语概念 / 常见业务问题…），不限字数。可随时编辑。
+        按 <strong style="color:var(--primary)">公司 + 岗位</strong> 沉淀该岗位所需的业务知识（行业认知 / 业务模式 / 术语概念 / 常见业务问题…），不限字数、正文支持 <strong style="color:var(--primary)">Markdown</strong>（**加粗**、- 列表、# 标题、&#96;代码&#96;、| 表格 |）。可随时编辑。
       </div>
       <div class="form-row">
         <div class="form-group">
@@ -7367,8 +7378,12 @@ function openModal(type, editItem) {
       <datalist id="dl_bizCompany">${bizKBDatalist('company')}</datalist>
       <datalist id="dl_bizRole">${bizKBDatalist('role')}</datalist>
       <div class="form-group">
-        <label class="form-label">业务知识（不限字数）</label>
-        <textarea class="form-textarea" id="f_bizContent" placeholder="该岗位需要掌握的业务知识：业务链路、关键术语、商业模式、常见问题与应对..." style="min-height:220px">${editItem ? escapeHtml(editItem.content || '') : ''}</textarea>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px">
+          <label class="form-label" style="margin:0">业务知识（不限字数 · 支持 Markdown）</label>
+          <button type="button" id="btn_bizPv" class="btn btn-sm btn-secondary" onclick="toggleBizPreview()" style="flex-shrink:0">预览</button>
+        </div>
+        <textarea class="form-textarea" id="f_bizContent" placeholder="支持 Markdown：**加粗**、&#96;代码&#96;、# 标题、- 列表、1. 序号、> 引用、[链接](url)、&#96;&#96;&#96;代码块&#96;&#96;&#96;、| 表头 | 单元格 |" style="min-height:220px">${editItem ? escapeHtml(editItem.content || '') : ''}</textarea>
+        <div class="md-body" id="pv_bizContent" style="display:none;min-height:220px;max-height:340px;overflow-y:auto;background:linear-gradient(135deg,#F0FDF4,#F8FAFC);border:1px solid #D1FAE5;border-radius:8px;padding:12px 14px;color:var(--text-2);line-height:1.78"></div>
       </div>
       <div class="form-actions">
         <button class="btn btn-secondary" onclick="closeModal()">取消</button>
@@ -8801,10 +8816,10 @@ function setExpBizCompany(companyEnc) { expView.bizCompany = companyEnc ? decode
 function setExpBizRole(role) { expView.bizRole = role || ''; saveExpView(); renderExpBizKB(); }
 
 function expBizCardHtml(b) {
-  const hasLong = (b.content || '').length > 160;
-  const moreBtn = hasLong ? `
-    <button type="button" class="btn btn-sm btn-secondary" id="exp-biz-more-${b.id}" onclick="toggleExpBizKB('${b.id}')" style="margin:8px 0 2px;font-size:12px">展开全文</button>
-  ` : '';
+  /* “展开全文”按钮默认隐藏：渲染完成后按实际内容高度（是否被裁剪）决定显示 */
+  const moreBtn = `
+    <button type="button" class="btn btn-sm btn-secondary" id="exp-biz-more-${b.id}" onclick="toggleExpBizKB('${b.id}')" style="display:none;margin:8px 0 2px;font-size:12px">展开全文</button>
+  `;
   return `
     <div class="exp-post-card" id="exp-biz-card-${b.id}">
       <div class="card-header">
@@ -8819,10 +8834,29 @@ function expBizCardHtml(b) {
         ${b.role ? `<span class="badge badge-role">${escapeHtml(b.role)}</span>` : ''}
         <span class="text-muted text-sm">${escapeHtml(b.date || '')}</span>
       </div>
-      <div class="exp-biz-content" id="exp-biz-content-${b.id}">${b.content ? escapeHtml(b.content) : '<span class="text-muted">（暂无内容）</span>'}</div>
+      <div class="exp-biz-content md-body" id="exp-biz-content-${b.id}">${b.content ? renderMarkdown(b.content) : '<span class="text-muted">（暂无内容）</span>'}</div>
       ${moreBtn}
     </div>
   `;
+}
+
+/* 渲染后按实际高度判定每张卡片是否需要“展开全文”（防误判短内容）；
+   容器不可见（display:none）时跳过——切回该子 Tab 时会重新渲染检测 */
+function expBizCheckOverflow() {
+  const container = document.getElementById('expBizListB');
+  if (!container) return;
+  container.querySelectorAll('.exp-biz-content').forEach(el => {
+    if (el.offsetParent === null) return;
+    const btn = document.getElementById('exp-biz-more-' + el.id.slice('exp-biz-content-'.length));
+    const overflowed = el.scrollHeight > el.clientHeight + 6;
+    if (overflowed) {
+      el.classList.remove('no-mask');
+      if (btn) btn.style.display = '';
+    } else {
+      el.classList.add('no-mask');
+      if (btn) btn.style.display = 'none';
+    }
+  });
 }
 
 function toggleExpBizKB(id) {
@@ -8873,9 +8907,28 @@ function renderExpBizKB() {
     return;
   }
   container.innerHTML = filtered.map(expBizCardHtml).join('');
+  expBizCheckOverflow();
 }
 
 function addExpBizKB() { openModal('bizKB'); }
+/* 编辑弹窗：Markdown 编辑 ⇄ 渲染预览 切换（仅切换显示，数据仍存原文） */
+function toggleBizPreview() {
+  const ta = document.getElementById('f_bizContent');
+  const pv = document.getElementById('pv_bizContent');
+  const btn = document.getElementById('btn_bizPv');
+  if (!ta || !pv) return;
+  const showing = pv.style.display !== 'none';
+  if (showing) {
+    pv.style.display = 'none';
+    ta.style.display = '';
+    if (btn) btn.textContent = '预览';
+  } else {
+    pv.innerHTML = renderMarkdown(ta.value || '');
+    pv.style.display = '';
+    ta.style.display = 'none';
+    if (btn) btn.textContent = '继续编辑';
+  }
+}
 function editExpBizKB(id) {
   const item = bizKBList().find(b => b.id === id);
   if (item) openModal('bizKB', item);
