@@ -1029,12 +1029,15 @@ a { color: var(--primary); text-decoration: none; }
 .exp-biz-content.md-body > :first-child { margin-top: 0; }
 .exp-biz-content.md-body > :last-child { margin-bottom: 0; }
 .exp-biz-content.md-body .md-p { color: var(--text); }
-/* 求职进度：五档进度色（简历初筛=蓝 / 测评=青 / 初试=琥珀 / 复试=绿 / 不合适=灰） */
+/* 求职进度：七档进度色（简历初筛=蓝 / 测评=青 / AI面试=深紫 / 初筛=天蓝 / 初试=琥珀 / 复试=绿 / HR面=橙 / 不合适=灰） */
 .st-screening { background: #DBEAFE; color: #1E40AF; }
-.st-assess { background: #CCFBF1; color: #0F766E; }
-.st-first { background: #FEF3C7; color: #92400E; }
-.st-final { background: #D1FAE5; color: #065F46; }
-.st-out { background: #F3F4F6; color: #6B7280; }
+.st-assess    { background: #CCFBF1; color: #0F766E; }
+.st-ai        { background: #EDE9FE; color: #6D28D9; }
+.st-pre       { background: #E0F2FE; color: #0369A1; }
+.st-first     { background: #FEF3C7; color: #92400E; }
+.st-final     { background: #D1FAE5; color: #065F46; }
+.st-hr        { background: #FED7AA; color: #C2410C; }
+.st-out       { background: #F3F4F6; color: #6B7280; }
 /* 求职进度：招聘类别色（实习=玫红 / 校招=靛蓝），与五档进度色区分开 */
 .ct-autumn { background: #FFE4E6; color: #BE123C; }
 .ct-campus { background: #E0E7FF; color: #4338CA; }
@@ -1058,10 +1061,13 @@ a { color: var(--primary); text-decoration: none; }
 .app-chip.active { border-color: currentColor; font-weight: 500; }
 .app-chip-all { background: #EDE9FE; color: #5B21B6; }
 .app-chip.st-screening { background: #DBEAFE; color: #1E40AF; }
-.app-chip.st-assess { background: #CCFBF1; color: #0F766E; }
-.app-chip.st-first { background: #FEF3C7; color: #92400E; }
-.app-chip.st-final { background: #D1FAE5; color: #065F46; }
-.app-chip.st-out { background: #F3F4F6; color: #6B7280; }
+.app-chip.st-assess    { background: #CCFBF1; color: #0F766E; }
+.app-chip.st-ai        { background: #EDE9FE; color: #6D28D9; }
+.app-chip.st-pre       { background: #E0F2FE; color: #0369A1; }
+.app-chip.st-first     { background: #FEF3C7; color: #92400E; }
+.app-chip.st-final     { background: #D1FAE5; color: #065F46; }
+.app-chip.st-hr        { background: #FED7AA; color: #C2410C; }
+.app-chip.st-out       { background: #F3F4F6; color: #6B7280; }
 /* 求职进度：编辑弹窗里的进度单选（radio 隐藏，勾中项变对应颜色） */
 .stage-pills { display: flex; flex-wrap: wrap; gap: 8px; }
 .stage-radio { position: relative; cursor: pointer; }
@@ -1072,25 +1078,30 @@ a { color: var(--primary); text-decoration: none; }
   border: 1px solid transparent; font-size: 13px; line-height: 1.6;
 }
 .stage-radio.screening input:checked + span { background: #DBEAFE; color: #1E40AF; }
-.stage-radio.assess input:checked + span { background: #CCFBF1; color: #0F766E; }
-.stage-radio.first input:checked + span { background: #FEF3C7; color: #92400E; }
-.stage-radio.final input:checked + span { background: #D1FAE5; color: #065F46; }
-.stage-radio.out input:checked + span { background: #F3F4F6; color: #6B7280; border-color: #9CA3AF; }
+.stage-radio.assess    input:checked + span { background: #CCFBF1; color: #0F766E; }
+.stage-radio.ai        input:checked + span { background: #EDE9FE; color: #6D28D9; }
+.stage-radio.pre       input:checked + span { background: #E0F2FE; color: #0369A1; }
+.stage-radio.first     input:checked + span { background: #FEF3C7; color: #92400E; }
+.stage-radio.final     input:checked + span { background: #D1FAE5; color: #065F46; }
+.stage-radio.hr        input:checked + span { background: #FED7AA; color: #C2410C; }
+.stage-radio.out       input:checked + span { background: #F3F4F6; color: #6B7280; border-color: #9CA3AF; }
 .stage-radio.autumn input:checked + span { background: #FFE4E6; color: #BE123C; }
 .stage-radio.campus input:checked + span { background: #E0E7FF; color: #4338CA; }
-/* 求职进度：看板（5 列按进度分列，方格卡片可视化全局投递状态） */
+/* 求职进度：看板（8 列按进度分列，方格卡片可视化全局投递状态；窄屏可横滚） */
 .app-kanban {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(8, minmax(140px, 1fr));
   gap: 10px;
   margin-top: 4px;
+  overflow-x: auto;
+  padding-bottom: 4px;
 }
 .kanban-col {
   background: linear-gradient(180deg, #FAFBFC, #FFFFFF);
   border: 1px solid var(--border-light);
   border-radius: 10px;
   padding: 10px 8px 8px;
-  min-height: 220px;
+  min-height: 180px;
   display: flex; flex-direction: column;
 }
 .kanban-col-header {
@@ -1108,10 +1119,16 @@ a { color: var(--primary); text-decoration: none; }
 .kanban-col[data-stage="简历初筛"] .col-cnt { background: #DBEAFE; color: #1E40AF; }
 .kanban-col[data-stage="测评"] .col-title { color: #0F766E; }
 .kanban-col[data-stage="测评"] .col-cnt { background: #CCFBF1; color: #0F766E; }
+.kanban-col[data-stage="AI面试"] .col-title { color: #6D28D9; }
+.kanban-col[data-stage="AI面试"] .col-cnt { background: #EDE9FE; color: #6D28D9; }
+.kanban-col[data-stage="初筛"] .col-title { color: #0369A1; }
+.kanban-col[data-stage="初筛"] .col-cnt { background: #E0F2FE; color: #0369A1; }
 .kanban-col[data-stage="初试"] .col-title { color: #92400E; }
 .kanban-col[data-stage="初试"] .col-cnt { background: #FEF3C7; color: #92400E; }
 .kanban-col[data-stage="复试"] .col-title { color: #065F46; }
 .kanban-col[data-stage="复试"] .col-cnt { background: #D1FAE5; color: #065F46; }
+.kanban-col[data-stage="HR面"] .col-title { color: #C2410C; }
+.kanban-col[data-stage="HR面"] .col-cnt { background: #FED7AA; color: #C2410C; }
 .kanban-col[data-stage="不合适"] .col-title { color: #6B7280; }
 .kanban-col[data-stage="不合适"] .col-cnt { background: #F3F4F6; color: #6B7280; }
 .kanban-list { display: flex; flex-direction: column; gap: 8px; flex: 1; }
@@ -9266,13 +9283,16 @@ function saveExpBizKB(id) {
   showToast(id ? '已更新' : '已添加');
 }
 
-/* ========== 求职进度 (jobApps: 公司+岗位+招聘类别 → 五档进度 + 面试复盘) ==========
+/* ========== 求职进度 (jobApps: 公司+岗位+招聘类别 → 七档进度 + 面试复盘) ==========
    记录「投了哪家（哪个招聘批次）→ 走到哪一步 → 复盘如何」。与岗位投递(jobs)分工：jobs 是同步进来的
    岗位机会池，jobApps 是个人投递跟进台账。独立存储 KEYS.jobApps，互不混用。
-   招聘类别：秋招=玫红 / 校招=靛蓝（可扩展，未来加「春招」等只需在数组增项）。
-   五档进度 = 五种颜色：简历初筛蓝 / 测评青 / 初试琥珀 / 复试绿 / 不合适灰。 */
-const JOB_APP_STAGES = ['简历初筛', '测评', '初试', '复试', '不合适'];
-const JOB_APP_STAGE_CLS = { '简历初筛': 'screening', '测评': 'assess', '初试': 'first', '复试': 'final', '不合适': 'out' };
+   招聘类别：实习=玫红 / 校招=靛蓝（可扩展，未来加「春招」等只需在数组增项）。
+   七档进度 = 七种颜色：简历初筛蓝 / 测评青 / AI面试深紫 / 初筛天蓝 / 初试琥珀 / 复试绿 / HR面橙；外加「不合适」灰（流程终止，自动沉底）。 */
+const JOB_APP_STAGES = ['简历初筛', '测评', 'AI面试', '初筛', '初试', '复试', 'HR面', '不合适'];
+const JOB_APP_STAGE_CLS = {
+  '简历初筛': 'screening', '测评': 'assess', 'AI面试': 'ai', '初筛': 'pre',
+  '初试': 'first', '复试': 'final', 'HR面': 'hr', '不合适': 'out'
+};
 function jobAppStageCls(stage) { return JOB_APP_STAGE_CLS[stage] || 'screening'; }
 const JOB_APP_CATS = ['实习', '校招'];
 const JOB_APP_CAT_CLS = { '实习': 'autumn', '校招': 'campus' };
