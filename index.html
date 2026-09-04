@@ -1087,14 +1087,35 @@ a { color: var(--primary); text-decoration: none; }
 .stage-radio.out       input:checked + span { background: #F3F4F6; color: #6B7280; border-color: #9CA3AF; }
 .stage-radio.autumn input:checked + span { background: #FFE4E6; color: #BE123C; }
 .stage-radio.campus input:checked + span { background: #E0E7FF; color: #4338CA; }
-/* 求职进度：看板（8 列按进度分列，方格卡片可视化全局投递状态；窄屏可横滚） */
+/* 求职进度：看板（6 列积极流程按进度分列：简历初筛/测评/初筛/初试/复试/HR面）。
+   AI面试、 不合适 默认不上看板——点顶部 chips 的这两档时切到 .app-list-view 列表视图集中查看 */
 .app-kanban {
   display: grid;
-  grid-template-columns: repeat(8, minmax(140px, 1fr));
+  grid-template-columns: repeat(6, minmax(160px, 1fr));
   gap: 10px;
   margin-top: 4px;
   overflow-x: auto;
   padding-bottom: 4px;
+}
+/* 列表视图：筛选 AI面试 / 不合适 时启用，全宽 grid 自适应列数 + 列头说明 */
+.app-list-view {
+  margin-top: 4px;
+  background: linear-gradient(180deg, #FAFBFC, #FFFFFF);
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  padding: 14px;
+}
+.app-list-header {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 0 4px 10px;
+  border-bottom: 1px dashed var(--border-light);
+  margin-bottom: 12px;
+}
+.app-list-header .col-title { font-size: 14px; font-weight: 600; color: var(--text); }
+.app-list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
 }
 .kanban-col {
   background: linear-gradient(180deg, #FAFBFC, #FFFFFF);
@@ -9294,6 +9315,8 @@ const JOB_APP_STAGE_CLS = {
   '初试': 'first', '复试': 'final', 'HR面': 'hr', '不合适': 'out'
 };
 function jobAppStageCls(stage) { return JOB_APP_STAGE_CLS[stage] || 'screening'; }
+/* 看板列：仅展示积极流程 6 列（AI面试、 不合适 默认不上看板，点 chips 切到列表视图） */
+const JOB_APP_BOARD_STAGES = ['简历初筛', '测评', '初筛', '初试', '复试', 'HR面'];
 const JOB_APP_CATS = ['实习', '校招'];
 const JOB_APP_CAT_CLS = { '实习': 'autumn', '校招': 'campus' };
 function jobAppCatCls(cat) { return JOB_APP_CAT_CLS[cat] || 'autumn'; }
@@ -9369,15 +9392,33 @@ function renderJobApps() {
     `;
     return;
   }
-  // 按档位分组（不合适仍按 jobAppSort 沉底在「不合适」列内）
+  const showStage = expView.appFilter || null; // null = 全部；string = 单档筛选
+  // AI面试、 不合适 默认不在看板上分列 → 点 chips 这两档时切换全宽列表视图集中查看
+  if (showStage === 'AI面试' || showStage === '不合适') {
+    const items = all.slice().sort(jobAppSort).filter(a => (a.stage || '简历初筛') === showStage);
+    const headerCls = jobAppStageCls(showStage);
+    const cards = items.length
+      ? `<div class="app-list-grid">${items.map(jobAppCardHtml).join('')}</div>`
+      : `<div class="kanban-empty">该档暂无记录</div>`;
+    container.innerHTML = `
+      <div class="app-list-view">
+        <div class="app-list-header">
+          <span class="st-app st-${headerCls}">${escapeHtml(showStage)}</span>
+          <span class="text-muted text-sm">共 ${items.length} 条</span>
+        </div>
+        ${cards}
+      </div>
+    `;
+    return;
+  }
+  // 看板视图：仅展示积极流程 6 列；AI面试/不合适 卡片不会出现在这里（需通过 chips 切到列表视图）
   const grouped = {};
-  JOB_APP_STAGES.forEach(s => { grouped[s] = []; });
+  JOB_APP_BOARD_STAGES.forEach(s => { grouped[s] = []; });
   all.slice().sort(jobAppSort).forEach(a => {
     const s = a.stage || '简历初筛';
-    (grouped[s] || (grouped[s] = [])).push(a);
+    if (grouped[s]) grouped[s].push(a);
   });
-  const showStage = expView.appFilter || null; // null = 全部列展示；string = 单列筛选
-  const cols = JOB_APP_STAGES.map(stage => {
+  const cols = JOB_APP_BOARD_STAGES.map(stage => {
     const isActive = !showStage || showStage === stage;
     const items = isActive ? grouped[stage] : [];
     const cards = items.length
