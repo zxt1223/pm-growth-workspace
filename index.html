@@ -1355,6 +1355,21 @@ a { color: var(--primary); text-decoration: none; }
 .exp-side-sub-item:hover { background: var(--gradient-soft); color: var(--text); }
 .exp-side-sub-item.active { background: #EDE9FE; color: var(--primary); font-weight: 600; }
 .exp-side-sub-item .cnt { font-size: 11px; color: var(--text-3); }
+/* 当前岗位/搜索条件下该公司为 0 条：淡化显示，点击会自动清空岗位与搜索词 */
+.exp-side-sub-item.zero { opacity: .42; }
+.exp-side-sub-item.zero .cnt { color: #b45309; font-weight: 600; }
+.exp-side-sub-item.zero:hover { opacity: .8; }
+.exp-filter-note {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  margin: 8px 0 10px; padding: 7px 11px; border-radius: 8px;
+  background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412; font-size: 12.5px;
+}
+.exp-filter-note b { color: #7c2d12; }
+.exp-filter-note button {
+  border: none; background: #ea580c; color: #fff; border-radius: 6px;
+  padding: 2px 9px; font-size: 12px; cursor: pointer;
+}
+.exp-filter-note button:hover { background: #c2410c; }
 .exp-main { flex: 1; min-width: 0; }
 @media (max-width: 720px) {
   .exp-layout { flex-direction: column; }
@@ -2095,9 +2110,10 @@ a { color: var(--primary); text-decoration: none; }
             <option value="" data-page-node-id="WRW78gFoeualVw9P6RzmBX">全部岗位</option>
           </select>
           <input type="text" class="filter-input" id="expPostSearchI" placeholder="搜索标题、内容、标签..." oninput="renderExpInterview()" style="flex:1;min-width:150px" data-page-node-id="QG0sbcWnsUGZVKcXzEd1yX">
-          <button class="btn btn-sm btn-danger" onclick="confirmClearModule('expPosts')" data-page-node-id="tBADhhVQ8nlisHQo2q06KE">清空数据</button>
+          <button class="btn btn-sm btn-danger" onclick="confirmClearModule('expPosts')">清空数据</button>
         </div>
-        <div id="expPostListI" data-page-node-id="nyLG6gdIyJZWh2WZlq93p8"></div>
+        <div id="expINote" class="exp-filter-note" style="display:none"></div>
+        <div id="expPostListI"></div>
       </div>
     </div>
     </div>
@@ -9029,28 +9045,43 @@ function expPostType(p) {
 }
 
 /* Sidebar sub-filter list: 'knowledge' → topics, 'interview' → companies */
-function expSidebarFiltersHtml(type) {
+/* 侧栏筛选项（公司 / 主题）。
+   修两处历史问题：
+   ① 计数口径：原先只按本维度统计，忽略了「岗位下拉 + 搜索框」，
+      导致「显示 37 份、点进去 0 条」。现在改为基于 ctx.base
+      ——即已应用除本维度以外其它筛选后的集合——来统计，
+      保证侧栏数字 === 点进去实际看到的条数。
+   ② 点击传值：原先把值拼进 onclick 字符串，公司名含引号/换行等特殊字符时
+      点击会直接抛 SyntaxError 且毫无反应。改用 data-val 传值，彻底免疫。 */
+function expSidebarFiltersHtml(type, ctx) {
   const all = getData(KEYS.expPosts);
+  const base = (ctx && Array.isArray(ctx.base)) ? ctx.base : all;
   if (type === 'knowledge') {
-    // 主题计数跨类型：含该 category 的全部帖子（知识贴 + 该主题面经），与点击后的实际显示一致
     const counts = {};
-    all.forEach(p => {
-      const t = p.category || '其他';
-      counts[t] = (counts[t] || 0) + 1;
-    });
-    const pureKnowledge = all.filter(p => expPostType(p) === 'knowledge').length;
-    const total = Object.values(counts).reduce((a, b) => a + b, 0);
-    const item = t => `<div class="exp-side-sub-item ${expView.knowledgeTopic === t ? 'active' : ''}" onclick="setExpTopic('${encodeURIComponent(t || '')}')"><span>${t || '全部主题'}</span><span class="cnt">${t ? (counts[t] || 0) : pureKnowledge}</span></div>`;
-    return `<div class="exp-side-sub-label">知识主题</div>` + ['', ...EXP_KNOWLEDGE_TOPICS].map(item).join('');
+    base.forEach(p => { const t = p.category || '其他'; counts[t] = (counts[t] || 0) + 1; });
+    /* 主题列表改为按数据动态生成，避免新增分类在侧栏看不见 */
+    const rawTopics = {};
+    all.forEach(p => { const t = p.category || '其他'; rawTopics[t] = (rawTopics[t] || 0) + 1; });
+    const topics = Object.keys(rawTopics).sort((a, b) => a.localeCompare(b, 'zh'));
+    const pureBase = base.filter(p => expPostType(p) === 'knowledge').length;
+    const item = t => {
+      const n = t ? (counts[t] || 0) : pureBase;
+      const zero = t && n === 0;
+      return `<div class="exp-side-sub-item ${expView.knowledgeTopic === t ? 'active' : ''}${zero ? ' zero' : ''}" data-val="${escapeHtml(t || '')}" title="${escapeHtml(zero ? '当前搜索条件下没有匹配内容，点击会自动清空搜索词' : (t || '全部主题'))}" onclick="setExpTopic(this)"><span>${escapeHtml(t || '全部主题')}</span><span class="cnt">${n}</span></div>`;
+    };
+    return `<div class="exp-side-sub-label">知识主题</div>` + ['', ...topics].map(item).join('');
   }
   const counts = {};
-  all.filter(p => expPostType(p) === 'interview').forEach(p => {
-    const c = p.company || '未分类';
-    counts[c] = (counts[c] || 0) + 1;
-  });
-  const companies = Object.keys(counts).sort((a, b) => a.localeCompare(b, 'zh'));
+  base.forEach(p => { const c = p.company || '未分类'; counts[c] = (counts[c] || 0) + 1; });
+  const rawCompanies = {};
+  all.filter(p => expPostType(p) === 'interview').forEach(p => { const c = p.company || '未分类'; rawCompanies[c] = (rawCompanies[c] || 0) + 1; });
+  const companies = Object.keys(rawCompanies).sort((a, b) => a.localeCompare(b, 'zh'));
   const total = Object.values(counts).reduce((a, b) => a + b, 0);
-  const item = c => `<div class="exp-side-sub-item ${expView.interviewCompany === c ? 'active' : ''}" onclick="setExpCompany('${encodeURIComponent(c || '')}')"><span>${c || '全部公司'}</span><span class="cnt">${c ? counts[c] : total}</span></div>`;
+  const item = c => {
+    const n = c ? (counts[c] || 0) : total;
+    const zero = c && n === 0;
+    return `<div class="exp-side-sub-item ${expView.interviewCompany === c ? 'active' : ''}${zero ? ' zero' : ''}" data-val="${escapeHtml(c || '')}" title="${escapeHtml(zero ? '当前岗位/搜索条件下没有匹配内容，点击会自动清空它们' : (c || '全部公司'))}" onclick="setExpCompany(this)"><span>${escapeHtml(c || '全部公司')}</span><span class="cnt">${n}</span></div>`;
+  };
   return `<div class="exp-side-sub-label">公司</div>` + ['', ...companies].map(item).join('');
 }
 
@@ -10027,7 +10058,9 @@ function renderExpKnowledge() {
   const sidebar = document.getElementById('expSidebarK');
   if (sidebar) sidebar.classList.toggle('collapsed', !!expView.sidebarK);
   const sideFilters = document.getElementById('expSideFiltersK');
-  if (sideFilters) sideFilters.innerHTML = expSidebarFiltersHtml('knowledge');
+  /* 基准集合：已应用搜索词的全部帖子（主题筛选跨 interview/knowledge 两类） */
+  const baseK = searchTerm ? list.filter(p => expPostSearchMatch(p, searchTerm)) : list.slice();
+  if (sideFilters) sideFilters.innerHTML = expSidebarFiltersHtml('knowledge', { base: baseK });
   const allKnowledge = list.filter(p => expPostType(p) === 'knowledge');
   let filtered = allKnowledge.slice();
   // 选中具体主题时跨类型展示：该 category 下的所有帖子（含面经）一起显示；未选主题则只显示纯知识贴
@@ -10076,16 +10109,45 @@ function renderExpInterview() {
     if (roleSel.innerHTML !== opts) roleSel.innerHTML = opts;
     roleSel.value = expView.interviewRole || '';
   }
+  /* 基准集合：除「公司」以外其它筛选都已应用。侧栏计数基于它统计，
+     这样侧栏显示的数字 === 点击该公司后实际看到的条数 */
+  const allInterview = list.filter(p => expPostType(p) === 'interview');
+  const base = allInterview.filter(p => {
+    if (expView.interviewRole && (p.role || '') !== expView.interviewRole) return false;
+    if (searchTerm && !expPostSearchMatch(p, searchTerm)) return false;
+    return true;
+  });
+  if (sideFilters) sideFilters.innerHTML = expSidebarFiltersHtml('interview', { base: base });
   let filtered = list.filter(p => expPostType(p) === 'interview');
   if (expView.interviewCompany) filtered = filtered.filter(p => (p.company || '未分类') === expView.interviewCompany);
   if (expView.interviewRole) filtered = filtered.filter(p => (p.role || '') === expView.interviewRole);
   if (searchTerm) filtered = filtered.filter(p => expPostSearchMatch(p, searchTerm));
+  /* 筛选状态提示条：让「为什么点进去是空的」一眼可见 */
+  const noteEl = document.getElementById('expINote');
+  if (noteEl) {
+    const labels = [];
+    if (expView.interviewCompany) labels.push(`公司「${escapeHtml(expView.interviewCompany)}」`);
+    if (expView.interviewRole) labels.push(`岗位「${escapeHtml(expView.interviewRole)}」`);
+    if (searchTerm) labels.push(`搜索「${escapeHtml(searchTerm)}」`);
+    if (labels.length) {
+      noteEl.innerHTML = `<span>当前筛选：${labels.join(' ＋ ')}，匹配到 <b>${filtered.length}</b> 条</span>`
+        + `<button type="button" onclick="clearExpCompanyFilters()">清空全部筛选</button>`;
+      noteEl.style.display = 'flex';
+    } else {
+      noteEl.innerHTML = '';
+      noteEl.style.display = 'none';
+    }
+  }
   if (filtered.length === 0) {
     const empty = list.filter(p => expPostType(p) === 'interview').length === 0;
+    const hint = (!empty && (expView.interviewRole || searchTerm))
+      ? '<div style="font-size:12.5px;color:#9a3412;margin-top:6px">你同时选中了岗位或搜索条件，两者叠加后没有结果。<b>试试清空岗位下拉与搜索框</b>，或直接点击左侧公司名（会自动帮你清空）。</div>'
+      : '';
     container.innerHTML = `
       <div class="exp-post-empty">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7h-9M14 17H5M17 2l4 4-4 4M3 2v20"/></svg>
         <div>${empty ? '还没有求职经验贴，点击"手动添加"开始收藏' : '没有匹配的经验贴'}</div>
+        ${hint}
       </div>
     `;
     return;
@@ -10103,20 +10165,45 @@ function bizKBDistinct(field) {
 function bizKBDatalist(field) {
   return bizKBDistinct(field).map(v => `<option value="${escapeHtml(v)}"></option>`).join('');
 }
-function bizKBSidebarHtml() {
+function bizKBSidebarHtml(ctx) {
+  const all = bizKBList();
+  const base = (ctx && Array.isArray(ctx.base)) ? ctx.base : all;
   const counts = {};
-  bizKBList().forEach(b => {
-    const c = b.company || '未分类';
-    counts[c] = (counts[c] || 0) + 1;
-  });
-  const companies = Object.keys(counts).sort((a, b) => a.localeCompare(b, 'zh'));
+  base.forEach(b => { const c = b.company || '未分类'; counts[c] = (counts[c] || 0) + 1; });
+  /* 公司列表始终取全集，保证某项在当前条件下为 0 时依然可见（只是淡化） */
+  const rawCounts = {};
+  all.forEach(b => { const c = b.company || '未分类'; rawCounts[c] = (rawCounts[c] || 0) + 1; });
+  const companies = Object.keys(rawCounts).sort((a, b) => a.localeCompare(b, 'zh'));
   const total = Object.values(counts).reduce((a, b) => a + b, 0);
-  const item = c => `<div class="exp-side-sub-item ${expView.bizCompany === c ? 'active' : ''}" onclick="setExpBizCompany('${encodeURIComponent(c || '')}')"><span>${c || '全部公司'}</span><span class="cnt">${c ? counts[c] : total}</span></div>`;
+  const item = c => {
+    const n = c ? (counts[c] || 0) : total;
+    const zero = c && n === 0;
+    return `<div class="exp-side-sub-item ${expView.bizCompany === c ? 'active' : ''}${zero ? ' zero' : ''}" data-val="${escapeHtml(c || '')}" title="${escapeHtml(zero ? '当前岗位/搜索条件下没有匹配内容，点击会自动清空它们' : (c || '全部公司'))}" onclick="setExpBizCompany(this)"><span>${escapeHtml(c || '全部公司')}</span><span class="cnt">${n}</span></div>`;
+  };
   return `<div class="exp-side-sub-label">公司</div>` + ['', ...companies].map(item).join('');
 }
 
 /* 业务知识库 view state（并入 expView，统一持久化） */
-function setExpBizCompany(companyEnc) { expView.bizCompany = companyEnc ? decodeURIComponent(companyEnc) : ''; saveExpView(); renderExpBizKB(); }
+function setExpBizCompany(arg) {
+  const company = sideItemValue(arg);
+  expView.bizCompany = company || '';
+  /* 叠加上岗位/搜索词后若一条都没有，自动放宽其它筛选 */
+  if (company) {
+    const searchEl = document.getElementById('expBizSearchB');
+    const term = searchEl ? searchEl.value.toLowerCase().trim() : '';
+    if (expView.bizRole || term) {
+      const hit = bizKBList().filter(b => (b.company || '未分类') === company
+        && (!expView.bizRole || (b.role || '') === expView.bizRole)
+        && (!term || ((b.company || '') + ' ' + (b.role || '') + ' ' + (b.content || '')).toLowerCase().includes(term)));
+      if (hit.length === 0) {
+        expView.bizRole = '';
+        if (searchEl) searchEl.value = '';
+      }
+    }
+  }
+  saveExpView();
+  renderExpBizKB();
+}
 function setExpBizRole(role) { expView.bizRole = role || ''; saveExpView(); renderExpBizKB(); }
 
 function expBizCardHtml(b) {
@@ -10178,7 +10265,6 @@ function renderExpBizKB() {
   const sidebar = document.getElementById('expSidebarB');
   if (sidebar) sidebar.classList.toggle('collapsed', !!expView.sidebarB);
   const sideFilters = document.getElementById('expSideFiltersB');
-  if (sideFilters) sideFilters.innerHTML = bizKBSidebarHtml();
   const roleSel = document.getElementById('expBizRoleB');
   if (roleSel) {
     const roles = bizKBDistinct('role');
@@ -10188,6 +10274,14 @@ function renderExpBizKB() {
   }
   const searchEl = document.getElementById('expBizSearchB');
   const term = searchEl ? searchEl.value.toLowerCase().trim() : '';
+  /* 基准集合：已应用岗位下拉与搜索词，保证侧栏计数 === 点击后实际条数 */
+  const bizAll = bizKBList();
+  const baseB = bizAll.filter(b => {
+    if (expView.bizRole && (b.role || '') !== expView.bizRole) return false;
+    if (term && !(((b.company || '') + ' ' + (b.role || '') + ' ' + (b.content || '')).toLowerCase().includes(term))) return false;
+    return true;
+  });
+  if (sideFilters) sideFilters.innerHTML = bizKBSidebarHtml({ base: baseB });
   let filtered = bizKBList().slice();
   if (expView.bizCompany) filtered = filtered.filter(b => (b.company || '未分类') === expView.bizCompany);
   if (expView.bizRole) filtered = filtered.filter(b => (b.role || '') === expView.bizRole);
@@ -11110,9 +11204,70 @@ function importJobs() {
 
 /* Sidebar view-state setters */
 let expFormPresetType = 'knowledge';
-function setExpTopic(topicEnc) { expView.knowledgeTopic = topicEnc ? decodeURIComponent(topicEnc) : ''; saveExpView(); renderExpKnowledge(); }
-function setExpCompany(companyEnc) { expView.interviewCompany = companyEnc ? decodeURIComponent(companyEnc) : ''; saveExpView(); renderExpInterview(); }
+/* ---- 侧栏点击：改为从元素的 data-val 读取，兼容旧的字符串调用 ----
+   老写法把值拼进 onclick 字符串（setExpCompany('xxx')），公司名一旦含引号
+   就会抛 SyntaxError，点击毫无反应；现在彻底规避。 */
+function sideItemValue(arg) {
+  if (arg && typeof arg === 'object' && arg.dataset) return arg.dataset.val || '';
+  return (typeof arg === 'string' ? arg : '') || '';
+}
+function expInterviewSearchTerm() {
+  const el = document.getElementById('expPostSearchI');
+  return el ? el.value.toLowerCase().trim() : '';
+}
+function expKnowledgeSearchTerm() {
+  const el = document.getElementById('expPostSearchK');
+  return el ? el.value.toLowerCase().trim() : '';
+}
+function setExpCompany(arg) {
+  const company = sideItemValue(arg);
+  expView.interviewCompany = company || '';
+  /* 若「该公司 + 已选岗位/搜索词」叠加后一条都看不到，自动放宽其它筛选，
+     避免用户看到「显示 37 份却点出来空白」 */
+  if (company) {
+    const role = expView.interviewRole, term = expInterviewSearchTerm();
+    if (role || term) {
+      const list = getData(KEYS.expPosts).filter(p => expPostType(p) === 'interview');
+      const hit = list.filter(p => (p.company || '未分类') === company
+        && (!role || (p.role || '') === role)
+        && (!term || expPostSearchMatch(p, term)));
+      if (hit.length === 0) {
+        expView.interviewRole = '';
+        const el = document.getElementById('expPostSearchI');
+        if (el) el.value = '';
+      }
+    }
+  }
+  saveExpView();
+  renderExpInterview();
+}
+function clearExpCompanyFilters() {
+  expView.interviewCompany = '';
+  expView.interviewRole = '';
+  const el = document.getElementById('expPostSearchI');
+  if (el) el.value = '';
+  saveExpView();
+  renderExpInterview();
+}
 function setExpRole(role) { expView.interviewRole = role || ''; saveExpView(); renderExpInterview(); }
+function setExpTopic(arg) {
+  const topic = sideItemValue(arg);
+  expView.knowledgeTopic = topic || '';
+  /* 同理：该主题与当前搜索词叠加后若为空，自动清空搜索词 */
+  if (topic) {
+    const term = expKnowledgeSearchTerm();
+    if (term) {
+      const list = getData(KEYS.expPosts);
+      const hit = list.filter(p => (p.category || '其他') === topic && expPostSearchMatch(p, term));
+      if (hit.length === 0) {
+        const el = document.getElementById('expPostSearchK');
+        if (el) el.value = '';
+      }
+    }
+  }
+  saveExpView();
+  renderExpKnowledge();
+}
 function toggleExpSidebar(which) {
   if (which === 'K') expView.sidebarK = !expView.sidebarK;
   else if (which === 'B') expView.sidebarB = !expView.sidebarB;
