@@ -6819,7 +6819,14 @@ function getData(key) {
   } catch { return []; }
 }
 function setData(key, data) {
-  localStorage.setItem(key, JSON.stringify(data));
+  try {
+    localStorage.setItem(key, JSON.stringify(data));
+  } catch (e) {
+    // 配额写满（QuotaExceededError）时不能抛出去——一旦抛出会让整个初始化中断，
+    // 排在后面的模块（如实习继任、日报、renderAll）全部不执行。
+    handleStorageQuotaError(e, key);
+    return false;
+  }
   if (key !== KEYS.settings && key !== KEYS.textOverrides) {
     try {
       const s = getData(KEYS.settings) || {};
@@ -6827,6 +6834,47 @@ function setData(key, data) {
       localStorage.setItem(KEYS.settings, JSON.stringify(s));
     } catch (e) { /* storage may be blocked; ignore */ }
   }
+  return true;
+}
+
+/* 配额写满时的降级处理：先尝试清理历史全量备份（最常见的占位元凶），
+   清完重试一次；仍失败则提示用户导出备份。全程不抛异常。 */
+let _quotaWarned = false;
+function handleStorageQuotaError(err, key) {
+  const isQuota = err && (err.name === 'QuotaExceededError' ||
+    err.name === 'NS_ERROR_DOM_QUOTA_REACHED' || err.code === 22);
+  if (!isQuota) {
+    console.warn('[workbench] 写入失败：' + key, err);
+    return;
+  }
+  if (pruneOldBackups(0) > 0) {
+    // 备份已清空，留给下一次渲染的机会（不递归，避免死循环）
+    console.warn('[workbench] 存储配额写满，已清理历史备份以腾出空间');
+  }
+  if (!_quotaWarned) {
+    _quotaWarned = true;
+    try {
+      showToast('浏览器存储空间已满，部分数据未能保存。请在「设置」里导出备份后清理旧数据');
+    } catch (e) { /* toast 不可用时静默 */ }
+  }
+  console.warn('[workbench] 存储配额不足，未能写入：' + key);
+}
+
+/* 清理历史全量备份：默认只保留最近 keep 个（keep=0 表示全清）。
+   返回被删除的个数。备份是每日全量快照，若不清理会逐日累积直至写满配额。 */
+function pruneOldBackups(keep) {
+  if (typeof keep !== 'number') keep = 1;
+  let names = [];
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.indexOf('wb_pm_backup_') === 0) names.push(k);
+    }
+  } catch (e) { return 0; }
+  names.sort().reverse();               // 日期后缀，字符串倒序即由新到旧
+  const doomed = names.slice(keep);
+  doomed.forEach(k => { try { localStorage.removeItem(k); } catch (e) {} });
+  return doomed.length;
 }
 
 /* ========== Initialize (no sample data - user's own content only) ========== */
@@ -11111,7 +11159,18 @@ function toggleInternCard(id) {
 }
 
 function renderInterns() {
-  const list = getData(KEYS.interns);
+  let list = getData(KEYS.interns);
+  // ⚠️ 兜底：若本地存储里没有数据（例如浏览器存储配额写满、写入被拒），
+  // 直接退回渲染页面内置的 AUTO_INTERNS_SEED 快照，绝不让用户看到空白。
+  let fromSeedFallback = false;
+  if (list.length === 0 && typeof window.AUTO_INTERNS_SEED !== 'undefined' && window.AUTO_INTERNS_SEED.length) {
+    list = window.AUTO_INTERNS_SEED.map(x => ({
+      id: x.autoId || ('intern-' + x.company + '-' + x.title),
+      autoId: x.autoId, date: x.date, base: x.base, company: x.company, title: x.title,
+      scope: x.scope, edu: x.edu, jd: x.jd, contact: x.contact, isAutoCollected: true
+    }));
+    fromSeedFallback = true;
+  }
   const bar = document.getElementById('internSyncBar');
   const box = document.getElementById('internList');
   const cnt = document.getElementById('internCount');
@@ -11133,7 +11192,8 @@ function renderInterns() {
         <span class="dl-board-sub">共 ${list.length} 条 ｜ 数据更新时间 ${escapeHtml(latest)}</span>
       </div>
       <div class="intern-meta">${chipHtml}</div>
-      ${stale ? `<div class="dl-board-sub" style="color:#b45309;margin-top:8px">⚠️ 数据更新时间早于今天，当天 16:00 的飞书同步可能未生效</div>` : ''}`;
+      ${stale ? `<div class="dl-board-sub" style="color:#b45309;margin-top:8px">⚠️ 数据更新时间早于今天，当天 16:00 的飞书同步可能未生效</div>` : ''}
+      ${fromSeedFallback ? `<div class="dl-board-sub" style="color:#b45309;margin-top:8px">⚠️ 本地存储空间不足，当前展示的是页面内置的最新快照（可正常查看，但改动不会保存）。请点击顶部「导出」备份后清理旧数据。</div>` : ''}`;
   }
 
   const selBase = document.getElementById('internBaseFilter') ? document.getElementById('internBaseFilter').value : '';
@@ -12435,17 +12495,27 @@ document.addEventListener('DOMContentLoaded', () => {
   loadWsSidebarState(); // Restore left sidebar collapsed state
   applyWsSidebarState();
   initSampleData();
-  seedFetchedNews();    // Auto-inject fetched AI news from 9 sources
-  mergeAutoExpSeed();   // Auto-collected experience posts (牛客/小红书 etc.)
-  mergeInterviewQA();   // Pilot: 字节/美团/小红书 面试 Q&A 注入训练题库
-  populateCompanyFilter(); // 按企业筛选下拉
-  mergeAutoJobSeed();   // Auto-synced job postings (Feishu table snapshot)
-  mergeAutoOfficialJobSeed(); // 官网/小红书校招·实习岗位（独立通道，永久手动岗位）
-  mergeAutoInternSeed();  // 实习继任（飞书「实习继任投递表」，每日 16:00 同步）
-  mergeAutoDailySeed(); // Pre-written long-form daily reports (core summary + detail)
-  initTextEditing();
-  renderAll();
-  checkStorageHealth();   // Show storage status banner (normal / ephemeral / blocked)
+
+  /* ⚠️ 每个 seed 注入步骤都要独立 try/catch 隔离：
+     一旦某一步抛异常（例如存储配额写满），没有被隔离的话会直接中断整个
+     DOMContentLoaded 回调，排在后面的模块就永远不执行——曾经导致
+     「实习继任」等新模块一直空白。这里逐个兜住，单点失败不影响其余。 */
+  const safeStep = (name, fn) => {
+    try { fn(); } catch (e) { console.warn('[workbench] 初始化步骤失败：' + name, e); }
+  };
+
+  safeStep('seedFetchedNews', () => seedFetchedNews());   // Auto-inject fetched AI news from 9 sources
+  safeStep('mergeAutoExpSeed', () => mergeAutoExpSeed()); // Auto-collected experience posts (牛客/小红书 etc.)
+  safeStep('mergeInterviewQA', () => mergeInterviewQA()); // Pilot: 字节/美团/小红书 面试 Q&A 注入训练题库
+  safeStep('populateCompanyFilter', () => populateCompanyFilter()); // 按企业筛选下拉
+  // 实习继任放在 jobs 之前：它体积小（几十条），先写能保证在配额紧张时也落盘
+  safeStep('mergeAutoInternSeed', () => mergeAutoInternSeed()); // 实习继任（飞书「实习继任投递表」，每日 16:00 同步）
+  safeStep('mergeAutoJobSeed', () => mergeAutoJobSeed());       // Auto-synced job postings (Feishu table snapshot)
+  safeStep('mergeAutoOfficialJobSeed', () => mergeAutoOfficialJobSeed()); // 官网/小红书校招·实习岗位（独立通道，永久手动岗位）
+  safeStep('mergeAutoDailySeed', () => mergeAutoDailySeed());   // Pre-written long-form daily reports
+  safeStep('initTextEditing', () => initTextEditing());
+  safeStep('renderAll', () => renderAll());
+  safeStep('checkStorageHealth', () => checkStorageHealth());   // Show storage status banner
 });
 
 /* ========== Storage Health Check ========== */
@@ -12470,24 +12540,86 @@ function checkStorageHealth() {
   } else {
     const s = getData(KEYS.settings) || {};
     const t = s.lastSaveAt ? new Date(s.lastSaveAt).toLocaleString() : '尚未保存';
-    banner.className = 'storage-banner storage-banner--ok';
-    banner.textContent = '存储正常 · 上次保存：' + t + '（修改已自动保存到本浏览器，刷新不丢）';
+    // 配额余量检测：localStorage 上限约 5MB。空间写满时写入会静默失败，
+    // 表现为「新模块一直空白 / 修改保存不上」，此前无法自查，所以这里显式暴露。
+    let usedChars = 0;
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (!k) continue;
+        usedChars += k.length + (localStorage.getItem(k) || '').length;
+      }
+    } catch (e) { /* ignore */ }
+    const usedMB = usedChars / 1048576;          // 按 UTF-16 字符折半 ≈ MB
+    const ratio = usedMB / 5;
+    let writable = true;
+    try {
+      const probe = '__wb_probe_big__';
+      localStorage.setItem(probe, '0'.repeat(256 * 1024));   // 256K 字符探针
+      localStorage.removeItem(probe);
+    } catch (e) { writable = false; }
+
+    if (!writable || ratio > 0.9) {
+      banner.className = 'storage-banner storage-banner--error';
+      banner.innerHTML = '⚠️ 浏览器存储空间即将用尽（已用约 ' + usedMB.toFixed(1) +
+        ' MB / 上限 5 MB），新的数据可能保存不上。请点击顶部「导出」备份后，清理工作台里不再需要的旧数据（如过期的岗位/资讯）。' +
+        '（历史自动备份已自动清理，只保留最近一份）';
+    } else {
+      banner.className = 'storage-banner storage-banner--ok';
+      banner.textContent = '存储正常 · 已用 ' + usedMB.toFixed(1) + ' MB / 5 MB · 上次保存：' + t + '（修改已自动保存到本浏览器，刷新不丢）';
+    }
   }
 }
 
-/* ========== Daily Safety Backup ========== */
+/* ========== Daily Safety Backup ==========
+   ⚠️ 备份是「全量快照」，一份备份 ≈ 把整个工作台的数据再存一遍。
+   早期版本只写不删，多份备份叠加会把 localStorage 配额（约 5MB）写满，
+   之后所有写入静默失败（表现为新模块空白、数据保存不上）。
+   所以这里改为：始终只保留「今天这一份」备份——先判断今天是否已备份，
+   已备份则原样保留；未备份才清掉旧备份并写入今天的。 */
 function autoBackupData() {
   try {
     let settings = getData(KEYS.settings);
     if (!settings || typeof settings !== 'object' || Array.isArray(settings)) settings = {};
     const todayStr = today();
-    if (settings.lastBackupDate === todayStr) return;
+
+    // ⚠️ 顺序很重要：今天已备份就什么都不动，避免把当天唯一那份备份删掉
+    if (settings.lastBackupDate === todayStr &&
+        localStorage.getItem('wb_pm_backup_' + todayStr) !== null) {
+      return;
+    }
+
+    // 清掉除今天以外的所有历史备份（含未能推进 lastBackupDate 的残留）
+    let pruned = 0;
+    try {
+      for (let i = localStorage.length - 1; i >= 0; i--) {
+        const k = localStorage.key(i);
+        if (k && k.indexOf('wb_pm_backup_') === 0 && k !== 'wb_pm_backup_' + todayStr) {
+          localStorage.removeItem(k);
+          pruned++;
+        }
+      }
+    } catch (e) { /* ignore */ }
+    if (pruned > 0) console.log('[workbench] 已清理 ' + pruned + ' 份历史备份，释放存储空间');
+
     const backup = {};
     Object.keys(KEYS).forEach(k => {
       const v = localStorage.getItem(KEYS[k]);
       if (v !== null) backup[KEYS[k]] = v;
     });
-    localStorage.setItem('wb_pm_backup_' + todayStr, JSON.stringify(backup));
+
+    try {
+      localStorage.setItem('wb_pm_backup_' + todayStr, JSON.stringify(backup));
+    } catch (e) {
+      // 空间仍不足：放弃旧备份再试一次，仍失败就跳过本次备份（best-effort）
+      pruneOldBackups(0);
+      try {
+        localStorage.setItem('wb_pm_backup_' + todayStr, JSON.stringify(backup));
+      } catch (e2) {
+        console.warn('[workbench] 存储空间不足，跳过今日自动备份');
+        return;
+      }
+    }
     settings.lastBackupDate = todayStr;
     setData(KEYS.settings, settings);
   } catch (e) { /* backup is best-effort, never blocks startup */ }
