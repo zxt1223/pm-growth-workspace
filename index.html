@@ -1405,6 +1405,30 @@ a { color: var(--primary); text-decoration: none; }
   background: var(--gradient-soft);
 }
 
+/* ========== 实习继任卡片 ========== */
+.intern-list { display: flex; flex-direction: column; gap: 12px; }
+.intern-count { font-size: 13px; color: var(--text-3); align-self: center; white-space: nowrap; }
+.intern-card { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius); padding: 14px 16px; transition: box-shadow .2s, border-color .2s; }
+.intern-card:hover { border-color: var(--primary); box-shadow: 0 2px 10px rgba(0,0,0,.06); }
+.intern-card-head { display: flex; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
+.intern-date { font-size: 12px; font-weight: 700; color: var(--primary); background: var(--gradient-soft); border-radius: 6px; padding: 3px 8px; white-space: nowrap; }
+.intern-base { font-size: 12px; font-weight: 600; color: #fff; background: #3b6fd4; border-radius: 6px; padding: 3px 8px; white-space: nowrap; }
+.intern-base.b-shenzhen { background: #1e7a3f; }
+.intern-base.b-guangzhou { background: #d97706; }
+.intern-company { font-size: 15px; font-weight: 700; color: var(--text); }
+.intern-title { font-size: 15px; font-weight: 600; color: var(--text); flex: 1; min-width: 160px; }
+.intern-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.intern-chip { font-size: 12px; color: var(--text-2); background: var(--bg); border-radius: 999px; padding: 3px 10px; }
+.intern-section { margin-top: 10px; }
+.intern-label { font-size: 12px; font-weight: 700; color: var(--text-3); margin-bottom: 4px; letter-spacing: .5px; }
+.intern-jd { font-size: 13px; line-height: 1.75; color: var(--text-2); white-space: pre-wrap; max-height: 108px; overflow: hidden; position: relative; }
+.intern-card.expanded .intern-jd { max-height: none; }
+.intern-card:not(.expanded) .intern-jd::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 34px; background: linear-gradient(to bottom, rgba(255,255,255,0), var(--bg-card)); }
+.intern-toggle { font-size: 12px; color: var(--primary); cursor: pointer; margin-top: 6px; user-select: none; }
+.intern-toggle:hover { text-decoration: underline; }
+.intern-actions { margin-left: auto; display: flex; gap: 6px; }
+.intern-contact { font-size: 13px; color: var(--text-2); word-break: break-all; }
+
 /* ========== 岗位截止预警看板 ========== */
 .dl-board { margin-bottom: 16px; }
 .dl-board-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
@@ -2091,6 +2115,7 @@ a { color: var(--primary); text-decoration: none; }
       <button class="sub-tab active" id="subTabPosts" onclick="switchExpSub('posts')" data-page-node-id="zj0PHAxGkgWDTBaejPGzKE">求职经验贴</button>
       <button class="sub-tab" id="subTabBiz" onclick="switchExpSub('biz')" data-page-node-id="SgEoeolahaIieo8CD45uo3">业务知识库</button>
       <button class="sub-tab" id="subTabJobs" onclick="switchExpSub('jobs')" data-page-node-id="XGKHaogu79ri0jAUU9pxhI">岗位投递</button>
+      <button class="sub-tab" id="subTabIntern" onclick="switchExpSub('intern')">实习继任</button>
       <button class="sub-tab" id="subTabBank" onclick="switchExpSub('bank')" data-page-node-id="NZ5rylkxxmdF3piXk6H3lg">面试题库</button>
       <button class="sub-tab" id="subTabApps" onclick="switchExpSub('apps')" data-page-node-id="LqnQFF7COYsTBlJyPjNzun">求职进度</button>
     </div>
@@ -2195,6 +2220,26 @@ a { color: var(--primary); text-decoration: none; }
           <tbody id="jobsTableBody" data-page-node-id="Y7vSa4Pquo47wdJ8YFAqZn"></tbody>
         </table>
       </div>
+    </div>
+
+    <!-- ===== 实习继任（飞书「实习继任投递表」自动同步） ===== -->
+    <div id="expInternArea" style="display:none">
+      <div id="internSyncBar" class="dl-board"></div>
+      <div class="filters">
+        <select class="filter-select" id="internBaseFilter" onchange="renderInterns()">
+          <option value="">全部 base 地</option>
+          <option value="上海">上海</option>
+          <option value="深圳">深圳</option>
+          <option value="广州">广州</option>
+        </select>
+        <input type="text" class="filter-input" id="internSearch" placeholder="搜索公司、岗位、JD、投递方式..." oninput="renderInterns()" style="flex:1;min-width:180px">
+        <span class="intern-count" id="internCount"></span>
+        <button class="btn btn-sm" onclick="openModal('intern')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+          添加岗位
+        </button>
+      </div>
+      <div id="internList" class="intern-list"></div>
     </div>
 
     <!-- ===== 面试题库（高频考点） ===== -->
@@ -2805,6 +2850,7 @@ const KEYS = {
   bizKB: 'wb_pm_biz_kb',  // 求职贴-业务知识库（公司+岗位+业务知识），独立存储，不与其他模块混用
   jobApps: 'wb_pm_job_apps',  // 求职贴-求职进度（公司+岗位+五档进度+面试复盘），独立存储
   jobs: 'wb_pm_jobs',
+  interns: 'wb_pm_interns',  // 求职贴-实习继任（飞书「实习继任投递表」自动同步，独立存储）
   dailyReports: 'wb_pm_daily_reports',  // 日报/周报数据（每天做的事 + 判断步骤；周报由日报聚合）
   textOverrides: 'wb_pm_text_overrides',  // ⚠️ NEVER clear this key — user's custom text edits must persist forever
   settings: 'wb_pm_settings'
@@ -5469,6 +5515,80 @@ window.AUTO_JOB_SEED = [
   {"autoId": "job-auto-杉数科技-算法实习生-运筹优化方向-算法实习生-机器学习方向-大模型技-广州","company": "杉数科技","title": "算法实习生 - 运筹优化方向、算法实习生 - 机器学习方向、大模型技术实习生、产品经理实习生、售前实习生；","location": "广州","category": "产品","type": "日常实习","url": "https://app.mokahr.com/campus-recruitment/shanshu/57987?sessionid=&sourceToken=93ec90979b37d135160d23518fabfb05#/jobs?zhineng[0]=87475","notes": "批次:日常实习 | 招聘:2027届 | 截止:招满即止","date": "2026-09-13"},
   {"autoId": "job-auto-杉数科技-算法实习生-运筹优化方向-算法实习生-机器学习方向-大模型技-上海","company": "杉数科技","title": "算法实习生 - 运筹优化方向、算法实习生 - 机器学习方向、大模型技术实习生、产品经理实习生、售前实习生；","location": "上海","category": "产品","type": "日常实习","url": "https://app.mokahr.com/campus-recruitment/shanshu/57987?sessionid=&sourceToken=93ec90979b37d135160d23518fabfb05#/jobs?zhineng[0]=87475","notes": "批次:日常实习 | 招聘:2027届 | 截止:招满即止","date": "2026-09-13"}
 // AUTO-JOBS-END
+];
+
+/* ============================================================
+   实习继任种子（飞书「实习继任投递表」自动同步）
+   - 数据源：https://zcne6sfehev9.feishu.cn/wiki/RIt8wwkSHiSsFRkfM5Wc5qiFnqd?sheet=oGGMcp
+   - 只保留 base 地 ∈ {上海, 深圳, 广州} 的记录；每天 16:00 由定时任务
+     intern_sync_build.py 整体替换本数组，用户手动添加的岗位保留不动。
+   - 字段：date 发布时间 / base / company / title / scope 招聘范围 /
+           edu 学历要求 / jd 岗位 JD / contact 投递方式
+   - ⚠️ 下面那两行注释标记绝不能删除或改名，自动化依赖它们定位写入区间；
+     也不要在更新时删掉已有条目。
+   ============================================================ */
+window.AUTO_INTERNS_SEED = [
+  // AUTO-INTERNS-START
+  {"autoId":"intern-auto-麦当劳-Finance BP Intern-上海-2026-09-13","date":"2026-09-13","base":"上海","company":"麦当劳","title":"Finance BP Intern","scope":"ASAP","edu":"本科及以上在校生，财务/会计/金融/经济/统计/商业分析等优先","jd":"核心工作职责：1.数据梳理与整合：系统性收集与整理日常业务数据，跨系统（CPRM、EPS、OAP）提取数据，维护财务BP关键数据看板与跟踪模板；2.分析总结与报告生成：协助编制周期性复盘报告，围绕业绩达成投资回报等指标输出结构化结论；参与促销渠道投放等事后复盘；3.业务洞察与挖掘：对数据异常进行初步归因，跟踪各产品线与渠道绩效；4.系统操作与流程支持：熟练操作内部财务及业务系统，协助财务BP跟进预算执行合同审批及付款等流程。要求：精通Excel；能独立制作逻辑清晰视觉美观的PPT；了解或使用过AI Agent辅助数据解读。","contact":"2691416943@qq.com"},
+  {"autoId":"intern-auto-腾讯视频-AIGC创作工具内容制作实习生-深圳-2026-09-12","date":"2026-09-12","base":"深圳","company":"腾讯视频","title":"AIGC创作工具内容制作实习生","scope":"本科及以上","edu":"影视制作导演编剧摄影广告动画数字媒体艺术等相关专业优先","jd":"参与腾讯视频AIGC创作工具的内容制作与案例开发内容类型包括微电影广告TVC纪实短片剧情短片等；配合新功能上线快速完成演示视频功能案例使用教程及创意内容的策划与制作；协助进行模型能力测试评估视频生成效果；参与AI创作Skill编写与创作工作流搭建。","contact":"mokema@tencent.com"},
+  {"autoId":"intern-auto-腾讯-数据科学实习生-深圳-2026-09-12","date":"2026-09-12","base":"深圳","company":"腾讯","title":"数据科学实习生","scope":"27届及以后毕业有留用机会","edu":"计算机科学数据科学统计学应用数学等本科及以上","jd":"参与微信读书的数据分析工作覆盖用户增长付费分析功能优化算法策略迭代大模型评测等核心场景；围绕产品增长的核心问题与痛点运用量化分析数据建模A/B Testing因果推断等方法开展专项分析；参与数仓建设与Data Agent Skill建设（NL2SQL LLM辅助取数RAG元数据检索）。","contact":"yokiyqliu@tencent.com"},
+  {"autoId":"intern-auto-腾讯-产品策划实习生-深圳-2026-09-12","date":"2026-09-12","base":"深圳","company":"腾讯","title":"产品策划实习生","scope":"本科及以上","edu":"本科及以上","jd":"参与面向家庭与青少年用户的产品策划包括用户调研国内外竞品分析方案设计项目落地数据复盘；完成产品的用户需求定义与功能设计输出PRD及原型设计文档并能将方案快速落地为可演示的产品初步demo；与业务法务合规技术研发及海外合作方等沟通协作；收集产品用户反馈分析用户画像与行为数据。","contact":"sheryhu@tencent.com"},
+  {"autoId":"intern-auto-携程-火车票内容运营实习生-上海-2026-09-12","date":"2026-09-12","base":"上海","company":"携程","title":"火车票内容运营实习生","scope":"本科及以上","edu":"本科及以上","jd":"负责运营社交媒体平台产出符合品牌和平台调性的优质短视频及图文内容；追踪新媒体平台热点持续优化作品曝光和转化数据；基于项目目标与内部营销外部产品及市场团队协作完成品宣及营销目标。要求：熟悉抖音小红书视频号等社媒平台调性；具备视频剪辑和图文制作能力。","contact":"2054757047@qq.com"},
+  {"autoId":"intern-auto-小红书-AI社区产培生-上海-2026-09-12","date":"2026-09-12","base":"上海","company":"小红书","title":"AI社区产培生","scope":"2028届及以后","edu":"本科及以上","jd":"AI×社区全链路产品实战：深度参与搜索发布视频直播等社区核心产品模块的AI能力建设；主导AI功能的需求洞察场景设计与迭代创新；真实社区×AI的前沿探索；AI Native产品创造从0到1定义属于自己的产品。","contact":"zhangyumei@xiaohongshu.com"},
+  {"autoId":"intern-auto-哈啰-活动及社群运营实习生-上海-2026-09-12","date":"2026-09-12","base":"上海","company":"哈啰","title":"活动及社群运营实习生","scope":"本科及以上在读","edu":"本科及以上","jd":"负责全国城市微信群/社群的日常运营与活跃包括用户拉新沟通关系维护；负责活动在哈啰App内上线及运营通过活动玩法和运营方式提升用户参与度；参与活动主题玩法用户互动等创意策划负责活动相关文案撰写；协助全国城市骑游骑行活动及城市聚会等策划现场执行。要求：有趣好玩有社群运营用户运营校园活动经验优先。","contact":"1400815231@qq.com"},
+  {"autoId":"intern-auto-京东-产品运营实习生-上海-2026-09-12","date":"2026-09-12","base":"上海","company":"京东","title":"产品运营实习生","scope":"27届有转正HC","edu":"统招本科及以上","jd":"负责微信域基础体验优化相关工作；参与产品规划与功能设计；协同产研测设计等团队跟进需求评审至上线复盘全过程。要求：2027届优先；具备较强逻辑思维数据分析能力；对AI新技术保持好奇心。","contact":"zchen6650@163.com"},
+  {"autoId":"intern-auto-互联网公司-财务实习生-深圳-2026-09-12","date":"2026-09-12","base":"深圳","company":"互联网公司","title":"财务实习生","scope":"每周5天6个月以上优先","edu":"本科及以上财会类专业优先","jd":"工作内容见P1。前期主要侧重2和4方面的工作内容二者熟练后逐渐拓展到1和3方面。早九晚六双休一个月两次补卡机会。180-200/day。地点深圳宝安西乡街道。","contact":"2093583487@qq.com"},
+  {"autoId":"intern-auto-中联物产-国际贸易商务实习生-上海-2026-09-12","date":"2026-09-12","base":"上海","company":"中联物产","title":"国际贸易商务实习生","scope":"一周内到岗每周至少四天3个月以上","edu":"国际经济与贸易经济学国际商务等相关专业大三/大四","jd":"协助处理购销合同执行相关事务；协助处理信用证项下相关单据缮制合同及相关文件核对处理；协助处理合同项下提单产地证等文件签发事务。要求：通过CET-6。薪资200元/天（税后）。地点长宁区虹桥南丰城。","contact":"1178740079@qq.com"},
+  {"autoId":"intern-auto-OPPO-广告销售运营实习生-深圳-2026-09-12","date":"2026-09-12","base":"深圳","company":"OPPO","title":"广告销售运营实习生","scope":"3个月以上每周5天十一收假后到岗","edu":"本科及以上","jd":"负责协助KA渠道销售开展代理商管理等相关工作包括日常数据反馈合同流程签订销售周报周会等；负责KA渠道客户日常广告运营事项（投放问题排查广告审核问题沟通优秀案例输出等）；负责KA渠道行业其他运营支持类工作。要求：有良好沟通协调能力熟练office；对在线广告业务有了解。","contact":"suncaiquan@oppo.com"},
+  {"autoId":"intern-auto-B站-综艺行业宣发实习生-上海-2026-09-12","date":"2026-09-12","base":"上海","company":"B站","title":"综艺行业宣发实习生","scope":"一周至少到岗4天最好全职","edu":"本科及以上","jd":"负责B站综艺行业运营宣发工作包括站内资源投放IP活动运营爱优腾芒等平台对接和艺人辅助对接等；负责品宣资源和流量资源的投放和效果回收优化数据分析等；对接设计团队策划并制作资源位素材；策划并执行线上IP宣发活动。要求：对于国内综艺明星熟悉度高；熟悉B站生态。","contact":"liuziyun@bilibili.com"},
+  {"autoId":"intern-auto-美资德企-HR实习生-上海-2026-09-11","date":"2026-09-11","base":"上海","company":"美资德企","title":"HR实习生","scope":"大三本科生、研二，2027届及以后","edu":"本科及以上学历在读，专业不限；","jd":"文件归档、翻译、扫描、复印等HR日常行政事务 ▪️协助核对考勤记录，筹办员工培训活动 ▪️支持招聘全流程：简历筛选、面试接待等 ▪️完成HR安排的其他临时工作","contact":"lijun.song.ext@innomotics.com yangliu.ext@innomotics.com"},
+  {"autoId":"intern-auto-橘宜-美妆跨境电商-上海-2026-09-11","date":"2026-09-11","base":"上海","company":"橘宜","title":"美妆跨境电商","scope":"到岗时间：越快越好","edu":"本科及以上","jd":"1. 负责JOOCYEE海外官网日常运营，包括产品上架、库存及产品信息维护等 2. 整理和分析日常销售数据，根据数据表现提出优化建议 3. 做竞品和海外美妆市场调研，跟进竞品动态 4. 参与海外官网内容、EDM/营销活动等策划和执行，也会接触用户反馈","contact":"ruoyi.zhou@joy-group.com"},
+  {"autoId":"intern-auto-小红书-创新产品增长运营实习生（侧重于达人营销）-上海-2026-09-11","date":"2026-09-11","base":"上海","company":"小红书","title":"创新产品增长运营实习生（侧重于达人营销）","scope":"28级市场营销、广告学等专业优先，有小红书内容营销经验优先，有互联网大厂or有过小而美”APP产品运营经验优先","edu":"本科及以上","jd":"一、工作职责：深度参与产品从0到1的全流程增长 在这里，你不仅仅是一名实习生，更是产品增长的亲历者与共建者。你将全方位参与创新产品的运营工作，核心职责包括： 1. 产品达人生态建设：负责小红书等平台达人资源的挖掘、分析、建联与合作 2. 内容运营与把控：结合产品调性与平台热点，撰写内容指导Brief，并对达人产出的图文/视频内容进行质量审核与优化。 3. 社群运营与激活：协助运营核心用户社群，提升用户活跃度与产品粘性。 4. 数据分析与驱动：日常监控核心运营数据（如达人转化、内容效果等），进行复盘分析，并能提出切实可行的优化策略。 二、岗位要求：我们希望你 5. 熟悉小红书生态：深度理解小红书的内容生态与营销推广模式，对如何通过内容驱动用户增长有浓厚兴趣。 6. 具备运营执行力：能够独立完成达人寻源、建联、稿件审核与数据跟踪等全流程工作。 7. 数据敏感，结果导向：能够从数据中发现规律和问题，并推动运营策略的迭代优化。 8. 拥有内容审美与把控力：具备良好的审美能力，对设计美学有一定了解，能够判断内容质量并给出优化建议。 9. 有产品运营经验者优先：有“小而美”APP产品或社区运营经验，能够敏锐捕捉热点并将其转化为产品内容方向者优先。","contact":"shisiqi3@xiaohongshu.com"},
+  {"autoId":"intern-auto-麦当劳-商业分析实习生-上海-2026-09-10","date":"2026-09-10","base":"上海","company":"麦当劳","title":"商业分析实习生","scope":"一周4-5天，4个月以上","edu":"本科及以上","jd":"工作内容：1.负责数据分析，追踪评估业务表现，撰写报告；2.协助进行相关市场研究，挖掘用户特征与偏好，追踪竞品动态；3.参与消费者调研工作，了解用户需求，进行活动机制、创意玩法等方面的测试与优化。要求：1.一周4-5天，4个月以上；2.工作细心有责任心学习能力强；3.熟练MS office，尤其Excel数据透视表；4.会SQL优先。薪资150/天，七五折员工优惠，每月300餐补。地点上海徐汇区龙腾大道。","contact":"707693386@qq.com"},
+  {"autoId":"intern-auto-迪卡侬-电商投放实习生-上海-2026-09-10","date":"2026-09-10","base":"上海","company":"迪卡侬","title":"电商投放实习生","scope":"9.18前到岗，3-6个月，每周至少4天","edu":"本科及以上","jd":"岗位：电商投放traffic。待遇200元/天（25/h），9:30-18:30午休2小时。岗位要求：Excel运用非常熟练，有广告投放等相关经验，对数据敏感（强制要求）。无转正hc。福利：一整层免费健身房、一天两节免费团课。","contact":"kerry.ren@decathlon.com"},
+  {"autoId":"intern-auto-辉瑞-实习生-上海-2026-09-10","date":"2026-09-10","base":"上海","company":"辉瑞","title":"实习生","scope":"9:30-18:00尽快到岗优先","edu":"本科及以上","jd":"辉瑞实习继任急招。岗位详细JD见图片。地点上海静安区中信泰富广场。Mentor非常有耐心，愿意带人学习。邮件命名：姓名-学校-年级-每周可到岗天数-可实习时长-最快到岗时间。","contact":"948583597@qq.com"},
+  {"autoId":"intern-auto-蔚来-数据分析实习生-上海-2026-09-10","date":"2026-09-10","base":"上海","company":"蔚来","title":"数据分析实习生","scope":"本科或研究生在读","edu":"本科或研究生在读，数学/统计学/计算机/数据科学/经济学等优先","jd":"岗位职责：1.协助业务团队日常数据提取、清洗、分析和监控，支持业务决策；2.使用SQL从数据仓库提取和整理数据；3.使用Python进行数据处理、自动化分析及可视化；4.参与业务指标体系、数据看板及专题分析的建设；5.结合AI工具和大模型能力，探索数据分析智能化应用；6.对业务问题保持好奇心，主动发现数据中异常和规律。要求：1.熟练掌握SQL；2.具备Python数据分析能力，熟悉Pandas、NumPy；3.较强逻辑分析能力。","contact":"ting.lei2@nio.com"},
+  {"autoId":"intern-auto-省广集团-媒介实习生-广州-2026-09-10","date":"2026-09-10","base":"广州","company":"省广集团","title":"媒介实习生","scope":"最好9.22前到岗","edu":"本科及以上","jd":"工作时间9:30-18:00。岗位JD在图片中：负责媒介投放执行、数据整理分析、客户沟通对接等工作。日常工作节奏轻松，会有dirty work。mt姐姐人很好。简历命名：姓名+学校+专业+年级+实习时长+最早到岗时间。","contact":"1992602230@qq.com"},
+  {"autoId":"intern-auto-橘朵-社媒运营实习生-上海-2026-09-10","date":"2026-09-10","base":"上海","company":"橘朵","title":"社媒运营实习生","scope":"每周4-5天","edu":"本科及以上","jd":"工作内容：1.负责ins/tt及其他平台（threads/lemon8/小红书/youtube）发布，文案/评论/粉丝维护；2.进行social小脚本撰写；3.当下trendy内容research。要求：1.对美妆行业/产品有一定了解，良好内容网感；2.有过往海外或国内社媒运营经验；3.较好的英文读写能力（至少过四六级）；4.工作有条理、有规划，执行力强。","contact":"jschenkejia@163.com"},
+  {"autoId":"intern-auto-得物-鉴别运营实习生-上海-2026-09-10","date":"2026-09-10","base":"上海","company":"得物","title":"鉴别运营实习生","scope":"做五休二排班制","edu":"本科及以上","jd":"职责描述：1.负责跨部门沟通和协调工作；2.负责各鉴别师C端刷帖提醒跟盯；3.负责数据表格（时效报表，超时订单报表）整理、汇总、分析，辅助鉴别师提审批、实验室送检等主要工作；4.协助品牌负责人完成公司要求的其他次要工作。地点嘉定DW仓。要求：1.积极主动有责任心，具备良好沟通技巧；2.对奢侈品/时尚/潮流有一定了解，得物奢侈品用户优先。","contact":"yezihao0852@163.com"},
+  {"autoId":"intern-auto-小红书-小红书商业化洗护组CBD实习-上海-2026-09-10","date":"2026-09-10","base":"上海","company":"小红书","title":"小红书商业化洗护组CBD实习","scope":"要求【9月21日】那周or之前到岗","edu":"在读本科生或研究生","jd":"1、数据支持：跟进商业化项目，不限于协助CBD对接与沟通洗护行业头肩部客户，快速响应数据需求，支持日常数据监控、品牌月度数据报告 2、数据分析：逻辑思维好，支持品牌数据需求，进行行业分析、竞品分析、人群洞察等数据分析工作，针对品牌投放逻辑性产出洞察与结论，为品牌在小红书的营销传播提供策略性建议 3、团队支持：协助组内销售及运营完成其他支持类工作","contact":"wujin1@xiaohongshu.com"},
+  {"autoId":"intern-auto-小红书-内容运营实习生（运动体验与增长）-深圳-2026-09-10","date":"2026-09-10","base":"深圳","company":"小红书","title":"内容运营实习生（运动体验与增长）","scope":"每周大于等于4天，6个月以上","edu":"本科或研究生在读","jd":"工作职责：1.负责创新产品官方账号日常内容输出与活动宣发；2.深度参与核心产品模块内容生态建设，协同产研团队推动产品体验落地与升级；3.洞察用户运动中的情感变化，在产品链路中挖掘关键节点，策划兼具仪式感与高分享意愿的传播内容。要求：1.本科或研究生在读，户外运动重度爱好者（跑步/骑行/徒步），有马拉松完赛经历优先；2.脑洞大、网感好，具备优秀文字功底；3.新闻传播、市场营销专业优先。","contact":"lvlefeng@xiaohongshu.com"},
+  {"autoId":"intern-auto-小红书-商业化洗护组CBD实习生-上海-2026-09-10","date":"2026-09-10","base":"上海","company":"小红书","title":"商业化洗护组CBD实习生","scope":"9月21日前到岗","edu":"本科及以上","jd":"岗位描述：1.数据支持：跟进商业化项目，协助CBD对接洗护行业头肩部客户，快速响应数据需求，支持日常数据监控和品牌月度数据报告；2.数据分析：逻辑思维好，支持品牌数据需求，进行行业分析、竞品分析、人群洞察等数据分析工作，针对品牌投放逻辑性产出洞察与结论；3.团队支持：协助组内销售及运营完成其他支持类工作。要求：1.热爱冲浪，了解小红书社区及商业产品；2.有效果广告投放及消费品电商/营销实习经验优先；3.熟练使用在线文档、Excel、PPT，有sql和数据可视化基础优先；4.思维活跃，工作态度积极。","contact":"wujin1@xiaohongshu.com"},
+  {"autoId":"intern-auto-唯品会-直播运营实习生（行业运营方向）-广州-2026-09-10","date":"2026-09-10","base":"广州","company":"唯品会","title":"直播运营实习生（行业运营方向）","scope":"9月到岗，一周5天实习至少半年优先","edu":"本科及以上在校生","jd":"岗位职责：1.负责唯品APP站内直播商家及品类运营；2.参与直播商家沟通与对接，定期数据复盘统计及分析；3.直播客服项目协同；4.直播体验提升，日常直播间巡场；5.参与官方直播间选品、样品管理、场控、助播。要求：1.熟悉电商平台，对电商直播有一定兴趣；2.思维活跃，细心有责任心；3.对数据敏感且会使用Excel；4.有服装行业经验或服装专业优先。正编实习生，包早午晚宵夜四餐。","contact":"2141180459@qq.com"},
+  {"autoId":"intern-auto-吉家宠物-设计实习生-上海-2026-09-10","date":"2026-09-10","base":"上海","company":"吉家宠物","title":"设计实习生","scope":"至少3个月，每周4-5天","edu":"视传、平面设计等相关专业在读本科/研究生（研究生优先）","jd":"工作内容：1.协助设计师完成日常平面设计相关工作；2.协助相关视觉及延展物料，宣传折页设计；3.协助收集、绘制图片素材。实习内容涉及品牌设计/包装设计/电商设计/展会及物品周边设计等。要求：1.视传、平面设计等相关专业在读本科/研究生（研究生优先）；2.熟练掌握PS、AI等基础软件（尤其PS）；3.审美在线，有耐心，踏实靠谱。地点长宁区兆丰广场中山公园地铁站。基本不加班。","contact":"zyh_email96@163.com"},
+  {"autoId":"intern-auto-博世-企业传播部实习生-上海-2026-09-10","date":"2026-09-10","base":"上海","company":"博世","title":"企业传播部实习生","scope":"每周至少3天，6个月以上","edu":"本科及以上","jd":"工作地点长宁区福泉北路333号。本科150r/d，研究生180r/d。邮件标题和简历命名：姓名-学校-专业-每周出勤天数-实习时长。","contact":"cuishuyang0212@163.com"},
+  {"autoId":"intern-auto-麦当劳-商业分析实习生-上海-2026-09-09","date":"2026-09-09","base":"上海","company":"麦当劳","title":"商业分析实习生","scope":"一周4-5天，4个月以上","edu":"本科及以上","jd":"麦当劳中国战略与洞察部商业分析实习。工作内容：1.负责数据分析，追踪评估业务表现，撰写报告；2.协助进行市场研究，挖掘用户特征与偏好，追踪竞品动态；3.参与消费者调研工作。要求：一周4-5天，4个月以上；工作细心有责任心；熟练MS office、Thinkcell，尤其Excel数据透视表；会SQL优先。薪资150/天，每月300餐补。地点上海市徐汇区龙腾大道。","contact":"hsyjt06@163.com"},
+  {"autoId":"intern-auto-雅诗兰黛-Special Channel-Trade Marketing实习生-上海-2026-09-09","date":"2026-09-09","base":"上海","company":"雅诗兰黛","title":"Special Channel-Trade Marketing实习生","scope":"每周2-3天，至少4个月，入职ASAP","edu":"在读本科生或研究生","jd":"工作内容：1.数据处理：负责品牌月报、促销机制整理等；2.订单管理：负责GWP、Tester申请及分配；3.物料管理：参与促销物料创意提案；4.支持渠道内其他日常工作。要求：Excel/Word/PPT操作熟练，熟练VLOOKUP和数据透视表；有Beauty Sense；英语听说读写流利。地点上海静安嘉里中心。","contact":"19085361223@163.com"},
+  {"autoId":"intern-auto-迪卡侬-内容运营实习生-上海-2026-09-09","date":"2026-09-09","base":"上海","company":"迪卡侬","title":"内容运营实习生","scope":"每周出勤>=3天，最少6个月","edu":"本科及以上，市场营销或设计优先","jd":"工作内容：负责健身&运动生活品类相关工作；打磨产品卖点文案；产品信息维护、翻译；门店海报、宣传物料设计；社交媒体内容创作；对接达人沟通。要求：英语CET-6及以上，熟练PS、AI。200元/天。地点上海浦东新区。","contact":"fei.tong@decathlon.com"},
+  {"autoId":"intern-auto-欧莱雅-实习生-上海-2026-09-09","date":"2026-09-09","base":"上海","company":"欧莱雅","title":"实习生","scope":"要求尽快到岗","edu":"本科及以上","jd":"欧莱雅实习继任。要求尽快到岗。","contact":"yiran9889@gmail.com"},
+  {"autoId":"intern-auto-欢聚集团-招商实习生-广州-2026-09-09","date":"2026-09-09","base":"广州","company":"欢聚集团","title":"招商实习生","scope":"不加班，准时下班","edu":"本科及以上","jd":"欢聚集团JOYY招商实习岗。地点广州琶洲CBD欢聚大厦。日薪150/天，每月餐补600。组里氛围好，哥姐超和善手把手教东西，不加班。简历投递邮箱Jiangdaren@joyy.com。","contact":"Jiangdaren@joyy.com"},
+  {"autoId":"intern-auto-携程-营销视觉设计实习生-上海-2026-09-09","date":"2026-09-09","base":"上海","company":"携程","title":"营销视觉设计实习生","scope":"越快到岗越好，大于3个月，每周5天","edu":"本科及以上","jd":"携程营销视觉设计实习。base上海长宁凌空SOHO。工作职责：1.协助完成团队设计输出及创意搭建，完成携程高端定制品牌相关品牌营销视觉内容设计；2.同主设计师全流程落地品牌物料设计，包括印刷刊物/多材质实体物料及包装/多渠道营销电子物料等；3.高频使用AIGC进行图片处理。日常实习无hc。","contact":"9749235@qq.com"},
+  {"autoId":"intern-auto-得物-招商运营实习生-上海-2026-09-09","date":"2026-09-09","base":"上海","company":"得物","title":"招商运营实习生","scope":"每周至少5天到岗，4个月以上","edu":"本科或硕士在读","jd":"得物招商运营实习生。职责：1.招商支持：协助品牌筛选、评估及谈判；2.品牌沟通与维护：协助与品牌日常沟通，跟进合作进展；3.跨部门协作：与运营、营销等部门紧密合作。要求：本科或硕士在读，良好沟通与协调能力，有电商实习经历优先，每周至少5天到岗，4个月以上。","contact":"liujinna@dewu.com"},
+  {"autoId":"intern-auto-得物-奢品商家运营实习生-上海-2026-09-09","date":"2026-09-09","base":"上海","company":"得物","title":"奢品商家运营实习生","scope":"尽快到岗，一周5天，3个月起","edu":"本科及以上","jd":"得物奢品商家运营实习。职责：协助负责跨境非标业务（鞋类/服装包配等）相关品类卖家运营工作；协助负责商家日常异常及疑问处理；协助监控货品供给稳定，到仓入库情况；非标业务交易数据整理。要求：尽快到岗，一周至少5天，3个月起；对鞋类/服装/美妆/数码/配饰等类目有了解和喜好；具备数据分析能力，熟练Office；有AI工具使用经验。AI每月1300额度。","contact":"2262996980@qq.com"},
+  {"autoId":"intern-auto-小红书-品牌运营实习生-上海-2026-09-09","date":"2026-09-09","base":"上海","company":"小红书","title":"品牌运营实习生","scope":"到岗时间ASAP","edu":"本科及以上","jd":"小红书品牌运营实习生。岗位jd见图二。base上海soho。组内氛围好，mt和搭子好相处。周五petday和内部活动福利。手把手带landing。如有运营自己的小红书账号请在简历中附上。投递时附作品集和自我介绍，直接附件发出。","contact":"tohru1@xiaohongshu.com"},
+  {"autoId":"intern-auto-小红书-商业化战略实习生-上海-2026-09-09","date":"2026-09-09","base":"上海","company":"小红书","title":"商业化战略实习生","scope":"每周4-5天，6个月，国庆后到岗","edu":"本科及以上","jd":"小红书战略部商业化战略实习生。要求：有咨询/PE/VC/互联网/AI公司/券商行研实习经历优先；对商业化课题有好奇心，细心靠谱；能快速学习整合跨行业信息，信息搜索能力强。每周4-5天，上海on-site，6个月，国庆后到岗。免费三餐+零食饮料，150元/天补贴。邮件命名：姓名-学校-最快到岗时间-每周出勤天数。","contact":"hudiefei@xiaohongshu.com"},
+  {"autoId":"intern-auto-哈啰-街猫社区运营实习-上海-2026-09-09","date":"2026-09-09","base":"上海","company":"哈啰","title":"街猫社区运营实习","scope":"尽快到岗，连续不少于3个月","edu":"本科及以上","jd":"街猫社区运营岗。职责：1.活动运营：策划执行社区线上话题与专题活动；2.内容推荐：挖掘优质内容进行流量推荐；3.创作者挖掘与维系。要求：1.良好网感，热爱小动物；2.善于沟通；3.会ps/剪映；4.连续不少于3个月。Base上海闵行莘庄。","contact":"dongyunfei660@hellobike.com"},
+  {"autoId":"intern-auto-Shopee-电商战略分析实习生-上海-2026-09-09","date":"2026-09-09","base":"上海","company":"Shopee","title":"电商战略分析实习生","scope":"每周5天onsite，4个月以上，6个月优先","edu":"海内外知名大学本科/研究生","jd":"Shopee上海电商战略分析实习。职责：1.完成大型dataroom数据体系更新维护、各类月报；2.协助跨境电商领域外部市场及竞对分析，制定竞争策略；3.其他ad-hoc事务。要求：1.海内外知名大学本科/研究生，有咨询/互联网战略/商分/研究类实习经验优先；2.良好逻辑思维和归纳能力，数据敏感；3.英文读写熟练可作工作语言；4.每周5天onsite，4个月以上，6个月优先。带教经验丰富，团队对接管理层。150/天。","contact":"zhuoyan.li@shopee.com"},
+  {"autoId":"intern-auto-IPG高诚公关-IMC Practice Team Intern-上海-2026-09-09","date":"2026-09-09","base":"上海","company":"IPG高诚公关","title":"IMC Practice Team Intern","scope":"每周至少4天，3个月以上，尽快入职","edu":"本科及以上","jd":"IPG集团高诚公关IMC Practice Team Intern。工作：协助日常公关行政工作，资料收集；参与传播方案策划，头脑风暴，输出创意；创意文案、方案文件撰写；线上线下活动执行。要求：出色文字功底；逻辑性强，认真负责；社媒重度爱好者；每周至少4天，3个月以上，线下实习。120/天补贴，零食无限，加班打车餐费报销。","contact":"rachel.huang@omc.com"},
+  {"autoId":"intern-auto-迪卡侬-电商运营实习生-上海-2026-09-08","date":"2026-09-08","base":"上海","company":"迪卡侬","title":"电商运营实习生","scope":"","edu":"本科及以上","jd":"电商运营实习生招继任。简历投递jiayi.xiang@decathlon.com。","contact":"jiayi.xiang@decathlon.com"},
+  {"autoId":"intern-auto-车企-3C车载新媒体运营实习生-深圳-2026-09-08","date":"2026-09-08","base":"深圳","company":"车企","title":"3C车载新媒体运营实习生","scope":"两周内到岗，大小周，实习至少3个月，传播学/新闻学/数字媒体优先","edu":"本科及以上","jd":"base深圳南山车企实习急招继任。3C车载新媒体运营实习生。工作内容：能出镜演员+能简单剪辑的女生优先；负责协同拍摄抖音账号口播视频及品牌IP向视频；结合热点和产品输出创意内容，策划并执行账号用户增长与互动活动。传播学、新闻学、数字媒体等相关专业优先，有驾照会开车优先。团队氛围好且为核心部门，上下班无需打卡，每日下午茶小零食，节日礼品福利。","contact":"daisikiku@gmail.com"},
+  {"autoId":"intern-auto-资生堂-Skincare Marketing Intern-上海-2026-09-08","date":"2026-09-08","base":"上海","company":"资生堂","title":"Skincare Marketing Intern","scope":"一周4-5天，实习至少满4个月，9月中ASAP到岗","edu":"能适应英文办公，熟练使用PPT、Excel","jd":"资生堂Skincare Marketing Intern。JD：1.Support AO Retainer content/Channel Schedule/Data review，包括LRB/TikTok/Weibo/WeChat内容策划；2.Support online assets and product content，收集竞品内容；3.Support Daily operation work。要求：1.一周4-5天，至少满4个月；2.9月中ASAP到岗；3.细心靠谱踏实，有multi-task能力；4.对快消行业有热情，有快消市场部实习经验优先；5.热爱美妆护肤，有网感；6.能适应英文办公。base上海浦东新区陆家嘴金融广场。本科23/h，硕士25/h。","contact":"joy.feng@cn.shiseido.com"},
+  {"autoId":"intern-auto-网易互娱-游戏内容推广实习生-广州-2026-09-08","date":"2026-09-08","base":"广州","company":"网易互娱","title":"游戏内容推广实习生","scope":"至少有一段实习经历，了解达人合作行业为加分项","edu":"本科及以上","jd":"广州网易互娱招继任。JD在P2图片。base广州猪场。简历命名：网易游戏内容推广实习生+姓名+学校+每周实习天数和实习月份+最快到岗时间。福利：实习薪资+包4餐+免费健身房+班车+下午茶。不卡专业学历但卡实习经历。薪资3500。","contact":"mtcwlkl@qq.com"},
+  {"autoId":"intern-auto-欧莱雅-美妆MKT实习生-上海-2026-09-08","date":"2026-09-08","base":"上海","company":"欧莱雅","title":"美妆MKT实习生","scope":"有MKT/Social种草/平台商业化经历优先，不招27届","edu":"本科及以上","jd":"捞静安寺美妆MKT实习继任！巴欧SKC好组，超核心品线。哥姐耐心愿意教，scope大，进来可参与D11和FY27 campaign。有MKT/Social种草/平台商业化经历优先，不招27届。","contact":"jasmine.he@loreal.com"},
+  {"autoId":"intern-auto-斐乐-Marketing实习生-上海-2026-09-08","date":"2026-09-08","base":"上海","company":"斐乐","title":"Marketing实习生","scope":"实习期能满足4-6个月，每周5天，入职日期ASAP","edu":"全日制本科及以上学历，有服饰、快消品牌相关实习经验者优先","jd":"FILA FUSION Marketing实习生。工作职责：1.协助上市推广策略方案输出/落地支持/追踪分析，包括IMC与联名项目；2.协助与Agency的日常沟通与对接，把控创意方向；3.协助内部资源沟通；4.参与执行26年产品推广项目；5.支持内部产品领用，财务/合同流程跟进等。任职要求：1.实习期能满足4-6个月，每周5天，ASAP；2.全日制本科及以上学历；3.积极主动，思维灵活，multi-task能力强，有一定审美。工作地点：上海市闵行区中骏广场。税前200/天。投递方式见图2。","contact":"fila.hr@fila.com.cn"},
+  {"autoId":"intern-auto-小红书-商业化行业策略实习生-产品策略方向-上海-2026-09-08","date":"2026-09-08","base":"上海","company":"小红书","title":"商业化行业策略实习生-产品策略方向","scope":"全日制本科及以上，大三/大四/研一优先，每周到岗5天，实习4个月以上","edu":"全日制本科及以上学历","jd":"小红书商业化线索行业策略实习生-产品策略方向，base上海。岗位职责：1.数据运营：响应数据洞察需求，支持常规的周度的分项目/产品/团队的数据监控，负责输出定期的数据报告，协助输出项目KO、进展、复盘报告等；2.产品运营：收集并挖掘业务侧的需求，支持产品知识库梳理和搭建，承接产品GTM和覆盖，协助达成产品渗透指标；3.项目管理：承接线索类行业主要项目专项，对接销售/平台专家/外部服务商进行项目管理，负责追踪项目进展，协助达成项目指标。岗位要求：1.全日制本科及以上，大三/大四/研一优先；2.每周到岗5天，实习4个月以上；3.有一定数据分析能力，熟悉Hive/SQL，熟练使用AI Agent工具；4.对互联网商业化有一定认识；5.愿意学习，有责任心。薪资150+餐补50/天。","contact":"gaoquan1@xiaohongshu.com"},
+  {"autoId":"intern-auto-哈啰-用户运营实习生-上海-2026-09-08","date":"2026-09-08","base":"上海","company":"哈啰","title":"用户运营实习生","scope":"早九晚六弹性打卡","edu":"本科及以上","jd":"哈啰招继任。用户运营实习生，base上海，早九晚六弹性打卡。具体的JD和投递邮箱在P2图片中。","contact":"halo_intern@hellobike.com"},
+  {"autoId":"intern-auto-博世-战略研究实习生-上海-2026-09-08","date":"2026-09-08","base":"上海","company":"博世","title":"战略研究实习生","scope":"至少3天/周，6个月实习，本科及以上","edu":"Bachelor or above in economics/business/math","jd":"上海博世招实习继任。工作内容：探索和跟踪行业/经济洞察（宏观政策、行业分析、竞争对手追踪）；数据分析和建模（地产市场、建筑机械等）；支持战略项目实施（研究、访谈、报告撰写），话题涵盖汽车、智能家居、智能制造、新能源等。岗位要求：经济/商业/数学相关本科及以上；较强英文沟通能力；有跨国公司/咨询经验优先；熟练Excel和PPT；积极灵活。本科150/天，硕士180/天。公司地址：上海市长宁区福泉北路333号。","contact":"yar8sgh@bosch.com"},
+  {"autoId":"intern-auto-匡威-Sales & Operation Intern-上海-2026-09-08","date":"2026-09-08","base":"上海","company":"匡威","title":"Sales & Operation Intern","scope":"本科及以上，每周至少到岗4天，可实习5-6个月","edu":"本科及以上","jd":"匡威Converse Commercial Department - Sales & Operation Intern。岗位职责：协助处理门店内部及供应商相关合同事宜；负责部分门店付款流程管理，根据财务反馈跟进缺失发票；协同客户销售团队与财务团队，支持季度返利/G2N项目相关工作；收集并维护门店相关信息；整理产品信息，撰写门店销售产品培训PPT；整理销售及运营数据，制作数据表格。任职要求：本科及以上；工作积极主动、踏实勤奋；熟练使用Office；每周至少到岗4天，可实习5-6个月。薪资：税前200元/天。工作地点：上海市杨浦区江湾城路99号尚浦中心。","contact":"shutian.zhao@converse.com"},
+  {"autoId":"intern-auto-Soul-海外产品运营实习生（商业化部门）-上海-2026-09-08","date":"2026-09-08","base":"上海","company":"Soul","title":"海外产品运营实习生（商业化部门）","scope":"日常实习，急招周内到岗，不是真的ASAP不要投递","edu":"本科及以上","jd":"Soul海外产品运营岗（商业化部门），jd见图。真的很急需要周内就到岗。组内氛围好，dirtywork少，实习生exposure足，能作为owner负责整条业务线（头像），有两个mentor（产品+运营）。欢迎学设计或审美好、能力强的同学。薪资研究生230/天，AI（codex）token额度管够，公司下午有免费水果。简历投递格式：姓名-最快到岗时间-学校-专业-base地-可实习几个月。","contact":"1577497367@qq.com"},
+  {"autoId":"intern-auto-金佰利-高洁丝Product Marketing实习生-上海-2026-09-07","date":"2026-09-07","base":"上海","company":"金佰利","title":"高洁丝Product Marketing实习生","scope":"一周工作4-5天，能够持续6个月及以上者优先，要求asap入职，中秋前到岗","edu":"本科及以上学历在读","jd":"500强快消招继任。金佰利高洁丝product marketing实习招继任。Job Description：Product Support（30%）：参与新产品上市和旧产品升级，参与头脑风暴、竞品调研、生意分析、产品孵化等产品开发全流程；与研发/生产/法规/销售等各部门对接，助力项目内部推动&协助执行项目；与Agency沟通产品设计，如产品包装、电商文描等。Campaign Support（30%）：参与brand/product campaign，跟进线上线下活动策划和执行，包括前期准备，中期执行，后期复盘，全方位感受快消行业运作。Routine Work（40%）：市场部费用管理及各类系统操作，下PO录费用，领用，盖章，付款等。Requirement：1.细心靠谱，认真踏实，具备multi-task能力，有一定产品sense；2.良好的沟通能力、执行能力和快速学习能力；3.对MKT充满热情，有快消实习和social经验优先；4.一周工作4-5天，能够持续6个月及以上者优先。工资：本科生120/天，研究生150/天。工作地点：上海市黄浦区淮海中路333号瑞安广场10F。邮件命名格式：姓名-学校-专业-每周工作天数-持续实习时间-最快入职时间。投递邮箱见P2。","contact":"Huggies.Intern@kcc.com"},
+  {"autoId":"intern-auto-腾讯-影视产业公共事务实习-上海-2026-09-07","date":"2026-09-07","base":"上海","company":"腾讯","title":"影视产业公共事务实习","scope":"2028年6月前仍为在校学生，9-10月可到岗，可稳定连续实习6个月，每周5天全勤","edu":"本科生及以上","jd":"招继任｜腾讯上海 影视产业公共事务实习 专业不限制！工作地点：上海腾讯滨江大厦。实习工作内容：参与影视剧、动漫、漫剧、电影等影视产业涉政务公共事务相关工作；协助梳理、分析影视产业领域各类信息动态；推进各类视听项目的材料整理、汇总与报送工作；协助完成政府公共事务相关活动落地执行。岗位要求：保证6个月、一周五天稳定出勤；做事细心踏实，责任心强，有耐心；热爱剧集、动漫、电影，对影视文化、网络视听平台有基础认知；熟练掌握Word、Excel、PPT办公软件。投递提示：邮件&简历标题格式：姓名-学校-到岗时间-可实习时长，简历中请标注个人微信号。","contact":"3170943019@qq.com"},
+  {"autoId":"intern-auto-得物-社区内容运营-上海-2026-09-07","date":"2026-09-07","base":"上海","company":"得物","title":"社区内容运营","scope":"本科生及以上在校生，每周出勤4天以上","edu":"本科生及以上","jd":"岗位职责（需求定义）：1、协助社区创新项目（互动评论），激发各类创新互动尝试 2、支持策略方向下的规模性供给及整个工作流；3、协助负责用户调研工作，通过访谈问卷等形式，摸底用户互动相关行为；任职要求（能力模型）：1、有网感有创意，热爱交流讨论，有自己的独到见解；2、有突出的年轻群体兴趣爱好，在互联网社区中有过群主/楼主优先；3、本科生及以上在校生，有互联网社区实习经历优先；4、保证每周出勤4天以上；5、抗压能力强，有自驱力且执行力强，想要有收获的同学。如果你对品牌招商充满热情，并希望在一个快速发展的电商平台积累实战经验，欢迎加入我们！Base上海，mt人超级好，组里氛围也很好。实习经历较少但是愿意学的也可以投投哦。","contact":"1633841330@qq.com"},
+  {"autoId":"intern-auto-小红书-创新产品内容运营-上海-2026-09-07","date":"2026-09-07","base":"上海","company":"小红书","title":"创新产品内容运营","scope":"实习时间需满足6个月以上，到岗时间ASAP","edu":"本科/研究生在读","jd":"继任啊，继任大姐/哥，我在小红书，你在哪里？创新产品内容运营，base上海。需要你有较强的文字功底，会写文案爱写文案。特别特别是需要有内容sense，审美较好。若有个人运营的图文账号最好，投递可附上。好MT会教很多东西，还有奶茶零食投递。岗位JD：1.负责小红书创新产品的内容运营，包括内容策划、文案撰写、选题挖掘等；2.关注热点话题和用户需求，持续优化内容策略；3.分析数据表现，迭代内容方向；4.配合团队完成其他运营工作。投递邮箱见P4。","contact":"zhaopin@xiaohongshu.com"},
+  {"autoId":"intern-auto-宝诗龙-Pr & Event Intern-上海-2026-09-07","date":"2026-09-07","base":"上海","company":"宝诗龙","title":"Pr & Event Intern","scope":"实习时间需满足6个月以上，到岗时间ASAP","edu":"本科及以上学历在读","jd":"上海静安奢侈品实习招继任 开云宝诗龙Boucheron。工作地点：上海静安嘉地中心。职位描述：1.公关传播：各市场每周剪报汇总整理，推广活动的反馈与效果报告；2.明星及KOL合作：汇总整理各市场明星代言报告，整合反馈与效果；3.活动管理：市场调研与报告，汇总各市场活动报告；4.其它行政任务，如物流协调/文件及杂志整理。岗位要求：1.具备中英文工作沟通的能力。2.实习时间需满足6个月以上。3.熟练使用各项办公软件，特别是PPT，投递简历请附PPT作品集。4.具备良好的沟通能力，逻辑思维能力与应变能力，有团队协作精神，有一定审美。5.到岗时间ASAP。150r/day。","contact":"georgiana.qu@boucheron.com"},
+  {"autoId":"intern-auto-字节-雇主品牌新媒体运营实习生-上海-2026-09-07","date":"2026-09-07","base":"上海","company":"字节","title":"雇主品牌新媒体运营实习生","scope":"2028届毕业，本科及以上学历在读，每周实习5天，实习时长不少于5个月优先","edu":"本科及以上学历在读","jd":"字节日常实习招继任 日薪350。本人10月离职，招继任，希望9月可以到岗。组内氛围好，工作强度不大，不忙的时候早11晚6。本岗为无转正的日常实习，要求28届。职位描述：1、支持字节跳动雇主品牌各渠道的创意内容策划，生产高品质、有影响力的内容；2、参与运营小红书、抖音等渠道的雇主品牌官方账号；3、借助AI工具实内容创新，支持各招聘项目的传播策划并推动落地；4、支持部门其它雇主品牌运营或策划的工作。职位要求：1、2028届毕业，本科及以上学历在读；2、对内容有热情，思维活跃，脑洞大，审美好；3、能熟练使用AI工具进行内容创作；4、对社交媒体流行信息有高敏锐度，打造过爆款传播且附作品者优先；5、每周实习5天，实习时长不少于5个月的同学优先。","contact":"youzhixuan@bytedance.com"},
+  {"autoId":"intern-auto-千岛-AI产品运营实习生-上海-2026-09-07","date":"2026-09-07","base":"上海","company":"千岛","title":"AI产品运营实习生","scope":"尽快到岗","edu":"本科/研究生在读","jd":"尽快到岗！给超nice的mt招继任啦！岗位：AI产品运营实习生。公司扁平化管理，组内都是年轻人，氛围轻松愉快。地铁直达办公楼，楼下就是商场。福利：1.每天提供早餐；2.Token自由，入职后可报销AI相关费用；3.每两周周五下午茶；4.入职后200元报销。投递格式：姓名+联系方式+毕业院校+可实习时长+最快到岗时间。","contact":"hr@qiandao.com"}
+  // AUTO-INTERNS-END
 ];
 
 /* ============================================================
@@ -9176,6 +9296,59 @@ function openModal(type, editItem) {
         <button class="btn" onclick="importJobs()">导入</button>
       </div>
     `;
+  } else if (type === 'intern') {
+    content.innerHTML = `
+      <div class="modal-header">
+        <div class="modal-title">${isEdit ? '编辑实习继任岗位' : '添加实习继任岗位'}</div>
+        <button class="modal-close" onclick="closeModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">发布时间</label>
+          <input type="text" class="form-input" id="it_date" placeholder="YYYY-MM-DD" value="${editItem ? escapeHtml(editItem.date || '') : today()}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">base 地</label>
+          <select class="form-select" id="it_base">
+            <option value="上海" ${!editItem || editItem.base === '上海' ? 'selected' : ''}>上海</option>
+            <option value="深圳" ${editItem && editItem.base === '深圳' ? 'selected' : ''}>深圳</option>
+            <option value="广州" ${editItem && editItem.base === '广州' ? 'selected' : ''}>广州</option>
+            <option value="北京" ${editItem && editItem.base === '北京' ? 'selected' : ''}>北京</option>
+            <option value="其他" ${editItem && editItem.base === '其他' ? 'selected' : ''}>其他</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">公司</label>
+        <input type="text" class="form-input" id="it_company" placeholder="如：得物、腾讯..." value="${editItem ? escapeHtml(editItem.company || '') : ''}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">岗位名称</label>
+        <input type="text" class="form-input" id="it_title" placeholder="如：社区内容运营..." value="${editItem ? escapeHtml(editItem.title || '') : ''}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">招聘范围</label>
+        <input type="text" class="form-input" id="it_scope" placeholder="如：本科生及以上在校生，每周出勤4天以上" value="${editItem ? escapeHtml(editItem.scope || '') : ''}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">学历要求</label>
+        <input type="text" class="form-input" id="it_edu" placeholder="如：本科生及以上" value="${editItem ? escapeHtml(editItem.edu || '') : ''}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">岗位 JD</label>
+        <textarea class="form-textarea" id="it_jd" placeholder="岗位职责、任职要求..." style="min-height:120px">${editItem ? escapeHtml(editItem.jd || '') : ''}</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">投递方式</label>
+        <input type="text" class="form-input" id="it_contact" placeholder="邮箱 / 内推码 / 链接" value="${editItem ? escapeHtml(editItem.contact || '') : ''}">
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-secondary" onclick="closeModal()">取消</button>
+        <button class="btn" onclick="saveIntern('${editItem ? editItem.id : ''}')">${isEdit ? '保存' : '添加'}</button>
+      </div>
+    `;
   }
 
   overlay.classList.add('show');
@@ -10870,27 +11043,179 @@ function switchExpSub(sub) {
   const postsArea = document.getElementById('expPostsArea');
   const bizArea = document.getElementById('expBizArea');
   const jobsArea = document.getElementById('expJobsArea');
+  const internArea = document.getElementById('expInternArea');
   const bankArea = document.getElementById('expBankArea');
   const appsArea = document.getElementById('expAppsArea');
   const tPosts = document.getElementById('subTabPosts');
   const tBiz = document.getElementById('subTabBiz');
   const tJobs = document.getElementById('subTabJobs');
+  const tIntern = document.getElementById('subTabIntern');
   const tBank = document.getElementById('subTabBank');
   const tApps = document.getElementById('subTabApps');
   if (postsArea) postsArea.style.display = sub === 'posts' ? '' : 'none';
   if (bizArea) bizArea.style.display = sub === 'biz' ? '' : 'none';
   if (jobsArea) jobsArea.style.display = sub === 'jobs' ? '' : 'none';
+  if (internArea) internArea.style.display = sub === 'intern' ? '' : 'none';
   if (bankArea) bankArea.style.display = sub === 'bank' ? '' : 'none';
   if (appsArea) appsArea.style.display = sub === 'apps' ? '' : 'none';
   if (tPosts) tPosts.classList.toggle('active', sub === 'posts');
   if (tBiz) tBiz.classList.toggle('active', sub === 'biz');
   if (tJobs) tJobs.classList.toggle('active', sub === 'jobs');
+  if (tIntern) tIntern.classList.toggle('active', sub === 'intern');
   if (tBank) tBank.classList.toggle('active', sub === 'bank');
   if (tApps) tApps.classList.toggle('active', sub === 'apps');
   if (sub === 'biz') renderExpBizKB();
   if (sub === 'jobs') renderJobs();
+  if (sub === 'intern') renderInterns();
   if (sub === 'bank') renderExpBank();
   if (sub === 'apps') renderJobApps();
+}
+
+/* ========== 实习继任 (interns) ==========
+   数据源：飞书「实习继任投递表」（每天 16:00 由定时任务自动同步）。
+   只保留 base 地 ∈ {上海, 深圳, 广州} 的记录；每天整体替换 AUTO_INTERNS_SEED
+   快照，用户手动添加的岗位予以保留。用户删除过的自动条目记录在
+   settings.internRemoved，不会被重新灌回来。
+   字段：date 发布时间 / base / company / title / scope 招聘范围 /
+        edu 学历要求 / jd 岗位JD / contact 投递方式 */
+function mergeAutoInternSeed() {
+  const seed = (typeof window.AUTO_INTERNS_SEED !== 'undefined' && Array.isArray(window.AUTO_INTERNS_SEED)) ? window.AUTO_INTERNS_SEED : [];
+  const list = getData(KEYS.interns);
+  let settings = getData(KEYS.settings);
+  if (!settings || typeof settings !== 'object' || Array.isArray(settings)) settings = {};
+  const removed = settings.internRemoved || [];
+  const kept = list.filter(r => !r.isAutoCollected && !r.autoId);
+  seed.forEach(item => {
+    const autoId = item.autoId || ('intern-auto-' + (item.company || '') + '-' + (item.title || '') + '-' + (item.base || ''));
+    if (removed.includes(autoId)) return;
+    kept.push({
+      id: uid(),
+      autoId,
+      date: item.date || today(),
+      base: item.base || '',
+      company: item.company || '',
+      title: item.title || '',
+      scope: item.scope || '',
+      edu: item.edu || '',
+      jd: item.jd || '',
+      contact: item.contact || '',
+      isAutoCollected: true
+    });
+  });
+  setData(KEYS.interns, kept);
+}
+
+function toggleInternCard(id) {
+  const card = document.getElementById('intern-card-' + id);
+  if (card) card.classList.toggle('expanded');
+}
+
+function renderInterns() {
+  const list = getData(KEYS.interns);
+  const bar = document.getElementById('internSyncBar');
+  const box = document.getElementById('internList');
+  const cnt = document.getElementById('internCount');
+  if (!box) return;
+
+  // 同步概览条：数据更新时间 = 全部记录里最新的发布时间
+  if (bar) {
+    const allDates = list.map(r => r.date || '').filter(Boolean).sort();
+    const latest = allDates.length ? allDates[allDates.length - 1] : '—';
+    const todayStr = today();
+    const stale = latest !== '—' && latest < todayStr;
+    const baseCounts = {};
+    list.forEach(r => { if (r.base) baseCounts[r.base] = (baseCounts[r.base] || 0) + 1; });
+    const chipHtml = Object.keys(baseCounts).sort((a, b) => baseCounts[b] - baseCounts[a])
+      .map(b => `<span class="intern-chip">${escapeHtml(b)} ${baseCounts[b]}</span>`).join('');
+    bar.innerHTML = `
+      <div class="dl-board-head">
+        <span class="dl-board-title">实习继任 · 自动同步</span>
+        <span class="dl-board-sub">共 ${list.length} 条 ｜ 数据更新时间 ${escapeHtml(latest)}</span>
+      </div>
+      <div class="intern-meta">${chipHtml}</div>
+      ${stale ? `<div class="dl-board-sub" style="color:#b45309;margin-top:8px">⚠️ 数据更新时间早于今天，当天 16:00 的飞书同步可能未生效</div>` : ''}`;
+  }
+
+  const selBase = document.getElementById('internBaseFilter') ? document.getElementById('internBaseFilter').value : '';
+  const kw = document.getElementById('internSearch') ? document.getElementById('internSearch').value.toLowerCase().trim() : '';
+
+  let rows = list.slice();
+  if (selBase) rows = rows.filter(r => (r.base || '').trim() === selBase);
+  if (kw) {
+    rows = rows.filter(r => (r.company + ' ' + r.title + ' ' + r.base + ' ' + (r.scope || '') + ' ' + (r.edu || '') + ' ' + (r.jd || '') + ' ' + (r.contact || '')).toLowerCase().includes(kw));
+  }
+  // 按发布时间倒序（最新在最上）
+  rows.sort((a, b) => (b.date || '').localeCompare(a.date || '') || (b.autoId || '').localeCompare(a.autoId || ''));
+
+  if (cnt) cnt.textContent = `显示 ${rows.length} / ${list.length} 条`;
+
+  if (rows.length === 0) {
+    box.innerHTML = `<div class="jobs-empty"><div>${list.length === 0 ? '还没有实习继任岗位' : '没有匹配的岗位'}</div></div>`;
+    return;
+  }
+
+  const baseClass = b => b === '深圳' ? 'b-shenzhen' : b === '广州' ? 'b-guangzhou' : '';
+  box.innerHTML = rows.map(r => `
+    <div class="intern-card" id="intern-card-${r.id}">
+      <div class="intern-card-head">
+        <span class="intern-date">${escapeHtml(r.date || '—')}</span>
+        ${r.base ? `<span class="intern-base ${baseClass(r.base)}">${escapeHtml(r.base)}</span>` : ''}
+        <span class="intern-company">${escapeHtml(r.company || '—')}</span>
+        <span class="intern-title">${escapeHtml(r.title || '')}</span>
+        <span class="intern-actions">
+          <button class="btn btn-sm btn-secondary" onclick="editIntern('${r.id}')">编辑</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteItem('interns', '${r.id}')">删除</button>
+        </span>
+      </div>
+      <div class="intern-meta">
+        ${r.scope ? `<span class="intern-chip">招聘范围：${escapeHtml(r.scope)}</span>` : ''}
+        ${r.edu ? `<span class="intern-chip">学历：${escapeHtml(r.edu)}</span>` : ''}
+        ${r.isAutoCollected ? '<span class="intern-chip">自动同步</span>' : ''}
+      </div>
+      ${r.jd ? `<div class="intern-section">
+        <div class="intern-label">岗位 JD</div>
+        <div class="intern-jd">${escapeHtml(r.jd)}</div>
+        <div class="intern-toggle" onclick="toggleInternCard('${r.id}')">展开 / 收起全文</div>
+      </div>` : ''}
+      ${r.contact ? `<div class="intern-section">
+        <div class="intern-label">投递方式</div>
+        <div class="intern-contact">${escapeHtml(r.contact)}</div>
+      </div>` : ''}
+    </div>
+  `).join('');
+}
+
+function saveIntern(id) {
+  const company = document.getElementById('it_company').value.trim();
+  const title = document.getElementById('it_title').value.trim();
+  if (!company && !title) { showToast('请至少填写公司或岗位名称'); return; }
+  const list = getData(KEYS.interns);
+  const item = {
+    date: document.getElementById('it_date').value.trim() || today(),
+    base: document.getElementById('it_base').value,
+    company, title,
+    scope: document.getElementById('it_scope').value.trim(),
+    edu: document.getElementById('it_edu').value.trim(),
+    jd: document.getElementById('it_jd').value.trim(),
+    contact: document.getElementById('it_contact').value.trim(),
+    isAutoCollected: false
+  };
+  if (id) {
+    const found = list.find(x => x.id === id);
+    if (found) Object.assign(found, item);
+  } else {
+    list.unshift(Object.assign({ id: uid() }, item));
+  }
+  setData(KEYS.interns, list);
+  closeModal();
+  renderInterns();
+  showToast(id ? '已更新' : '已添加');
+}
+
+function editIntern(id) {
+  const item = getData(KEYS.interns).find(x => x.id === id);
+  if (!item) return;
+  openModal('intern', item);
 }
 
 /* ========== 面试题库 (Interview Question Bank) ==========
@@ -11858,6 +12183,7 @@ function deleteItem(module, id) {
     case 'bizKB': key = KEYS.bizKB; name = '业务知识'; break;
     case 'jobApp': key = KEYS.jobApps; name = '求职记录'; break;
     case 'jobs': key = KEYS.jobs; name = '岗位'; break;
+    case 'interns': key = KEYS.interns; name = '实习继任岗位'; break;
     case 'tasks': key = KEYS.tasks; name = '任务'; break;
   }
   showConfirm('删除' + name, '确定要删除这条' + name + '吗？此操作不可撤销。', () => {
@@ -11873,6 +12199,15 @@ function deleteItem(module, id) {
       settings.jobRemoved = removed;
       setData(KEYS.settings, settings);
     }
+    if (module === 'interns' && removedItem && removedItem.autoId) {
+      // 记住被删除的自动同步条目，避免下次飞书同步把它灌回来
+      let settings = getData(KEYS.settings);
+      if (!settings || typeof settings !== 'object' || Array.isArray(settings)) settings = {};
+      const removed = settings.internRemoved || [];
+      if (!removed.includes(removedItem.autoId)) removed.push(removedItem.autoId);
+      settings.internRemoved = removed;
+      setData(KEYS.settings, settings);
+    }
     if (module === 'training') { renderTraining(); }
     if (module === 'defense') { renderDimensions(); renderDefense(); }
     if (module === 'news') { renderNews(); }
@@ -11880,6 +12215,7 @@ function deleteItem(module, id) {
     if (module === 'bizKB') { renderExpBizKB(); }
     if (module === 'jobApp') { renderJobApps(); }
     if (module === 'jobs') { renderJobs(); }
+    if (module === 'interns') { renderInterns(); }
     if (module === 'tasks') { renderTasks(); }
     renderToday();
     showToast('已删除');
@@ -11965,6 +12301,7 @@ function exportData() {
     bizKB: getData(KEYS.bizKB),
     jobApps: getData(KEYS.jobApps),
     jobs: getData(KEYS.jobs),
+    interns: getData(KEYS.interns),
     textOverrides: getData(KEYS.textOverrides) || {}
   };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -12104,6 +12441,7 @@ document.addEventListener('DOMContentLoaded', () => {
   populateCompanyFilter(); // 按企业筛选下拉
   mergeAutoJobSeed();   // Auto-synced job postings (Feishu table snapshot)
   mergeAutoOfficialJobSeed(); // 官网/小红书校招·实习岗位（独立通道，永久手动岗位）
+  mergeAutoInternSeed();  // 实习继任（飞书「实习继任投递表」，每日 16:00 同步）
   mergeAutoDailySeed(); // Pre-written long-form daily reports (core summary + detail)
   initTextEditing();
   renderAll();
