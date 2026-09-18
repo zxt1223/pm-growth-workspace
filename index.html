@@ -1428,6 +1428,8 @@ a { color: var(--primary); text-decoration: none; }
 .intern-toggle:hover { text-decoration: underline; }
 .intern-actions { margin-left: auto; display: flex; gap: 6px; }
 .intern-contact { font-size: 13px; color: var(--text-2); word-break: break-all; }
+.intern-scope { font-size: 13px; color: var(--text-2); line-height: 1.7; white-space: pre-wrap; }
+.intern-todo { font-size: 13px; color: #9aa0a6; line-height: 1.7; background: rgba(245,158,11,.08); border-left: 3px solid #f59e0b; padding: 6px 10px; border-radius: 4px; }
 
 /* ========== 岗位截止预警看板 ========== */
 .dl-board { margin-bottom: 16px; }
@@ -11865,6 +11867,14 @@ function toggleInternCard(id) {
   if (card) card.classList.toggle('expanded');
 }
 
+function cleanJd(raw) {
+  if (!raw) return '';
+  const s = String(raw).trim();
+  // 仅含标题占位（如【岗位职责】/【岗位要求】/Roles & Responsibilities 等）而无正文，视为未填写
+  if (/^(【[^】]*】|［[^］]*］|岗位职责|岗位要求|职位描述|职位职责|岗位描述|职责描述|JD|Job Description|Roles? &? Responsibilities?)\s*$/i.test(s)) return '';
+  return s;
+}
+
 function renderInterns() {
   let list = getData(KEYS.interns);
   // ⚠️ 兜底：若本地存储里没有数据（例如浏览器存储配额写满、写入被拒），
@@ -11935,15 +11945,18 @@ function renderInterns() {
         </span>
       </div>
       <div class="intern-meta">
-        ${r.scope ? `<span class="intern-chip">招聘范围：${escapeHtml(r.scope)}</span>` : ''}
         ${r.edu ? `<span class="intern-chip">学历：${escapeHtml(r.edu)}</span>` : ''}
         ${r.isAutoCollected ? '<span class="intern-chip">自动同步</span>' : ''}
       </div>
-      ${r.jd ? `<div class="intern-section">
-        <div class="intern-label">岗位 JD</div>
-        <div class="intern-jd">${escapeHtml(r.jd)}</div>
-        <div class="intern-toggle" onclick="toggleInternCard('${r.id}')">展开 / 收起全文</div>
+      ${r.scope ? `<div class="intern-section">
+        <div class="intern-label">招聘范围</div>
+        <div class="intern-scope">${escapeHtml(r.scope)}</div>
       </div>` : ''}
+      ${cleanJd(r.jd) ? `<div class="intern-section">
+        <div class="intern-label">岗位 JD</div>
+        <div class="intern-jd">${escapeHtml(cleanJd(r.jd))}</div>
+        <div class="intern-toggle" onclick="toggleInternCard('${r.id}')">展开 / 收起全文</div>
+      </div>` : `<div class="intern-section"><div class="intern-label">岗位 JD</div><div class="intern-todo">源表未填写具体 JD（仅含标题占位），请在飞书「实习继任投递表」补全后等待 16:00 自动同步</div></div>`}
       ${r.contact ? `<div class="intern-section">
         <div class="intern-label">投递方式</div>
         <div class="intern-contact">${escapeHtml(r.contact)}</div>
