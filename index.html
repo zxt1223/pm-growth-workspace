@@ -1504,6 +1504,19 @@ a { color: var(--primary); text-decoration: none; }
 .jobs-table tbody tr:last-child td { border-bottom: none; }
 .jobs-table .job-company { font-weight: 600; color: var(--text); }
 .jobs-table .job-title { color: var(--primary); font-weight: 500; }
+/* ========== 岗位投递·公司折叠分组行 ========== */
+.jobs-co-row td {
+  background: #F6F1FD; cursor: pointer; padding: 11px 16px;
+  border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light);
+  user-select: none; -webkit-user-select: none;
+}
+.jobs-co-row:hover td { background: #EFE6FC; }
+.jobs-co-caret { display: inline-block; transition: transform .18s ease; margin-right: 8px; color: var(--primary); vertical-align: middle; flex-shrink: 0; }
+.jobs-co-row.open .jobs-co-caret { transform: rotate(90deg); }
+.jobs-co-head { display: flex; align-items: center; gap: 8px; min-width: 0; flex-wrap: wrap; }
+.jobs-co-name { font-weight: 700; font-size: 14.5px; color: var(--text); }
+.jobs-co-count { margin-left: auto; font-size: 12px; color: var(--primary); background: #fff; border: 1px solid var(--border-light); padding: 1px 10px; border-radius: 999px; white-space: nowrap; }
+.jobs-co-arrow { font-size: 12px; color: var(--text-3); white-space: nowrap; }
 .job-tags { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
 .job-sub-tag { font-size: 11px; color: var(--text-3); margin-top: 2px; }
 .job-url {
@@ -2196,6 +2209,7 @@ a { color: var(--primary); text-decoration: none; }
           <option value="fame_desc" data-page-node-id="OnZ4hnf25630tekEcBySpr">知名程度（高→低）</option>
           <option value="fame_asc" data-page-node-id="f0nU7FqkeBnxY8vGB0rxlR">知名程度（低→高）</option>
         </select>
+        <button class="btn btn-sm btn-secondary" id="jobGroupBtn" onclick="toggleAllJobGroups()" data-page-node-id="vGzQjobGroupBtn1">全部展开</button>
         <input type="text" class="filter-input" id="jobSearch" placeholder="搜索公司、岗位、备注..." oninput="renderJobs()" style="flex:1;min-width:150px" data-page-node-id="YtDHZOd2oSKanFmC6X0ugX">
         <button class="btn btn-sm" onclick="openModal('job')" data-page-node-id="vzLwjpGdQpJQRlg9eK3LfG">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="eRptLX41F2NB66CXvKLI77"><path d="M12 5v14M5 12h14" data-page-node-id="U8TaP43hm9Ddu44SRreiaU"/></svg>
@@ -2211,7 +2225,6 @@ a { color: var(--primary); text-decoration: none; }
         <table class="jobs-table" id="jobsTable" data-page-node-id="cXXl6cHTWh7i6EEL6WWRlC">
           <thead data-page-node-id="7C4eJ1RJE13AHHlE6lSpnP">
             <tr data-page-node-id="coPtKBzdhTjYcskv2M4zeh">
-              <th style="width:130px" data-page-node-id="bKaPmwQxTRVinSLmMrXdXx">公司</th>
               <th data-page-node-id="ZUO7KcXmju69CgCh3tK2AQ">岗位名称</th>
               <th style="width:90px" data-page-node-id="K5lvjwY5WxODYvhkzNIqcl">城市</th>
               <th style="width:130px" data-page-node-id="ZWHpxf6J14lGM3UFJL4PBS">类型 / 批次</th>
@@ -4168,7 +4181,15 @@ window.AUTO_EXP_SEED = [
      "content": "这是阿里集团千问办公社招的AI产品经理岗位，方向为搜问，工作地杭州。岗位目标是用大模型重定义企业知识的获取、组织与消费方式，推动搜问从知识问答产品演进为面向人和Agent的企业上下文平台。职责五条：负责AI搜问核心产品建设，聚焦IM消息、文档知识库、企业应用等场景下的自然语言问答与知识检索，对Retrieval效果、回答质量、用户体验与业务结果负责；主导知识处理、检索召回、排序、Context构建、答案生成等核心链路的产品定义，与算法和工程团队协同，把模糊业务目标转化为清晰方案和可量化指标；规划知识理解、检索增强与智能问答能力建设；深入企业场景，从会议、项目协作、客户服务、业务决策中抽象共性能力，形成可复用平台能力与方案；建立AI产品效果评测与迭代闭环，通过线上数据、用户反馈、客户共创和BadCase分析建立Retrieval、Answer、Citation与用户信任的评测体系。",
      "tags": "JD解读,AI产品,阿里巴巴,千问,企业搜索",
      "date": "2026-09-20"
-    }
+    },
+    {"id":"exp-auto-20260921-bytedance-ai-func-attribution","title":"字节跳动AI产品面试：多AI功能共享入口的贡献归因与风险管理框架","type":"interview","company":"字节跳动","role":"AI产品经理","platform":"面灵AI（面经题单）","category":"AI产品","sourceUrl":"https://www.mianlingai.com/topics/ai-product-manager-interview-questions-2026","summary":"字节真题：多个AI功能共享同一入口时如何拆分独立贡献，以及亿级DAU产品的AI风险框架怎么搭。","keyPoints":["多个AI功能共享一个流量入口，如何评估各自独立贡献","协同与互斥怎么量化：A上线后B的指标下滑如何归因","亿级DAU产品的AI风险框架需覆盖上线前、实时监控、应急响应","上线前用评测集加红线case加小流量灰度，不达标不放量","实时监控质量与业务双看板，异常触发自动降级","应急响应要有值班机制、一键回滚和用户侧解释文案"],"content":"字节跳动AI产品岗真题，两问连考AI功能的度量与风险治理。第一问：当多个AI功能共享同一流量入口（如搜索框、推荐流、对话框），如何评估各自独立贡献，以及彼此是协同还是互斥？答题要点是先明确口径——用分流实验或功能开关做单变量对照，拿掉A看B的增量；互斥常表现为同一位置争抢曝光，协同则表现为前置功能提升后续功能的触发率。若无实验条件，可用PSM或时间序列对比给出区间估计并说明置信度。第二问：为亿级日活产品设计AI功能风险管理框架，覆盖上线前、实时监控、应急响应三段。上线前做评测集与红线case，配小流量灰度，未达最低可接受值不放量；实时监控要质量与业务双看板，幻觉率、投诉率异常时自动降级到规则或转人工；应急响应需明确值班人、一键回滚路径与用户侧解释文案。考察点：能否把AI的不确定性做成可度量、可回滚的工程化机制。","tags":"面经,AI产品,字节跳动,效果评估","date":"2026-09-21"},
+    {"id":"exp-auto-20260921-bytedance-ecom-ai-3q","title":"字节跳动电商AI场景题三连：模糊语义、达人AI采纳与完播高GMV低归因","type":"interview","company":"字节跳动","role":"电商产品经理","platform":"面灵AI（面经题单）","category":"AI产品","sourceUrl":"https://www.mianlingai.com/topics/ai-product-manager-interview-questions-2026","summary":"字节电商AI三连问：AI怎么理解「显瘦」、达人为何不愿用AI工具、完播高却GMV低怎么查。","keyPoints":["电商搜索里AI如何理解「显瘦」这类主观模糊概念","抖音电商达人创作经营链路中哪些节点最适合AI提效","达人不愿使用AI工具的原因与破解思路","带货视频完播与观看时长高但GMV低，可能原因与验证方法","如何从海量电商视频中提炼爆款内容因子并验证有效性"],"content":"字节跳动电商与TikTok Shop方向AI产品真题三连。①电商搜索中AI如何理解「显瘦」这类模糊主观概念？思路是拆成可计算的多模态信号——版型、面料垂坠度、模特身形与买家秀对比，再用评论与退货原因做弱标签，最终以搜索后的点击与转化验证理解是否到位，而不是只做词向量相似。②抖音电商达人的创作与经营链路中，哪些节点最适合AI提效？选题、脚本、剪辑、选品、话术、复盘都可介入，优先级看哪一步最耗时且容错率高。③达人不愿用AI工具的原因可能是风格失真、内容同质化掉流量、学习成本高，解法是给可控可编辑的半自动方案并绑定流量激励。④带货视频完播率与观看时长都高但GMV很低，要从人群是否精准、种草到下单链路是否断裂、价格与库存是否劝退、挂车与优惠是否清晰几个方向排查，并用分渠道AB验证。⑤提炼爆款内容因子要靠结构化标注加对照实验，而非人工直觉总结。","tags":"面经,AI产品,字节跳动,电商","date":"2026-09-21"},
+    {"id":"exp-auto-20260921-meituan-pm-in-model-training","title":"美团AI产品面试：产品经理是算法的工具人吗，产品视角能为训练贡献什么","type":"interview","company":"美团","role":"AI产品经理","platform":"面灵AI（面经题单）","category":"AI产品","sourceUrl":"https://www.mianlingai.com/topics/ai-product-manager-interview-questions-2026","summary":"美团真题：你参与过模型训练吗、垂类大模型怎么训出来、产品经理如何不当算法的工具人。","keyPoints":["你参与过模型训练吗，产品经理在训练流程里做什么","产品视角的贡献：定目标、拆场景、定标注规范与验收口径","你们业务的垂类大模型是怎么训练出来的，解决什么问题","数据从哪来、标注标准谁定、效果由谁验收","怎么避免沦为工具人：从提需求升级到定评估与迭代机制"],"content":"美团AI产品岗真题，专问产品经理在模型训练中的位置。第一问：你参与过模型训练吗，会不会觉得自己是算法的工具人，产品视角能为训练贡献什么？高分答法是把产品贡献讲成三件事：一是定义目标，把业务问题翻译成模型要解决的任务并明确效果下限；二是拆场景与数据，确定覆盖哪些高频与长尾场景、数据从哪来、标注规范怎么定；三是定验收口径，把准确率、幻觉率、采纳率与业务指标绑定，上线以最低可接受值为门槛。第二问：你们业务的垂类大模型是怎么训练出来的，主要解决什么问题？要点是先讲清通用模型在垂类的短板，比如术语不懂、行业知识缺失、输出格式不受控，再说明用了SFT、RAG还是规则兜底，以及为什么这么组合。第三问：数据标注标准由谁制定、效果由谁验收？正确回答是产品牵头定标准、算法提供能力边界、业务方参与验收，而不是全推给算法。","tags":"面经,AI产品,美团,模型训练","date":"2026-09-21"},
+    {"id":"exp-auto-20260921-meituan-llm-basics-for-pm","title":"美团AI产品面试技术八股：SFT与DPO取舍、大小模型选择与逐字输出原理","type":"interview","company":"美团","role":"AI产品经理","platform":"面灵AI（面经题单）","category":"AI产品","sourceUrl":"https://www.mianlingai.com/topics/ai-product-manager-interview-questions-2026","summary":"美团AI产品技术八股六问：SFT与DPO怎么选、什么业务适合小模型、为什么AI逐字输出。","keyPoints":["SFT与DPO的区别，什么场景该用哪个、成本差多少","什么业务适合大模型，什么业务适合小模型","为什么现在的AI是一个字一个字蹦出来回答","BERT与Transformer的区别，了解哪些注意力机制","什么是过拟合，产品侧如何提前规避","和大模型交流应遵循什么整体原则"],"content":"美团AI产品岗的技术八股，特点是只问概念对产品决策意味着什么。①SFT与DPO的区别：SFT用标注数据教模型怎么答，DPO用偏好数据教模型答得更好，前者成本低、适合冷启动与格式对齐，后者更贵但能压住风格与安全，选型看数据可得性与效果下限。②什么业务适合大模型、什么适合小模型：开放式生成、多轮理解、长尾语义用大模型；分类、抽取、意图识别、高并发低延迟场景用小模型或蒸馏模型更划算。③为什么AI一个字一个字蹦出来：自回归生成机制逐token预测输出，好处是可流式呈现、可中断，代价是延迟与成本随长度线性增长。④BERT与Transformer的区别：Transformer是架构，BERT是只用编码器的预训练模型，擅长理解不擅长生成。⑤过拟合是模型记住训练集而泛化变差，产品侧靠留出评测集与线上AB规避。⑥与大模型交流的整体原则：给角色、给上下文、给约束、给示例，并多轮迭代而非一次成稿。","tags":"面经,AI产品,美团,技术八股","date":"2026-09-21"},
+    {"id":"exp-auto-20260921-tencent-scenario-design-6q","title":"腾讯产品场景设计题六连：微信、QQ、长视频、朋友圈广告与游戏IP","type":"interview","company":"腾讯","role":"产品经理","platform":"面灵AI（面经题单）","category":"产品思维与方法论","sourceUrl":"https://www.mianlingai.com/topics/ai-product-manager-interview-questions-2026","summary":"腾讯产品岗几乎每场必出一道自家业务场景题，这套六连覆盖微信、QQ、长视频与商业化。","keyPoints":["微信目前最需要优化的一个功能或体验是什么，为什么","若要强化QQ年轻用户社交粘性，会新增或迭代什么核心功能","抖音短视频对腾讯长视频的冲击，产品策略如何应对","腾讯视频推荐算法与抖音的本质区别，产品层面如何辅助算法","朋友圈广告展现形式是否合理，如何平衡体验与变现","零用户调研下快速迭代争议功能，如何用竞品与历史数据预判风险"],"content":"腾讯产品岗几乎每场都会出一道结合自家业务的场景题，这组六连来自近期真题。①微信目前最需要优化的功能或体验是什么？不要只说按钮位置，要按核心用户与场景、现状问题、改动方案、怎么验证四步推演。②如何强化QQ的年轻用户社交粘性？可从关系链轻量化、虚拟形象与兴趣群组切入，并给出冷启动方式。③短视频对腾讯长视频的冲击如何应对？核心是把长视频的独家内容与社交分发结合，而不是硬拼时长。④长视频推荐与短视频推荐的本质区别在于消费成本与决策门槛，产品层可做内容卡片前置、追剧提醒与兴趣标签显式化来辅助算法。⑤朋友圈广告的合理性要看频次、相关性与可关闭性，平衡点是让广告不破坏社交信任。⑥零用户调研下快速迭代争议功能，要用竞品分析、历史相似功能数据与AB实验预判风险，并设好回滚条件。答题关键永远是给出推导过程而不是结论。","tags":"面经,产品思维,腾讯,场景设计","date":"2026-09-21"},
+    {"id":"exp-auto-20260921-tencent-feedback-to-ai-req","title":"腾讯AI产品面试：用户反馈如何转化为AI需求与AI对话体验怎么衡量","type":"interview","company":"腾讯","role":"AI产品经理","platform":"面灵AI（面经题单）","category":"AI产品","sourceUrl":"https://www.mianlingai.com/topics/ai-product-manager-interview-questions-2026","summary":"腾讯AI产品真题：反馈到需求的转化链路，以及AI对话产品该用哪些指标衡量体验。","keyPoints":["用户反馈不能直接当需求，要区分个体偏好与普遍痛点","反馈聚类去噪后，区分是模型能力问题还是产品体验问题","把模糊反馈翻译成可验收需求：场景、输入、期望输出、下限","AI对话体验衡量：任务完成率、多轮轮次、打断率、追问率","传统留存指标不足以衡量对话产品，需补过程指标"],"content":"腾讯AI产品岗真题两问。第一问：如何将用户反馈转化为AI产品需求，请结合案例说明。标准链路是四步：先聚类去噪，把零散吐槽按场景归堆；再定性，区分这是模型能力不足（答不准）、产品设计问题（找不到入口、不会写提示词）还是预期管理问题（以为AI无所不能）；然后把定性结论翻译成可验收需求，写清场景、典型输入、期望输出与效果下限；最后小流量验证并回流badcase。切忌把单条反馈直接当需求，要区分个体偏好与普遍痛点。第二问：如何衡量AI对话产品的用户体验？不能只看留存，要补过程指标——任务完成率、平均多轮轮次、用户打断率、追问与重试率、转人工率、首字延迟，再叠加满意度与净推荐值。案例上可用客服助手说明：完成率与转人工率是一对核心矛盾指标，前者看能力，后者看兜底是否合理。","tags":"面经,AI产品,腾讯,用户反馈","date":"2026-09-21"},
+    {"id":"exp-auto-20260921-ali-taobao-worthbuy-design","title":"阿里产品设计题：为淘宝设计一个帮用户找到「值得买」商品的功能","type":"interview","company":"阿里巴巴","role":"产品经理","platform":"面灵AI（面经题单）","category":"产品思维与方法论","sourceUrl":"https://www.mianlingai.com/topics/ai-product-manager-interview-questions-2026","summary":"阿里产品岗真题：把「值得买」拆成可计算口径，再落到选品逻辑、可解释理由与验证指标。","keyPoints":["先定义「值得买」：性价比、口碑、适配度三种口径","用户分层：价格敏感型、品质型、决策困难型","功能设计：选品逻辑加可解释推荐理由加比价与替代方案","指标：点击率、转化率、退货率、复购率与比价使用率","如何验证「值得」的主观性，避免做成又一个榜单"],"content":"阿里产品岗高频设计题：为淘宝设计一个帮用户找到「值得买」商品的功能。第一步必须定义「值得买」，它至少有三种口径——性价比（同款更低）、口碑（评价与复购更好）、适配度（更适合你的需求），三者对应的数据源与推荐逻辑完全不同，要先选主线再叠加。第二步做用户分层：价格敏感型看比价与历史低价，品质型看材质与口碑，决策困难型看场景化清单与替代方案。第三步落到功能：选品用销量、评价分、退货率、价格曲线做基础过滤；每条推荐必须给出可解释理由，如近30天同款最低价或同类目退货率最低，否则用户不会信；同时提供比价与替代品入口，降低单一推荐带来的信任风险。第四步定指标：推荐位点击率、详情转化率、退货率、复购率与比价使用率。最后要回答如何验证「值得」的主观性——用AB实验看长期复购与退货率，而不是只看即时点击。","tags":"面经,产品思维,阿里巴巴,产品设计题","date":"2026-09-21"},
+    {"id":"exp-auto-20260921-xhs-pm-vs-ai-pm","title":"小红书AI产品面试：产品经理和AI产品经理的区别与AI需求真伪判断","type":"interview","company":"小红书","role":"AI产品经理","platform":"面灵AI（面经题单）","category":"AI产品","sourceUrl":"https://www.mianlingai.com/topics/ai-product-manager-interview-questions-2026","summary":"小红书AI产品真题：PM与AI PM的定位差异，以及如何判断一个AI需求是真需求还是伪需求。","keyPoints":["产品经理和AI产品经理的区别在哪，你更适合哪个","确定性交付与概率性交付带来的工作方式差异","如何判断一个AI需求是真需求还是伪需求，结合社区场景举例","判断依据：规则或小模型能否解决、容错率与用户预期","不该用大模型的场景：强合规、强确定性、高频低价值任务"],"content":"小红书AI产品岗真题两问。第一问：产品经理和AI产品经理有什么区别，你更适合哪个？核心差别在交付形态——传统产品交付确定性功能，AI产品交付的是概率性能力，因此AI PM要多做三件事：把效果下限写进需求、设计badcase回流与迭代机制、管理用户对不确定性的预期。技能上要多懂一层模型能力边界与成本结构，但产品方法论的地基不变。第二问：如何判断一个AI需求是真需求还是伪需求？结合小红书场景可用四道筛子：一是这件事用规则或小模型能否解决，能就别上大模型；二是容错率是否足够，笔记润色、话题推荐可以，社区规则判定这类强合规场景不行；三是用户是否真的期待AI介入，还是只想更快拿到结果；四是收益能否覆盖推理与审核成本。反例是给所有笔记强制加AI摘要，看似提效，实则稀释真实分享的社区调性。","tags":"面经,AI产品,小红书,需求判断","date":"2026-09-21"}
     // AUTO-EXPERIENCE-POSTS-END
 ];
 
@@ -12843,6 +12864,26 @@ document.addEventListener('click', function (e) {
   if (!e.target.closest || !e.target.closest('.ms-filter')) closeAllMsPanels();
 });
 
+/* ========== 岗位投递·公司折叠分组状态 ==========
+   expanded 存已展开的公司名；默认全部收起，只显示公司列表。
+   groups 缓存当前渲染的公司名数组，供展开/收起按钮用。 */
+const jobGroupState = { expanded: new Set(), groups: [] };
+
+function toggleJobCompany(idx) {
+  const name = jobGroupState.groups[idx];
+  if (!name) return;
+  if (jobGroupState.expanded.has(name)) jobGroupState.expanded.delete(name);
+  else jobGroupState.expanded.add(name);
+  renderJobs();
+}
+
+function toggleAllJobGroups() {
+  const allOpen = jobGroupState.groups.length > 0 && jobGroupState.groups.every(g => jobGroupState.expanded.has(g));
+  if (allOpen) jobGroupState.groups.forEach(g => jobGroupState.expanded.delete(g));
+  else jobGroupState.groups.forEach(g => jobGroupState.expanded.add(g));
+  renderJobs();
+}
+
 function renderJobs() {
   const list = getData(KEYS.jobs);
   renderDeadlineBoard(list);
@@ -12867,17 +12908,48 @@ function renderJobs() {
   else if (sortSel === 'fame_asc') filtered = filtered.slice().sort((a, b) => companyMeta(a.company).fame - companyMeta(b.company).fame || (a.company || '').localeCompare(b.company || '', 'zh'));
 
   if (filtered.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6"><div class="jobs-empty">
+    jobGroupState.groups = [];
+    updateJobGroupBtn();
+    tbody.innerHTML = `<tr><td colspan="5"><div class="jobs-empty">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7h-9M14 17H5M17 2l4 4-4 4M3 2v20"/></svg>
       <div>${list.length === 0 ? '还没有岗位，点击"添加岗位"或"导入表格"开始录入' : '没有匹配的岗位'}</div>
     </div></td></tr>`;
     return;
   }
 
-  tbody.innerHTML = filtered.map(j => `
+  /* 按公司分组（保持首次出现顺序）；搜索时自动全部展开，避免只见公司不见岗位 */
+  const groups = [];
+  const gmap = new Map();
+  filtered.forEach(j => {
+    const key = (j.company || '').trim() || '未填写公司';
+    if (!gmap.has(key)) { const g = { name: key, jobs: [] }; gmap.set(key, g); groups.push(g); }
+    gmap.get(key).jobs.push(j);
+  });
+  jobGroupState.groups = groups.map(g => g.name);
+  const expandAll = !!searchTerm;
+  updateJobGroupBtn();
+
+  const coRow = (g, idx) => {
+    const open = expandAll || jobGroupState.expanded.has(g.name);
+    const cities = [...new Set(g.jobs.map(j => (j.location || '').trim()).filter(Boolean))];
+    const cityHint = cities.length ? ' · ' + (cities.length <= 2 ? cities.join(' / ') : cities.slice(0, 2).join(' / ') + ' 等') : '';
+    return `
+    <tr class="jobs-co-row${open ? ' open' : ''}" onclick="toggleJobCompany(${idx})" title="点击${open ? '收起' : '展开'} ${escapeHtml(g.name)} 的岗位">
+      <td colspan="5">
+        <div class="jobs-co-head">
+          <svg class="jobs-co-caret" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          <span class="jobs-co-name">${escapeHtml(g.name)}</span>
+          ${coTypeBadge(g.name)}
+          <span class="jobs-co-count">${g.jobs.length} 个岗位</span>
+          <span class="jobs-co-arrow">${open ? '点击收起' : '点击展开'}${cityHint}</span>
+        </div>
+      </td>
+    </tr>`;
+  };
+
+  const jobRow = j => `
     <tr>
-      <td><span class="job-company">${escapeHtml(j.company || '—')}</span>${j.isAutoCollected ? '<div class="job-sub-tag">自动同步</div>' : ''}${coTypeBadge(j.company)}</td>
-      <td><span class="job-title">${escapeHtml(j.title || '—')}</span></td>
+      <td><span class="job-title">${escapeHtml(j.title || '—')}</span>${j.isAutoCollected ? '<div class="job-sub-tag">自动同步</div>' : ''}</td>
       <td>${escapeHtml(j.location || '—')}</td>
       <td>
         <div class="job-tags">
@@ -12893,8 +12965,20 @@ function renderJobs() {
         <button class="btn btn-sm btn-secondary" onclick="editJob('${j.id}')">编辑</button>
         <button class="btn btn-sm btn-danger" onclick="deleteItem('jobs', '${j.id}')">删除</button>
       </td>
-    </tr>
-  `).join('');
+    </tr>`;
+
+  tbody.innerHTML = groups.map((g, idx) => {
+    const open = expandAll || jobGroupState.expanded.has(g.name);
+    return coRow(g, idx) + (open ? g.jobs.map(jobRow).join('') : '');
+  }).join('');
+}
+
+function updateJobGroupBtn() {
+  const btn = document.getElementById('jobGroupBtn');
+  if (!btn) return;
+  const gs = jobGroupState.groups;
+  const allOpen = gs.length > 0 && gs.every(g => jobGroupState.expanded.has(g));
+  btn.textContent = allOpen ? '全部收起' : '全部展开';
 }
 
 function saveJob(id) {
