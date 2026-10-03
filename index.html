@@ -1087,6 +1087,56 @@ a { color: var(--primary); text-decoration: none; }
 .stage-radio.out       input:checked + span { background: #F3F4F6; color: #6B7280; border-color: #9CA3AF; }
 .stage-radio.autumn input:checked + span { background: #FFE4E6; color: #BE123C; }
 .stage-radio.campus input:checked + span { background: #E0E7FF; color: #4338CA; }
+/* ===== 求职贴 · 求职看板（报告/清单卡片，点击打开完整页面） ===== */
+.board-layout { padding: 2px 0 8px; }
+.board-note {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  margin: 0 0 14px; padding: 10px 14px;
+  background: var(--gradient-soft); border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 4px);
+  font-size: 13px; line-height: 1.7; color: var(--text-2);
+}
+.board-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 14px;
+}
+.board-card {
+  display: flex; flex-direction: column; gap: 10px;
+  padding: 16px; background: var(--bg-card);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  box-shadow: var(--shadow); transition: transform .18s, box-shadow .18s, border-color .18s;
+}
+.board-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--primary-light); }
+.board-card-top { display: flex; align-items: flex-start; gap: 10px; }
+.board-ico {
+  width: 38px; height: 38px; flex: 0 0 38px; border-radius: var(--radius-xs);
+  display: flex; align-items: center; justify-content: center;
+  background: var(--gradient); color: #fff;
+}
+.board-title { font-size: 15px; font-weight: 700; line-height: 1.4; color: var(--text); }
+.board-tag {
+  display: inline-block; margin-right: 6px; padding: 1px 8px; border-radius: 999px;
+  font-size: 11px; font-weight: 600; vertical-align: 2px;
+  background: #EDE9FE; color: var(--primary-dark); border: 1px solid var(--border);
+}
+.board-desc { font-size: 13px; line-height: 1.75; color: var(--text-2); }
+.board-meta { font-size: 12px; color: var(--text-3); }
+.board-actions { display: flex; align-items: center; gap: 8px; margin-top: 2px; }
+.board-open {
+  flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 8px 12px; border: none; border-radius: var(--radius-xs);
+  background: var(--gradient); color: #fff; font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.board-open:hover { filter: brightness(1.06); }
+.board-del {
+  padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-xs);
+  background: #fff; color: var(--text-3); font-size: 12px; cursor: pointer;
+}
+.board-del:hover { color: var(--danger); border-color: #FECACA; }
+.board-empty {
+  padding: 30px; text-align: center; color: var(--text-3); font-size: 13px; line-height: 1.8;
+  border: 1px dashed var(--border); border-radius: var(--radius); background: var(--bg-card);
+}
 /* 求职进度：看板（6 列积极流程按进度分列：简历初筛/测评/初筛/初试/复试/HR面）。
    AI面试、 不合适 默认不上看板——点顶部 chips 的这两档时切到 .app-list-view 列表视图集中查看 */
 .app-kanban {
@@ -2133,6 +2183,7 @@ a { color: var(--primary); text-decoration: none; }
       <button class="sub-tab" id="subTabIntern" onclick="switchExpSub('intern')">实习继任</button>
       <button class="sub-tab" id="subTabBank" onclick="switchExpSub('bank')" data-page-node-id="NZ5rylkxxmdF3piXk6H3lg">面试题库</button>
       <button class="sub-tab" id="subTabApps" onclick="switchExpSub('apps')" data-page-node-id="LqnQFF7COYsTBlJyPjNzun">求职进度</button>
+      <button class="sub-tab" id="subTabBoard" onclick="switchExpSub('board')" data-page-node-id="LqnQFF7COYsTBd0ardXy1">求职看板</button>
     </div>
     <div id="expPostsArea" data-page-node-id="nG84GJSZF4iMfXXHzRjjDK">
     <div class="exp-layout" data-page-node-id="jkfM6M4RoTFekjHE6ErLKb">
@@ -2321,6 +2372,27 @@ a { color: var(--primary); text-decoration: none; }
         </div>
         <div id="appChipsBar" class="app-chips" data-page-node-id="QL74UNWi3q5CoqPF8LcUkz"></div>
         <div id="expAppsList" data-page-node-id="mBEfwkRSUvgbUd5Y2JIIai"></div>
+      </div>
+    </div>
+
+    <!-- ===== 求职看板（报告 / 清单卡片，点击直接打开完整页面） ===== -->
+    <div id="expBoardArea" style="display:none" data-page-node-id="DCTcpXmAYJGi2XfvxjBOArd1">
+      <div class="exp-main" style="border:none;padding:0">
+        <div class="filters">
+          <span style="font-size:13px;color:var(--text-2)">汇总页以卡片形式沉淀在这里，点「打开完整页面」即可在新标签查看全量内容</span>
+          <span style="flex:1"></span>
+          <button class="btn btn-sm" onclick="addBoardCard()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            添加卡片
+          </button>
+        </div>
+        <div class="board-layout">
+          <div class="board-note">
+            卡片指向的页面需与工作台放在同一目录下（推荐放在工作台同级 <b>reports/</b> 文件夹）。
+            填 <b>reports/文件名.html</b> 即可；也可直接填一个 http(s) 网址。
+          </div>
+          <div id="expBoardList" class="board-grid"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -2864,6 +2936,7 @@ const KEYS = {
   expPosts: 'wb_pm_exp_posts',
   bizKB: 'wb_pm_biz_kb',  // 求职贴-业务知识库（公司+岗位+业务知识），独立存储，不与其他模块混用
   jobApps: 'wb_pm_job_apps',  // 求职贴-求职进度（公司+岗位+五档进度+面试复盘），独立存储
+  boardCards: 'wb_pm_board_cards',  // 求职贴-求职看板（报告/清单卡片：标题+页面路径+简介），独立存储
   jobs: 'wb_pm_jobs',
   interns: 'wb_pm_interns',  // 求职贴-实习继任（飞书「实习继任投递表」自动同步，独立存储）
   dailyReports: 'wb_pm_daily_reports',  // 日报/周报数据（每天做的事 + 判断步骤；周报由日报聚合）
@@ -4237,7 +4310,15 @@ window.AUTO_EXP_SEED = [
     {"id":"exp-auto-20261002-meituan-pm-written-ai-prompt","title":"美团产品岗笔试改版解读：AI实战案例大题与Prompt答题结构","type":"interview","company":"美团","role":"产品经理","platform":"CSDN","category":"产品思维与方法论","sourceUrl":"https://blog.csdn.net/Zhitunjiaoyu/article/details/165003600","summary":"美团产品与运营岗笔试改版：行测40分加AI实战案例60分，10轮AI提问定成败。","keyPoints":["笔试60分钟、总分100：行测20道选择题40分，AI实战案例Prompt大题60分","AI大题只有10轮提问机会，题干禁止复制，所有信息必须手动整理","真实场景是本地生活到店优惠活动获客差、转化不及预期，要求复盘归因并给方案","高分写法：先给AI定资深本地生活产品经理角色，再给只依据题干数据不编造等约束","输出按问题诊断到指标复盘的顺序：诊断、数据归因、痛点排序、优化方案、验证指标"],"content":"美团产品岗与运营岗笔试已改版，统一一套卷。60分钟、总分100：行测20道选择题40分，AI实战案例Prompt大题60分，后者是分值最高、区分度最大的拉分项。行测不考数字规律推理，主要考增长率与同比环比计算、转化率渗透率等业务数据分析、言语理解与逻辑判断，建议不恋战、给AI大题留足时间。AI大题给本地生活到店优惠活动的完整业务背景与流量、行为、转化、核销数据，还带用户差评与商户反馈，任务是活动获客效果差、转化不及预期，要求复盘问题、定位原因、输出优化方案。硬性规则：全程只有10轮AI提问机会，题干禁止复制，所有信息必须手动整理，最终自己整合输出完整报告。高分写法定角色、加约束：只依据题干数据不编造，先诊断再归因，按优先级排序，最后附验证指标。","tags":"面经,产品思维,美团,笔试","date":"2026-10-02"},
     {"id":"exp-auto-20261002-ali-taotian-multimodal-ai-pm-jd","title":"阿里淘天多模态AI产品经理岗位解读：意图承接与搜索策略设计","type":"interview","company":"阿里巴巴","role":"AI产品经理","platform":"淘天集团招聘官网","category":"AI产品","sourceUrl":"https://talent.taotian.com/off-campus/position-detail?positionId=7000046108","summary":"淘天多模态AI产品JD解读：图片视频商品表达、意图承接策略与AB增量验证。","keyPoints":["核心职责是围绕用户图片视频商品等多种表达形式，设计多模态AI解决方案","分析用户意图，针对不同意图设计多模态搜索承接策略，优化消费决策路径","要求熟悉VLM、RAG、Agent的适用场景与能力边界，能讲清在哪用也在哪不用","站内外需求激发与增长机会，要用AB实验验证增量并持续放大业务价值","可预判高频题：图片找货的召回与排序标准怎么定、多模态能力什么场景不该用"],"content":"淘天集团智能算法产品事业部AI产品经理岗位解读，方向是淘宝多模态AI产品。职责核心是围绕用户用图片、视频、商品等多种形式的表达，结合大模型与电商场景设计AI解决方案；分析用户意图，针对不同意图设计多模态搜索承接策略，优化消费决策路径，把用户问题转化为产品方案与推进计划并对上线效果负责；探索站内外需求激发与增长机会，用AB实验验证增量并持续放大。任职要求3年以上搜索推荐或大模型应用产品经验，熟悉VLM、RAG、Agent的适用场景与能力边界，具备强用户洞察、Owner意识与跨团队推动力。面试可预判的高频题：图片找货这类多模态搜索怎么定义召回与排序标准、不同意图如何分流承接、多模态能力在什么场景下反而不该用、AB实验怎么设计才能隔离出多模态的增量。","tags":"面经,AI产品,阿里巴巴,多模态","date":"2026-10-02"},
     {"id":"exp-auto-20261002-xhs-ai-open-ecosystem-pm-jd","title":"小红书AI开放生态产品经理（小游戏方向）岗位解读","type":"interview","company":"小红书","role":"AI产品经理","platform":"牛企直聘（转载小红书官网）","category":"AI产品","sourceUrl":"https://campus.niuqizp.com/job-v8k5nzCMz.html","summary":"小红书AI开放生态JD解读：小工具与小游戏开放机制、Builder双边需求与AI作品。","keyPoints":["岗位负责AI开放生态中小工具与游戏类的开放机制设计与形态演进","要打通Builder与游戏开发者的入驻、创作、开放平台到经营变现全链路","考察对B端Builder与C端用户双边需求的感知，是典型平台生态题","硬性加分是有自己的AI coding作品，投递前先做出一个可演示的东西","要求是游戏深度爱好者，面试大概率问开放机制怎么设计、生态冷启动先拉哪一边"],"content":"小红书AI开放生态产品经理（小游戏方向）岗位解读，base深圳，面向27或28届可全职实习3个月以上。职责有两条主线：负责小红书AI开放生态里小工具与游戏类的开放机制设计与形态演进；打通Builder与游戏开发者的入驻、创作、开放平台经营变现等核心环节的产品能力落地。任职要求除本科与实习时长外，有三条硬信号：有游戏平台实习经历优先，对AI应用场景与开放生态方向有浓厚兴趣；有自己的AI coding作品；热爱游戏、是游戏深度爱好者。此外要熟悉小红书内容社区生态，能敏锐感知B端Builder与C端用户的双边需求。面试大概率考开放机制怎么设计才能让生态自转、双边冷启动先拉哪一边、开发者变现路径如何与社区内容分发结合。","tags":"面经,AI产品,小红书,开放生态","date":"2026-10-02"},
-    {"id":"exp-auto-20261002-xhs-ad-alliance-aigc-pm-jd","title":"小红书广告联盟AIGC产品经理岗位解读：素材产能与投放闭环","type":"interview","company":"小红书","role":"AI产品经理","platform":"牛企直聘（转载小红书官网）","category":"AI产品","sourceUrl":"https://jobs.niuqizp.com/job-vlr5NtZLC.html","summary":"小红书广告联盟AIGC产品JD：素材批量生成、智能创意生产链路与投放择优闭环。","keyPoints":["职责是把文本图片视频数字人等AIGC能力用于广告素材批量生成与智能优化","设计智能创意生产链路：素材自动生成、多版本组合、智能混剪到自动化AB择优投放","要打通站外素材与站内承接，让站外流量在端内获得一致高效的体验","必答逻辑：素材衰退与跑量模型，用CTR、转化、ROI驱动模型与模板迭代","面试可能问素材同质化怎么治理、创意模板资产库如何沉淀、择优标准怎么定"],"content":"小红书广告联盟AIGC产品经理岗位解读。职责是把AIGC能力用于广告素材的批量生成与智能优化，覆盖文本、图片、视频、数字人，目标是提升素材产能与投放效果；设计智能创意生产链路，从素材自动生成、多版本组合、智能混剪，到自动化AB测试与择优投放的完整闭环；打通站外素材与站内承接，让站外流量在端内获得一致高效的体验；搭建创意素材的效果反馈与迭代机制，结合CTR、转化、ROI等数据驱动模型与模板持续优化；联动算法、设计与投放团队沉淀创意模板与素材资产库。任职要求熟悉AIGC能力与工具在广告场景的落地，了解素材衰退、跑量模型等投放逻辑。面试易问素材同质化怎么治理、创意模板资产库如何沉淀、多版本组合的择优标准怎么定。","tags":"面经,AI产品,小红书,AIGC","date":"2026-10-02"}
+    {"id":"exp-auto-20261002-xhs-ad-alliance-aigc-pm-jd","title":"小红书广告联盟AIGC产品经理岗位解读：素材产能与投放闭环","type":"interview","company":"小红书","role":"AI产品经理","platform":"牛企直聘（转载小红书官网）","category":"AI产品","sourceUrl":"https://jobs.niuqizp.com/job-vlr5NtZLC.html","summary":"小红书广告联盟AIGC产品JD：素材批量生成、智能创意生产链路与投放择优闭环。","keyPoints":["职责是把文本图片视频数字人等AIGC能力用于广告素材批量生成与智能优化","设计智能创意生产链路：素材自动生成、多版本组合、智能混剪到自动化AB择优投放","要打通站外素材与站内承接，让站外流量在端内获得一致高效的体验","必答逻辑：素材衰退与跑量模型，用CTR、转化、ROI驱动模型与模板迭代","面试可能问素材同质化怎么治理、创意模板资产库如何沉淀、择优标准怎么定"],"content":"小红书广告联盟AIGC产品经理岗位解读。职责是把AIGC能力用于广告素材的批量生成与智能优化，覆盖文本、图片、视频、数字人，目标是提升素材产能与投放效果；设计智能创意生产链路，从素材自动生成、多版本组合、智能混剪，到自动化AB测试与择优投放的完整闭环；打通站外素材与站内承接，让站外流量在端内获得一致高效的体验；搭建创意素材的效果反馈与迭代机制，结合CTR、转化、ROI等数据驱动模型与模板持续优化；联动算法、设计与投放团队沉淀创意模板与素材资产库。任职要求熟悉AIGC能力与工具在广告场景的落地，了解素材衰退、跑量模型等投放逻辑。面试易问素材同质化怎么治理、创意模板资产库如何沉淀、多版本组合的择优标准怎么定。","tags":"面经,AI产品,小红书,AIGC","date":"2026-10-02"},
+    {"id":"exp-auto-20261003-bytedance-agent-vs-siri","title":"字节AI产品面试：Agent与Siri等传统智能助手的核心差异","type":"interview","company":"字节跳动","role":"AI产品经理","platform":"面灵AI真题清单（公开面经整理）","category":"AI产品","sourceUrl":"https://www.mianlingai.com/topics/ai-agent-interview-questions-2026/","summary":"考Agent与传统助手的边界：主动性、行动力、记忆三差异，再用大白话向非技术面试官讲清Agent","keyPoints":["差异一主动性：传统助手等指令触发单轮响应，Agent围绕目标自主拆解多步任务","差异二行动力：Agent能调用工具操作外部系统，并依据环境反馈修正执行","差异三记忆与状态：Agent跨轮次维持任务目标与上下文，而非一次性问答","大白话类比：Siri像会聊天的查询机，Agent像替你跑腿办事的助理","追问：加了插件的ChatBot算不算Agent，标准在自主规划与闭环反馈"],"content":"两问出自面灵AI整理的公开面经真题清单，均标注近期在字节跳动AI产品岗面试中实际出现。第一问问Agent与Siri等传统智能助手的核心差异，高分答法抓住三点：一是主动性，传统助手等指令触发、单轮响应，Agent能围绕目标自主拆解多步任务并决定执行路径；二是行动力，Agent能调用工具、操作外部系统并根据环境反馈修正，而不只是语音指令到功能映射；三是记忆与状态连续性，Agent跨轮次维持任务目标与上下文。第二问要求用大白话向非技术面试官讲清什么是Agent，建议用类比：Siri像会聊天的查询机，你说一句它答一句；Agent像能替你跑腿办事的助理，你给目标它给结果。常见追问是加了插件的ChatBot算不算Agent，判断标准在有没有自主规划与闭环反馈，而不是有没有接工具。","tags":"面经,AI产品,字节跳动,Agent","date":"2026-10-03"},
+    {"id":"exp-auto-20261003-bytedance-agent-four-faults","title":"字节AI Agent面试：生产环境四类典型故障的成因与三层解法","type":"interview","company":"字节跳动","role":"AI产品经理","platform":"面灵AI真题清单（公开面经整理）","category":"AI产品","sourceUrl":"https://www.mianlingai.com/topics/ai-agent-interview-questions-2026/","summary":"考思考链错误传播、工具幻觉、JSON格式崩坏、无限循环四类故障如何发生，以及分三层治理","keyPoints":["思考链错误传播：前序推理出错沿链路放大，关键节点设中间结果校验复核","工具幻觉：编造不存在的工具或参数，靠工具注册表白名单与调用前校验拦截","JSON格式崩坏：输出不合法致解析失败，用结构化输出约束加重试修复兜底","无限循环：重复调用无进展，靠循环检测、轮次上限与熔断终止","三层解法：单步层校验约束、编排层重试降级回退、平台层监控回放与人机接管"],"content":"面灵AI整理的Agent真题清单标注此题为字节跳动近期面试题。它把生产环境Agent故障归纳为四类：一是思考链错误传播，前序步骤推理出错后沿链路放大，要在关键节点设中间结果校验与复核；二是工具幻觉，模型编造不存在的工具或填错参数，靠工具注册表白名单、调用前参数校验拦截；三是JSON格式崩坏，输出不合法导致下游解析失败，用结构化输出约束、解析失败重试与修复兜底；四是无限循环，反复调用同一工具无进展，靠循环检测、轮次上限和熔断终止。三层解法指：单步层做校验与约束，编排层做重试、降级与任务回退，平台层做监控告警、失败回放与人机接管。答题主线是先讲每类故障怎么发生，再讲对应防线，体现分层防御思维而非只背单一方案。","tags":"面经,AI产品,字节跳动,Agent,稳定性","date":"2026-10-03"},
+    {"id":"exp-auto-20261003-bytedance-ecom-ai-video","title":"字节电商AI场景题：无素材批量生成带货视频与爆款因子提炼","type":"interview","company":"字节跳动","role":"AI产品经理","platform":"面灵AI真题清单（公开面经整理）","category":"AI产品","sourceUrl":"https://www.mianlingai.com/topics/ai-product-manager-interview-questions-2026","summary":"考TikTok Shop新商家无素材时AI批量生成带货视频，以及从海量电商视频提炼爆款因子并验证","keyPoints":["无素材冷启动：从商品图、详情页、评论抽取卖点与证据","生成链路：商品理解、脚本生成、混剪或数字人口播、多版本产出","风险：夸大宣传、素材同质化、平台合规，需审核层与多样性约束","爆款因子定义：开头钩子、节奏、卖点结构、时长分布等可量化特征","因子验证：小流量AB实验验证因果，防止把相关性当因果"],"content":"两道电商AI场景题均标注近期出现在字节跳动（TikTok方向）面试中。第一问：TikTok Shop新商家没有短视频素材时，如何用AI批量生成带货视频。答题框架：素材冷启动从商品图、详情页、用户评论中抽取卖点与卖点证据；生成链路为商品理解、脚本生成、画面混剪或数字人口播、多版本产出；风险在夸大宣传、素材同质化与平台合规，需审核层与多样性约束；效果指标看素材通过率、跑量率与GMV增量。第二问：如何从海量电商视频中提炼爆款内容因子并验证有效性。思路是先定义因子（开头钩子、节奏、卖点结构、时长分布），用数据挖掘加人工标注筛选与转化强相关的因子，再通过小流量AB实验验证因果，防止把相关性当因果。两题合考AI产能与商业结果的连接能力。","tags":"面经,AI产品,字节跳动,电商AI,TikTok","date":"2026-10-03"},
+    {"id":"exp-auto-20261003-tencent-finetune-vs-prompt","title":"腾讯云AI产品面试：什么场景选微调、什么场景选提示词工程","type":"interview","company":"腾讯","role":"AI产品经理","platform":"面灵AI真题清单（公开面经整理）","category":"AI产品","sourceUrl":"https://www.mianlingai.com/topics/ai-product-manager-interview-questions-2026","summary":"考微调与提示词工程的选型标准：效果、数据、成本、时延、迭代速度五维权衡与组合策略","keyPoints":["选提示词工程：任务通用、样本少、需快速迭代、效果可接受时优先","选微调：垂直术语与格式要求高、提示词到顶、调用量大到摊薄训练成本","成本视角：提示词成本在每次推理持续发生，高并发长提示词时微调更省","迭代视角：提示词分钟级上线，微调要走数据标注训练评测灰度闭环","组合策略：先提示词打基线，RAG补知识，最后微调补能力"],"content":"面灵AI真题清单标注此题近期出现在腾讯云、阿里云的AI产品岗面试中。题目问哪些情况优先微调、哪些情况选提示词工程。参考框架五个维度：效果上，通用任务提示词通常够用，垂直术语、特定格式与稳定风格要求高时提示词容易到顶，微调收益明显；数据上，有几千条以上高质量标注数据才值得微调，样本少先做提示词与少样本示例；成本上，提示词成本在每次推理持续发生，长提示词高并发时微调反而更省；时延上，微调可缩短提示词、降低首字延迟；迭代速度上，提示词分钟级上线，微调要走数据、训练、评测、灰度的完整闭环。高分答法是给出组合策略：先提示词打基线，RAG补知识，最后微调补能力，并强调先量化基线效果再决定是否微调。","tags":"面经,AI产品,腾讯,微调,提示词工程","date":"2026-10-03"},
+    {"id":"exp-auto-20261003-tencent-kano-priority","title":"腾讯产品面试：KANO模型与四象限法怎么做需求优先级排序","type":"interview","company":"腾讯","role":"产品经理","platform":"面灵AI真题清单（公开面经整理）","category":"产品思维与方法论","sourceUrl":"https://www.mianlingai.com/topics/ai-product-manager-interview-questions-2026","summary":"考KANO五类需求判别与四象限价值成本排序的组合用法，要求结合业务落地而非背名词","keyPoints":["KANO五类：基本型、期望型、兴奋型、无差异、反向，靠正反两问判别","四象限法：按用户价值与实现成本落格，优先高价值低成本","组合用法：KANO定需求性质，四象限定排序，再叠加业务战略权重","高分点：兴奋型需求会退化为期望型乃至基本型，需定期重测","收尾：模型输出还要用数据和AB实验校验，避免纸上排序"],"content":"面灵AI真题清单标注此题近期出现在腾讯产品岗面试中。KANO模型把需求分为五类：基本型不满足会强烈不满、期望型满足越多越满意、兴奋型不期待但给了会惊喜、无差异型做不做都行、反向型做了反被抱怨，通过正反两问问卷判别。四象限法按用户价值与实现成本把需求落进四个格子，优先做高价值低成本，战略需要时做高价值高成本。组合用法是KANO先定需求性质、四象限再定排序，最后叠加业务战略权重。高分要点：一是别只背模型，要结合具体业务举例说明每类需求长什么样；二是指出兴奋型需求会随时间退化为期望型乃至基本型，需定期重测；三是说明模型输出还要用数据和AB实验校验。此题考的是方法论落地与排序说服力，不是名词解释。","tags":"面经,产品思维与方法论,腾讯,需求优先级,KANO","date":"2026-10-03"},
+    {"id":"exp-auto-20261003-meituan-llm-scale","title":"美团AI产品面试：大模型的「大」体现在哪些方面","type":"interview","company":"美团","role":"AI产品经理","platform":"面灵AI真题清单（公开面经整理）","category":"AI产品","sourceUrl":"https://www.mianlingai.com/topics/ai-product-manager-interview-questions-2026","summary":"考从参数、数据、算力三个维度理解大模型之大，并翻译成产品选型与体验权衡的语言","keyPoints":["参数规模：容量带来涌现能力，但推理成本与时延同步上升","数据规模：语料广度决定通用能力边界，数据质量影响幻觉率","算力规模：训练与推理成本决定产品单位经济模型","产品含义：大不免费，要判断哪些场景值得为能力付成本时延代价","答法关键：把技术属性翻译成产品权衡，不是复述参数数字"],"content":"面灵AI真题清单标注此题近期出现在美团产品岗面试中，且常与SFT、DPO等技术八股连问。大模型的「大」可拆成三个维度：参数规模大，模型容量带来涌现能力，复杂推理与指令遵循在规模跨过阈值后显著跃升，但推理成本与时延同步上升；数据规模大，预训练语料的广度决定通用能力边界，数据质量直接影响幻觉率；算力规模大，训练投入与推理部署成本决定产品的单位经济模型。落到产品决策的含义是：大不是免费的，每多用一分能力都要付成本与时延代价，产品经理要能判断哪些场景值得为大模型能力付费、哪些场景小模型加规则更划算，并把能力边界翻译成用户预期管理。答这题的关键是把技术属性翻译成产品权衡，而不是复述参数规模。","tags":"面经,AI产品,美团,大模型基础","date":"2026-10-03"},
+    {"id":"exp-auto-20261003-ali-qianwen-personal-agent","title":"阿里千问Personal Agent情报：跨会话记忆为何是新护城河","type":"interview","company":"阿里巴巴","role":"AI产品经理","platform":"搜狐科技（千问App产品负责人访谈整理）","category":"AI产品","sourceUrl":"https://www.sohu.com/a/1080309933_114778","summary":"千问负责人披露超60%问题靠中长期上下文回答更好、复杂任务涨5倍，可答记忆价值量化题","keyPoints":["数据弹药：调取中长期上下文与档案画像后，超60%问题回复更好","复杂任务前10个月增长5倍，平均对话轮次5到8轮，服务拓展到20多个场景","三层Context：通用Context管人生阶段、领域级Context跨场景调用、多终端持续理解","架构分工：通用Harness管规划与工具调用，领域级Agent提供专业深度","反常识信号：95%以上需求仍是高级搜索，App对接人力不到2%"],"content":"素材来自千问App产品负责人郑嗣寿在2026云栖大会后的访谈（9月发布），可作阿里AI产品岗「记忆价值怎么量化」「Agent壁垒在哪」类题目的数据支撑。核心数据：通过使用用户中长期上下文与档案画像，超过60%的问题得到更好回复；今年前10个月个人复杂任务需求增长5倍；平均对话轮次达5到8轮；服务领域拓展至20多个场景。方法论上，千问构建三层个人Context：围绕身份与人生阶段的通用Context、跨场景调用的领域级Context、眼镜耳机等多终端的持续理解；架构上通用Harness承担规划与工具调用，领域级Agent提供专业深度。反常识信号：95%以上需求仍停留在高级搜索，App对接人力不到2%，人力集中在Harness、记忆与工具。这些数字可直接用于论证跨会话记忆是AI产品新护城河。","tags":"面经,AI产品,阿里巴巴,千问,记忆,Personal Agent","date":"2026-10-03"},
+    {"id":"exp-auto-20261003-xhs-plan-vs-agent-mode","title":"小红书AI产品面试：AI编程的Plan模式与Agent模式有什么区别","type":"interview","company":"小红书","role":"AI产品经理","platform":"面灵AI真题清单（公开面经整理）","category":"AI产品","sourceUrl":"https://www.mianlingai.com/topics/ai-agent-interview-questions-2026/","summary":"考Plan模式与Agent模式在控制权、自动化程度、出错代价上的差异，及各自适用任务类型","keyPoints":["Plan模式：先规划后确认再执行，人在环，适合高风险与探索性任务","Agent模式：自主规划执行反馈闭环，适合目标明确、可验证的重复任务","核心变量：控制权归属、自动化程度、出错代价与回滚成本","产品视角：Plan靠过程透明建信任，Agent靠结果质量与兜底建信任","追问答法：按风险等级与可验证性分档，高危走Plan、低危高频走Agent"],"content":"面灵AI真题清单标注此题近期出现在小红书AI产品岗面试中。Plan模式与Agent模式是AI编程工具的两种形态：Plan模式先让模型产出执行计划、用户确认后再执行，人始终在环，适合高风险、不可逆或需求模糊的探索性任务；Agent模式由模型自主规划、执行、依据反馈迭代直到完成，适合目标明确、结果可验证、出错可回滚的重复性任务。本质差异在三个变量：控制权归属（人确认每步还是只确认目标）、自动化程度（人工介入频次）、出错代价（能否低成本回滚）。产品视角的高分答法：两种模式对应不同的信任建立路径，Plan模式靠过程透明赢得信任，Agent模式靠结果质量与兜底机制赢得信任；被追问如何分配任务时，按风险等级与可验证性分档，高危任务走Plan、低危高频任务走Agent。","tags":"面经,AI产品,小红书,AI编程,Agent","date":"2026-10-03"}
     // AUTO-EXPERIENCE-POSTS-END
 ];
 
@@ -12435,6 +12516,98 @@ function jobAppCheckOverflow() {
   });
 }
 function addJobApp() { openModal('jobApp'); }
+
+/* ========== 求职贴 · 求职看板（报告/清单卡片 → 点击打开完整页面） ==========
+   卡片页统一用「相对工作台自身的路径」解析：
+   - 本地 file:// 打开   → 解析成 file:///.../reports/xxx.html
+   - 部署到 GitHub Pages → 解析成 .../reports/xxx.html
+   同一条相对路径两种场景都能用，不用改链接。 */
+const JOB_BOARD_SEED = [
+  {
+    title: '2027 秋招快消全清单 · 年包排名',
+    tag: '清单',
+    file: 'reports/2027秋招快消全清单_年包排名.html',
+    desc: '72 家快消/消费品公司 2027 秋招：适配岗位、网申截止、工作地、预估人数、应聘难度、发展潜力，按首年总包（年包）完整排名。',
+    date: '2026-10-03'
+  },
+  {
+    title: '高露洁 2027 校招岗位解读',
+    tag: '解读',
+    file: 'reports/高露洁校招解读.html',
+    desc: '客户发展 / 市场 / 电商 / 财务 / 供应链等 11 类培训生拆解：各岗人数、入职难度、发展潜力、薪资架构与总包测算。',
+    date: '2026-10-02'
+  }
+];
+
+/* 把「页面路径」解析成可打开的绝对地址（相对当前工作台页面） */
+function boardReportUrl(file) {
+  if (!file) return '';
+  try { return new URL(String(file).trim(), location.href).href; } catch (e) { return file; }
+}
+
+/* 卡片 / 按钮点击 → 新标签打开完整页面 */
+function openBoardReport(el) {
+  const file = el && el.getAttribute ? (el.getAttribute('data-file') || '') : '';
+  const url = boardReportUrl(file);
+  if (!url) { alert('这张卡片还没配置可打开的页面路径'); return; }
+  window.open(url, '_blank', 'noopener');
+}
+
+function renderJobBoard() {
+  const box = document.getElementById('expBoardList');
+  if (!box) return;
+  const seed = (typeof JOB_BOARD_SEED !== 'undefined' && Array.isArray(JOB_BOARD_SEED)) ? JOB_BOARD_SEED : [];
+  const custom = getData(KEYS.boardCards) || [];
+  const map = {};
+  seed.forEach(it => { if (it && it.title) map[it.title] = Object.assign({}, it, { custom: false }); });
+  custom.forEach(it => {
+    if (!it || !it.title) return;
+    map[it.title] = Object.assign({}, map[it.title] || {}, it, { custom: true, id: it.id });
+  });
+  const list = Object.keys(map).map(k => map[k]);
+  if (!list.length) {
+    box.innerHTML = '<div class="board-empty">暂无看板卡片，点右上角「添加卡片」把报告 / 清单页沉淀进来。</div>';
+    return;
+  }
+  box.innerHTML = list.map(c => `
+    <div class="board-card" data-file="${escapeHtml(c.file || '')}" onclick="openBoardReport(this)">
+      <div class="board-card-top">
+        <div class="board-ico">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>
+        </div>
+        <div class="board-title"><span class="board-tag">${escapeHtml(c.tag || '报告')}</span>${escapeHtml(c.title)}</div>
+      </div>
+      <div class="board-desc">${escapeHtml(c.desc || '')}</div>
+      <div class="board-meta">更新于 ${escapeHtml(c.date || '')}</div>
+      <div class="board-actions">
+        <button class="board-open" data-file="${escapeHtml(c.file || '')}" onclick="event.stopPropagation();openBoardReport(this)">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6M10 14L21 3"/></svg>
+          打开完整页面
+        </button>
+        ${c.custom ? '<button class="board-del" title="删除这张卡片" onclick="event.stopPropagation();deleteBoardCard(\'' + (c.id || '') + '\')">删除</button>' : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function addBoardCard() {
+  const title = (prompt('卡片名称（如：2027 秋招快消全清单_年包排名）：') || '').trim();
+  if (!title) return;
+  const file = (prompt('页面路径：填相对路径 reports/xxx.html，或直接填一个 http 网址：') || '').trim();
+  if (!file) { alert('请填写可打开的页面路径或网址'); return; }
+  const tag = (prompt('分类标签（如 清单 / 解读 / 报告，直接回车默认「报告」）：') || '报告').trim();
+  const desc = (prompt('一句话简介（可直接留空）：') || '').trim();
+  const list = getData(KEYS.boardCards) || [];
+  list.push({ id: uid(), title, file, tag, desc, date: new Date().toISOString().slice(0, 10) });
+  setData(KEYS.boardCards, list);
+  renderJobBoard();
+}
+
+function deleteBoardCard(id) {
+  if (!id || !window.confirm('确定删除这张看板卡片？（仅删除你自己添加的卡片）')) return;
+  setData(KEYS.boardCards, (getData(KEYS.boardCards) || []).filter(x => x && x.id !== id));
+  renderJobBoard();
+}
 function editJobApp(id) {
   const item = jobAppList().find(a => a.id === id);
   if (item) openModal('jobApp', item);
@@ -12505,29 +12678,34 @@ function switchExpSub(sub) {
   const internArea = document.getElementById('expInternArea');
   const bankArea = document.getElementById('expBankArea');
   const appsArea = document.getElementById('expAppsArea');
+  const boardArea = document.getElementById('expBoardArea');
   const tPosts = document.getElementById('subTabPosts');
   const tBiz = document.getElementById('subTabBiz');
   const tJobs = document.getElementById('subTabJobs');
   const tIntern = document.getElementById('subTabIntern');
   const tBank = document.getElementById('subTabBank');
   const tApps = document.getElementById('subTabApps');
+  const tBoard = document.getElementById('subTabBoard');
   if (postsArea) postsArea.style.display = sub === 'posts' ? '' : 'none';
   if (bizArea) bizArea.style.display = sub === 'biz' ? '' : 'none';
   if (jobsArea) jobsArea.style.display = sub === 'jobs' ? '' : 'none';
   if (internArea) internArea.style.display = sub === 'intern' ? '' : 'none';
   if (bankArea) bankArea.style.display = sub === 'bank' ? '' : 'none';
   if (appsArea) appsArea.style.display = sub === 'apps' ? '' : 'none';
+  if (boardArea) boardArea.style.display = sub === 'board' ? '' : 'none';
   if (tPosts) tPosts.classList.toggle('active', sub === 'posts');
   if (tBiz) tBiz.classList.toggle('active', sub === 'biz');
   if (tJobs) tJobs.classList.toggle('active', sub === 'jobs');
   if (tIntern) tIntern.classList.toggle('active', sub === 'intern');
   if (tBank) tBank.classList.toggle('active', sub === 'bank');
   if (tApps) tApps.classList.toggle('active', sub === 'apps');
+  if (tBoard) tBoard.classList.toggle('active', sub === 'board');
   if (sub === 'biz') renderExpBizKB();
   if (sub === 'jobs') renderJobs();
   if (sub === 'intern') renderInterns();
   if (sub === 'bank') renderExpBank();
   if (sub === 'apps') renderJobApps();
+  if (sub === 'board') renderJobBoard();
 }
 
 /* ========== 实习继任 (interns) ==========
@@ -13900,6 +14078,7 @@ function renderAll() {
   renderExpPosts();
   renderJobs();
   renderTasks();
+  renderJobBoard();
 
   // Check data count for backup reminder
   const total = getData(KEYS.training).length + getData(KEYS.defense).length +
