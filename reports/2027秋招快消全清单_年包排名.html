@@ -85,6 +85,27 @@
     body{background:#fff;padding:0;}
     .card{break-inside:avoid;box-shadow:none;}
   }
+
+  /* ===== 投递完成标记（打勾→沉降变灰） ===== */
+  .mark-col{width:36px;text-align:center;vertical-align:middle;white-space:nowrap;}
+  .mark-col input{width:17px;height:17px;cursor:pointer;accent-color:var(--brand);}
+  tr.done td{background:#eceef0 !important;color:#9aa0a6 !important;}
+  tr.done .pkg,tr.done .star,tr.done b,tr.done .pill,tr.done a,tr.done .rk{color:#9aa0a6 !important;}
+  tr.done a{text-decoration:line-through;}
+  tr.done{transition:background .25s,opacity .25s;}
+  .track-bar{position:sticky;top:0;z-index:60;background:linear-gradient(135deg,#0a8754,#115e3c);
+    color:#fff;display:flex;align-items:center;gap:12px;padding:9px 16px;font-size:13px;
+    box-shadow:0 2px 8px rgba(0,0,0,.15);margin:-24px -14px 16px;}
+  .track-bar .tb-title{font-weight:600;}
+  .track-bar .tb-count{opacity:.95;}
+  .track-bar .tb-btn{margin-left:auto;background:#fff;color:#0a8754;border:none;border-radius:8px;
+    padding:5px 13px;font-weight:600;cursor:pointer;font-size:12.5px;}
+  .track-bar .tb-btn:hover{background:#e8f5ee;}
+  @media (max-width:720px){
+    .mark-col{padding-left:4px !important;padding-right:4px !important;text-align:center;}
+    td.mark-col::before{display:none !important;}
+    .track-bar{margin:-12px -8px 12px;}
+  }
 </style>
 </head>
 <body data-page-node-id="FQCmIWh4hAdHiHGA2K2ENa">
@@ -335,5 +356,95 @@
 
 <div class="foot" data-page-node-id="GdreNpGhuYLSHY9Qrh88u0">数据整理于 2026-10-03｜2026-10-04 补充：全部 72 家投递入口 + 岗位匹配度 + <b>按你最适配岗位的年包拆解（含年终奖）</b>｜年包为税前估算<br>本页为单文件 HTML，无外部依赖，可直接发送到手机/平板/其他电脑，用任意浏览器打开即可正常查看（窄屏自动切换为卡片式布局）</div>
 </div>
+<script>
+(function(){
+  var STORE='pm_report_done_v1';
+  function loadDone(){try{return JSON.parse(localStorage.getItem(STORE))||{};}catch(e){return {};}}
+  function saveDone(o){try{localStorage.setItem(STORE,JSON.stringify(o));}catch(e){}}
+  var done=loadDone();
+
+  // 把公司名归一化成可跨表匹配的稳定 key
+  function norm(s){
+    s=(s||'').replace('已核实','').replace(/\s+/g,' ').trim();
+    var i=s.indexOf('('); if(i>0) s=s.slice(0,i);
+    var j=s.indexOf('/'); if(j>0) s=s.slice(0,j);
+    var k=s.indexOf(' '); if(k>0) s=s.slice(0,k);
+    return s.trim();
+  }
+
+  var tables=Array.prototype.slice.call(document.querySelectorAll('table'));
+  var allRows=[];
+
+  tables.forEach(function(tb){
+    var thead=tb.querySelector('thead'); if(!thead) return;
+    var htr=thead.querySelector('tr'); if(!htr) return;
+    var ths=Array.prototype.slice.call(htr.querySelectorAll('th'));
+    var cidx=-1;
+    ths.forEach(function(th,i){ if(th.textContent.trim().indexOf('公司')>-1) cidx=i; });
+    if(cidx<0) return;
+
+    var hth=document.createElement('th'); hth.className='mark-col'; hth.textContent='✓';
+    htr.insertBefore(hth,htr.children[0]);
+
+    var tbody=tb.querySelector('tbody'); if(!tbody) return;
+    var rows=Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+    rows.forEach(function(tr,i){
+      var ctd=tr.children[cidx];
+      var key=norm(ctd?ctd.textContent:'');
+      tr.dataset.key=key; tr.dataset.orig=i;
+      var td=document.createElement('td'); td.className='mark-col';
+      var cb=document.createElement('input'); cb.type='checkbox'; cb.className='cmark';
+      cb.checked=!!done[key];
+      td.appendChild(cb); tr.insertBefore(td,tr.children[0]);
+      allRows.push({tr:tr,key:key});
+    });
+    sortBody(tbody);
+  });
+
+  function sortBody(tbody){
+    var rows=Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+    rows.sort(function(a,b){
+      var da=a.classList.contains('done')?1:0, db=b.classList.contains('done')?1:0;
+      if(da!==db) return da-db;
+      return (+a.dataset.orig)-(+b.dataset.orig);
+    });
+    rows.forEach(function(r){tbody.appendChild(r);});
+  }
+  function applyRow(tr){
+    if(done[tr.dataset.key]) tr.classList.add('done'); else tr.classList.remove('done');
+  }
+  allRows.forEach(function(o){applyRow(o.tr);});
+
+  document.addEventListener('change',function(e){
+    if(!e.target.classList || !e.target.classList.contains('cmark')) return;
+    var tr=e.target.closest('tr'); var key=tr.dataset.key;
+    if(!tr) return;
+    if(e.target.checked) done[key]=1; else delete done[key];
+    saveDone(done);
+    allRows.forEach(function(o){ if(o.key===key) applyRow(o.tr); });
+    sortBody(tr.closest('tbody'));
+    updateBar();
+  });
+
+  var bar=document.createElement('div'); bar.className='track-bar';
+  bar.innerHTML='<span class="tb-title">✅ 投递完成标记</span>'+
+    '<span id="tb-count" class="tb-count"></span>'+
+    '<button id="tb-reset" class="tb-btn" type="button">重置</button>';
+  document.body.insertBefore(bar,document.body.firstChild);
+
+  function updateBar(){
+    var c=0; for(var k in done){ if(done[k]) c++; }
+    var el=document.getElementById('tb-count'); if(el) el.textContent='已标记 '+c+' 家公司';
+  }
+  document.getElementById('tb-reset').addEventListener('click',function(){
+    if(!confirm('确定清空所有「已办」标记？')) return;
+    done={}; saveDone(done);
+    allRows.forEach(function(o){ o.tr.classList.remove('done'); var cb=o.tr.querySelector('.cmark'); if(cb) cb.checked=false; });
+    tables.forEach(function(tb){ var b=tb.querySelector('tbody'); if(b) sortBody(b); });
+    updateBar();
+  });
+  updateBar();
+})();
+</script>
 </body>
 </html>
